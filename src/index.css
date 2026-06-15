@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "DM Serif Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --tempo-bg-primary: #0D0D0F;
+  --tempo-bg-secondary: #141416;
+  --tempo-bg-tertiary: #1C1C1F;
+  --tempo-border: #2A2A2D;
+  --tempo-border-hover: #3D3D42;
+  --tempo-accent-blue: var(--color-accent, #3b82f6);
+  --tempo-accent-purple: #8B5CF6;
+  --tempo-accent-green: #34D399;
+  --tempo-accent-amber: #FBBF24;
+  --tempo-accent-coral: #FB7185;
+  --tempo-accent-teal: #2DD4BF;
+  --tempo-text-primary: #F1F1F1;
+  --tempo-text-secondary: #8A8A90;
+  --tempo-text-muted: #4A4A52;
+  --color-accent: #3b82f6;
+  --color-deep: #8B5CF6;
+  --color-light: #60A5FA;
+  --color-admin: #FBBF24;
+  --color-creative: #FB7185;
+  --color-social: #2DD4BF;
+}
+
+/* 1. PAPER LIGHT THEME */
+.paper-light {
+  --tempo-bg-primary: #FAF9F6; /* warm soft white */
+  --tempo-bg-secondary: #F3F1EC;
+  --tempo-bg-tertiary: #E5E2DB;
+  --tempo-border: #D1CFCA;
+  --tempo-border-hover: #AFAEA8;
+  --tempo-accent-blue: var(--color-accent, #2563EB);
+  --tempo-accent-purple: #7C3AED;
+  --tempo-accent-green: #059669;
+  --tempo-accent-amber: #D97706;
+  --tempo-accent-coral: #E11D48;
+  --tempo-accent-teal: #0D9488;
+  --tempo-text-primary: #1C1C1F;
+  --tempo-text-secondary: #4A4A52;
+  --tempo-text-muted: #8A8A90;
+}
+
+/* Map hardcoded background colors to their variable counterparts in Paper Light */
+.paper-light,
+.paper-light .bg-\[\#0D0D0F\],
+.paper-light .bg-\[\#0d0d0f\],
+.paper-light .bg-\[\#0D0D0FB3\],
+.paper-light .bg-\[\#0A0A0C\],
+.paper-light .bg-\[\#0a0a0c\] {
+  background-color: var(--tempo-bg-primary) !important;
+}
+
+.paper-light .bg-\[\#141416\],
+.paper-light .bg-\[\#141416\]\/50,
+.paper-light .bg-\[\#0E0E10\] {
+  background-color: var(--tempo-bg-secondary) !important;
+}
+
+.paper-light .bg-\[\#1C1C1F\] {
+  background-color: var(--tempo-bg-tertiary) !important;
+}
+
+.paper-light .border-\[\#2A2A2D\],
+.paper-light .border-\[\#2A2A2D\]\/60,
+.paper-light .border-\[\#2A2A2D\]\/40,
+.paper-light .border-\[\#2A2A2D\]\/55,
+.paper-light .border-\[\#2A2A2D\]\/70,
+.paper-light .border-r-\[\#2A2A2D\],
+.paper-light .border-b-\[\#2A2A2D\],
+.paper-light .border-t-\[\#2A2A2D\] {
+  border-color: var(--tempo-border) !important;
+}
+
+.paper-light .text-\[\#F1F1F1\],
+.paper-light .text-white {
+  color: var(--tempo-text-primary) !important;
+}
+
+.paper-light .text-\[\#8A8A90\] {
+  color: var(--tempo-text-secondary) !important;
+}
+
+.paper-light .text-\[\#4A4A52\] {
+  color: var(--tempo-text-muted) !important;
+}
+
+/* Ensure clean scrollbars in light theme */
+.paper-light ::-webkit-scrollbar-thumb {
+  background: var(--tempo-border) !important;
+}
+.paper-light ::-webkit-scrollbar-thumb:hover {
+  background: var(--tempo-border-hover) !important;
+}
+
+/* 2. FOREST GREEN THEME */
+.forest-green {
+  --tempo-bg-primary: #0A140F; /* deep dark forest green background */
+  --tempo-bg-secondary: #0F2218;
+  --tempo-bg-tertiary: #173324;
+  --tempo-border: #234E37;
+  --tempo-border-hover: #33714E;
+  --tempo-accent-blue: var(--color-accent, #60A5FA);
+  --tempo-accent-purple: #A78BFA;
+  --tempo-accent-green: #34D399;
+  --tempo-accent-amber: #FBBF24;
+  --tempo-accent-coral: #FB7185;
+  --tempo-accent-teal: #2DD4BF;
+  --tempo-text-primary: #ECFDF5;
+  --tempo-text-secondary: #A7F3D0;
+  --tempo-text-muted: #528965;
+}
+
+/* Map hardcoded background colors to their variable counterparts in Forest Green */
+.forest-green,
+.forest-green .bg-\[\#0D0D0F\],
+.forest-green .bg-\[\#0d0d0f\],
+.forest-green .bg-\[\#0D0D0FB3\],
+.forest-green .bg-\[\#0A0A0C\],
+.forest-green .bg-\[\#0a0a0c\] {
+  background-color: var(--tempo-bg-primary) !important;
+}
+
+.forest-green .bg-\[\#141416\],
+.forest-green .bg-\[\#141416\]\/50,
+.forest-green .bg-\[\#0E0E10\] {
+  background-color: var(--tempo-bg-secondary) !important;
+}
+
+.forest-green .bg-\[\#1C1C1F\] {
+  background-color: var(--tempo-bg-tertiary) !important;
+}
+
+.forest-green .border-\[\#2A2A2D\],
+.forest-green .border-\[\#2A2A2D\]\/60,
+.forest-green .border-\[\#2A2A2D\]\/40,
+.forest-green .border-\[\#2A2A2D\]\/55,
+.forest-green .border-\[\#2A2A2D\]\/70,
+.forest-green .border-r-\[\#2A2A2D\],
+.forest-green .border-b-\[\#2A2A2D\],
+.forest-green .border-t-\[\#2A2A2D\] {
+  border-color: var(--tempo-border) !important;
+}
+
+.forest-green .text-\[\#F1F1F1\],
+.forest-green .text-white {
+  color: var(--tempo-text-primary) !important;
+}
+
+.forest-green .text-\[\#8A8A90\] {
+  color: var(--tempo-text-secondary) !important;
+}
+
+.forest-green .text-\[\#4A4A52\] {
+  color: var(--tempo-text-muted) !important;
+}
+
+/* Dynamic overrides for hardcoded Tailwind blues so they dynamically respect --color-accent too! */
+.bg-\[\#4F8EF7\], .bg-\[\#4f8ef7\], .hover\:bg-\[\#4F8EF7\]:hover, .hover\:bg-\[\#4f8ef7\]:hover {
+  background-color: var(--color-accent) !important;
+}
+.text-\[\#4F8EF7\], .text-\[\#4f8ef7\], .hover\:text-\[\#4F8EF7\]:hover, .hover\:text-\[\#4f8ef7\]:hover {
+  color: var(--color-accent) !important;
+}
+.border-\[\#4F8EF7\], .border-\[\#4f8ef7\], .hover\:border-\[\#4F8EF7\]\/50:hover, .hover\:border-\[\#4F8EF7\]:hover, .hover\:border-\[\#4f8ef7\]:hover {
+  border-color: var(--color-accent) !important;
+}
+.focus\:border-\[\#4F8EF7\]:focus, .focus\:border-\[\#4f8ef7\]:focus {
+  border-color: var(--color-accent) !important;
+}
+.focus\:ring-\[\#4F8EF7\]:focus, .focus\:ring-\[\#4f8ef7\]:focus {
+  --tw-ring-color: var(--color-accent) !important;
+}
+.selection\:bg-\[\#4F8EF7\]\/30 *::selection, .selection\:bg-\[\#4f8ef7\]\/30::selection, .selection\:bg-\[\#4F8EF7\]\/30::selection {
+  background-color: color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+}
+.bg-\[\#4F8EF7\]\/10, .bg-\[\#4f8ef7\]\/10 {
+  background-color: color-mix(in srgb, var(--color-accent) 10%, transparent) !important;
+}
+.bg-\[\#4F8EF7\]\/15, .bg-\[\#4f8ef7\]\/15 {
+  background-color: color-mix(in srgb, var(--color-accent) 15%, transparent) !important;
+}
+.border-\[\#4F8EF7\]\/20, .border-\[\#4f8ef7\]\/20 {
+  border-color: color-mix(in srgb, var(--color-accent) 20%, transparent) !important;
+}
+
+/* Reduce Motion accessibility rule */
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Disable Gravity pulse animation when toggled off */
+.gravity-pulse-disabled .g-pulse-ring,
+.gravity-pulse-disabled .pulse-indicator,
+.gravity-pulse-disabled .pulse-coral-indicator {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+
