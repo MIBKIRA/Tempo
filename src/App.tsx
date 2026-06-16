@@ -21,12 +21,11 @@ import { LogoSm } from './components/Logo';
 import { useTasksData } from './TasksContext';
 import CompleteProfile from './components/CompleteProfile';
 import AuthCallback from './components/AuthCallback';
+import { useUser } from './UserContext';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [userEmail, setUserEmail] = useState<string>('ryuk9079@gmail.com');
-  const [userName, setUserName] = useState<string>('Adrian Vance');
-  const [userAvatarUrl, setUserAvatarUrl] = useState<string>('');
+  const { userAvatarUrl, setUserAvatarUrl, userName, setUserName, userEmail, setUserEmail } = useUser();
   const [activeSidebarTab, setActiveSidebarTab] = useState<string>('today');
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
 

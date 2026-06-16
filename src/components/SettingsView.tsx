@@ -5,6 +5,7 @@ import {
   Download, Upload, RefreshCw, Smartphone, Eye, EyeOff
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { useUser } from '../UserContext';
 
 // Define the interface for keyboard shortcuts
 interface ShortcutRow {
@@ -151,6 +152,7 @@ export default function SettingsView({
   const [pageTransitions, setPageTransitions] = useState<boolean>(() => localStorage.getItem("tempo-page-transitions") !== "false");
 
   // 3. PROFILE STATES
+  const { userAvatarUrl, setUserAvatarUrl, setUserName } = useUser();
   const [profileName, setProfileName] = useState<string>('Ahmed Mohamed');
   const [profileEmail, setProfileEmail] = useState<string>('ahmed.m@tempo.io');
   const [profileUsername, setProfileUsername] = useState<string>('ahmedm');
@@ -185,14 +187,19 @@ export default function SettingsView({
           if (meta.full_name) setProfileName(meta.full_name);
           if (meta.username) setProfileUsername(meta.username);
           if (meta.bio) setProfileBio(meta.bio);
-          if (meta.avatar_url) setProfileAvatarUrl(meta.avatar_url);
+          if (userAvatarUrl) {
+            setProfileAvatarUrl(userAvatarUrl);
+          } else if (meta.avatar_url) {
+            setProfileAvatarUrl(meta.avatar_url);
+            setUserAvatarUrl(meta.avatar_url);
+          }
         }
       } catch (err) {
         console.error("Failed to load user info from Supabase:", err);
       }
     }
     loadUserProfile();
-  }, []);
+  }, [userAvatarUrl, setUserAvatarUrl]);
 
   // Inline validator for Username input change
   const handleUsernameChange = (val: string) => {
@@ -263,7 +270,14 @@ export default function SettingsView({
         .getPublicUrl(filePath);
 
       setProfileAvatarUrl(publicUrl);
+      setUserAvatarUrl(publicUrl);
       setUploadProgress(100);
+
+      // Save to profiles database table immediately
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl, updated_at: new Date().toISOString() })
+        .eq('id', user.id);
 
       // Trigger custom settings save representation
       triggerSaveNotification("Avatar uploaded successfully!");
@@ -277,10 +291,24 @@ export default function SettingsView({
         setUploadProgress(50);
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {
+        reader.onload = async () => {
           const base64Str = reader.result as string;
           setProfileAvatarUrl(base64Str);
+          setUserAvatarUrl(base64Str);
           setUploadProgress(100);
+
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase
+                .from('profiles')
+                .update({ avatar_url: base64Str, updated_at: new Date().toISOString() })
+                .eq('id', user.id);
+            }
+          } catch (dbErr) {
+            console.error("Failed to sync fallback base64 avatar to profiles:", dbErr);
+          }
+
           triggerSaveNotification("Avatar updated!");
           window.dispatchEvent(new Event("tempo-profile-updated"));
           setTimeout(() => setUploadProgress(0), 1000);
@@ -331,6 +359,20 @@ export default function SettingsView({
       setProfileName(trimmedName);
       setProfileUsername(trimmedUsername);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Update profiles database table
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: trimmedName,
+            username: trimmedUsername,
+            avatar_url: profileAvatarUrl,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', user.id);
+      }
+
       const { error } = await supabase.auth.updateUser({
         data: {
           full_name: trimmedName,
@@ -341,6 +383,9 @@ export default function SettingsView({
       });
 
       if (error) throw error;
+
+      setUserName(trimmedName);
+      setUserAvatarUrl(profileAvatarUrl);
 
       triggerSaveNotification("Profile updated successfully!");
       window.dispatchEvent(new Event("tempo-profile-updated"));
@@ -1395,9 +1440,26 @@ export default function SettingsView({
                       {profileAvatarUrl && (
                         <button
                           type="button"
-                          onClick={() => {
+                          onClick={async () => {
                             setProfileAvatarUrl('');
+                            setUserAvatarUrl('');
+                            try {
+                              const { data: { user } } = await supabase.auth.getUser();
+                              if (user) {
+                                await supabase
+                                  .from('profiles')
+                                  .update({ avatar_url: '', updated_at: new Date().toISOString() })
+                                  .eq('id', user.id);
+
+                                await supabase.auth.updateUser({
+                                  data: { avatar_url: '' }
+                                });
+                              }
+                            } catch (err) {
+                              console.error("Error removing avatar from DB:", err);
+                            }
                             triggerSaveNotification("Avatar removed!");
+                            window.dispatchEvent(new Event("tempo-profile-updated"));
                           }}
                           className="px-3.5 py-1.5 rounded-8 text-[11px] font-mono font-bold text-[#FB7185] hover:bg-[#FB7185]/10 border border-[#FB7185]/20 cursor-pointer transition-colors duration-150"
                         >
