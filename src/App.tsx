@@ -21,12 +21,20 @@ import { LogoSm } from './components/Logo';
 import { useTasksData } from './TasksContext';
 import CompleteProfile from './components/CompleteProfile';
 import AuthCallback from './components/AuthCallback';
+import { useUser } from './UserContext';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [userEmail, setUserEmail] = useState<string>('ryuk9079@gmail.com');
-  const [userName, setUserName] = useState<string>('Adrian Vance');
-  const [userAvatarUrl, setUserAvatarUrl] = useState<string>('');
+  const { 
+    userAvatarUrl, 
+    setUserAvatarUrl, 
+    userName, 
+    setUserName, 
+    userEmail, 
+    setUserEmail,
+    setUserUsername,
+    setUserBio
+  } = useUser();
   const [activeSidebarTab, setActiveSidebarTab] = useState<string>('today');
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
 
@@ -219,6 +227,7 @@ export default function App() {
             setIsProfileComplete(!needsProfileCompletion);
             setUserName(profile.full_name || profile.username || 'Adrian Vance');
             setUserAvatarUrl(profile.avatar_url || '');
+            setUserUsername(profile.username || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
             } else if (window.location.pathname === '/complete-profile') {
@@ -249,8 +258,8 @@ export default function App() {
         setIsAuthenticated(true);
         setUserEmail(newSession.user.email || 'ryuk9079@gmail.com');
         
-        // Only trigger profile loading on SIGNED_IN to avoid updating issues
-        if (event === 'SIGNED_IN') {
+        // Fetch profile details immediately on successful login / session active
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
           const { data: profile } = await supabase
             .from('profiles')
             .select('is_complete, provider, full_name, username, avatar_url')
@@ -262,6 +271,7 @@ export default function App() {
             setIsProfileComplete(!needsProfileCompletion);
             setUserName(profile.full_name || profile.username || 'Adrian Vance');
             setUserAvatarUrl(profile.avatar_url || '');
+            setUserUsername(profile.username || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
             } else if (window.location.pathname === '/complete-profile') {
@@ -277,6 +287,13 @@ export default function App() {
       } else {
         setIsAuthenticated(false);
         setIsProfileComplete(true);
+        if (event === 'SIGNED_OUT') {
+          setUserAvatarUrl('');
+          setUserName('Adrian Vance');
+          setUserEmail('ryuk9079@gmail.com');
+          setUserUsername('');
+          setUserBio('');
+        }
       }
     });
 
@@ -298,6 +315,7 @@ export default function App() {
               setIsProfileComplete(!needsProfileCompletion);
               setUserName(profile.full_name || profile.username || 'Adrian Vance');
               setUserAvatarUrl(profile.avatar_url || '');
+              setUserUsername(profile.username || '');
             }
           }
         } catch (e) {
@@ -685,15 +703,23 @@ export default function App() {
       if (session) {
         supabase
           .from('profiles')
-          .select('is_complete, provider')
+          .select('is_complete, provider, full_name, username, avatar_url')
           .eq('id', session.user.id)
           .single()
           .then(({ data: profile }) => {
-            const needsProfileCompletion = profile?.provider === 'google' && profile?.is_complete === false;
-            setIsProfileComplete(!needsProfileCompletion);
-            if (needsProfileCompletion) {
-              navigate('/complete-profile');
+            if (profile) {
+              setUserName(profile.full_name || profile.username || name);
+              setUserAvatarUrl(profile.avatar_url || '');
+              setUserUsername(profile.username || '');
+              const needsProfileCompletion = profile.provider === 'google' && profile.is_complete === false;
+              setIsProfileComplete(!needsProfileCompletion);
+              if (needsProfileCompletion) {
+                navigate('/complete-profile');
+              } else {
+                navigate('/');
+              }
             } else {
+              setIsProfileComplete(true);
               navigate('/');
             }
           });

@@ -7,6 +7,7 @@ import { Task, Intention, Habit, TimeBlock, EnergyType, ItemType } from '../type
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
 import { useHabits } from '../contexts/HabitsContext';
+import { useUser } from '../UserContext';
 
 // TIMELINE MATH & HELPER CONSTANTS & FUNCTIONS
 // Timeline ranges from 6:00 AM to 10:00 PM (16 hours).
@@ -31,7 +32,8 @@ interface TodayViewProps {
   setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-export default function TodayView({ userEmail, userName, onLogout, onViewChange, onStartFocusMode, tasks: propsTasks, setTasks: propsSetTasks }: TodayViewProps) {
+export default function TodayView({ userEmail, userName: propUserName, onLogout, onViewChange, onStartFocusMode, tasks: propsTasks, setTasks: propsSetTasks }: TodayViewProps) {
+  const { userAvatarUrl, userName } = useUser();
   const { tasks, createTask, updateTask, completeTask, deleteTask } = useTasksData();
   const {
     habits: dbHabits,
@@ -550,10 +552,21 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             </div>
             
             {/* Avatar display */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] p-0.5 shadow-lg flex items-center justify-center shrink-0">
-              <span className="text-xs font-mono font-bold text-white uppercase select-none">
-                AV
-              </span>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] p-0.5 shadow-lg flex items-center justify-center shrink-0 overflow-hidden relative">
+              {userAvatarUrl ? (
+                <img src={userAvatarUrl} alt={userName} className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
+              ) : (
+                <span className="text-xs font-mono font-bold text-white uppercase select-none">
+                  {(() => {
+                    if (!userName) return '??';
+                    const parts = userName.trim().split(/\s+/);
+                    if (parts.length >= 2) {
+                      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                    }
+                    return parts[0].slice(0, 2).toUpperCase();
+                  })()}
+                </span>
+              )}
             </div>
           </div>
 
