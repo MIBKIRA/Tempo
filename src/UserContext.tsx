@@ -59,26 +59,37 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         setUserEmail(session.user.email || 'ryuk9079@gmail.com');
-        try {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name, username, avatar_url')
-            .eq('id', session.user.id)
-            .single();
+        
+        // Fetch or re-fetch profile on sign-in, initial session, or user update
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('full_name, username, avatar_url')
+              .eq('id', session.user.id)
+              .single();
 
-          if (profile) {
-            setUserName(profile.full_name || profile.username || 'Adrian Vance');
-            setUserAvatarUrl(profile.avatar_url || '');
-            setUserUsername(profile.username || '');
+            if (profile) {
+              setUserName(profile.full_name || profile.username || 'Adrian Vance');
+              setUserAvatarUrl(profile.avatar_url || '');
+              setUserUsername(profile.username || '');
+            }
+            if (session.user.user_metadata?.bio) {
+              setUserBio(session.user.user_metadata.bio);
+            }
+          } catch (err) {
+            console.error("Error fetching user profile in auth change subscription:", err);
           }
-          if (session.user.user_metadata?.bio) {
-            setUserBio(session.user.user_metadata.bio);
-          }
-        } catch (err) {
-          console.error("Error fetching user profile in auth change subscription:", err);
         }
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         // Reset to initial clean state on sign out
+        setUserAvatarUrl('');
+        setUserName('Adrian Vance');
+        setUserEmail('ryuk9079@gmail.com');
+        setUserUsername('');
+        setUserBio('');
+      } else {
+        // Fallback for any other events where session might be cleared
         setUserAvatarUrl('');
         setUserName('Adrian Vance');
         setUserEmail('ryuk9079@gmail.com');
