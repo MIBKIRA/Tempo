@@ -3,7 +3,6 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import { TasksProvider } from './TasksContext.tsx';
 import { HabitsProvider } from './contexts/HabitsContext.tsx';
-import { UserProvider } from './UserContext.tsx';
 import './index.css';
 
 // Apply the user's saved theme preference immediately on startup to prevent flash
@@ -38,13 +37,11 @@ if (savedColors) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProvider>
-      <TasksProvider>
-        <HabitsProvider>
-          <App />
-        </HabitsProvider>
-      </TasksProvider>
-    </UserProvider>
+    <TasksProvider>
+      <HabitsProvider>
+        <App />
+      </HabitsProvider>
+    </TasksProvider>
   </StrictMode>,
 );
 
