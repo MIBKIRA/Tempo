@@ -152,13 +152,25 @@ export default function SettingsView({
   const [pageTransitions, setPageTransitions] = useState<boolean>(() => localStorage.getItem("tempo-page-transitions") !== "false");
 
   // 3. PROFILE STATES
-  const { userAvatarUrl, setUserAvatarUrl, setUserName } = useUser();
-  const [profileName, setProfileName] = useState<string>('Ahmed Mohamed');
-  const [profileEmail, setProfileEmail] = useState<string>('ahmed.m@tempo.io');
-  const [profileUsername, setProfileUsername] = useState<string>('ahmedm');
+  const { 
+    userAvatarUrl, 
+    setUserAvatarUrl, 
+    userName, 
+    setUserName, 
+    userEmail, 
+    setUserEmail,
+    userUsername,
+    setUserUsername,
+    userBio,
+    setUserBio
+  } = useUser();
+
+  const [profileName, setProfileName] = useState<string>(userName || 'Ahmed Mohamed');
+  const [profileEmail, setProfileEmail] = useState<string>(userEmail || 'ahmed.m@tempo.io');
+  const [profileUsername, setProfileUsername] = useState<string>(userUsername || 'ahmedm');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [profileBio, setProfileBio] = useState<string>('Senior Product Designer. Passionate about productivity ratios and calendar block optimizations.');
-  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string>('');
+  const [profileBio, setProfileBio] = useState<string>(userBio || 'Senior Product Designer. Passionate about productivity ratios and calendar block optimizations.');
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string>(userAvatarUrl || '');
 
   // Extended Profile Settings state
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -176,30 +188,14 @@ export default function SettingsView({
     return parts[0].slice(0, 2).toUpperCase();
   };
 
-  // Fetch real authenticated user profile details from Supabase on mount
+  // Synchronize local states with global state when global state loads or changes
   useEffect(() => {
-    async function loadUserProfile() {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (user) {
-          if (user.email) setProfileEmail(user.email);
-          const meta = user.user_metadata || {};
-          if (meta.full_name) setProfileName(meta.full_name);
-          if (meta.username) setProfileUsername(meta.username);
-          if (meta.bio) setProfileBio(meta.bio);
-          if (userAvatarUrl) {
-            setProfileAvatarUrl(userAvatarUrl);
-          } else if (meta.avatar_url) {
-            setProfileAvatarUrl(meta.avatar_url);
-            setUserAvatarUrl(meta.avatar_url);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to load user info from Supabase:", err);
-      }
-    }
-    loadUserProfile();
-  }, [userAvatarUrl, setUserAvatarUrl]);
+    if (userName) setProfileName(userName);
+    if (userEmail) setProfileEmail(userEmail);
+    if (userUsername) setProfileUsername(userUsername);
+    if (userBio) setProfileBio(userBio);
+    if (userAvatarUrl) setProfileAvatarUrl(userAvatarUrl);
+  }, [userName, userEmail, userUsername, userBio, userAvatarUrl]);
 
   // Inline validator for Username input change
   const handleUsernameChange = (val: string) => {
@@ -385,6 +381,8 @@ export default function SettingsView({
       if (error) throw error;
 
       setUserName(trimmedName);
+      setUserUsername(trimmedUsername);
+      setUserBio(profileBio);
       setUserAvatarUrl(profileAvatarUrl);
 
       triggerSaveNotification("Profile updated successfully!");

@@ -25,7 +25,16 @@ import { useUser } from './UserContext';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const { userAvatarUrl, setUserAvatarUrl, userName, setUserName, userEmail, setUserEmail } = useUser();
+  const { 
+    userAvatarUrl, 
+    setUserAvatarUrl, 
+    userName, 
+    setUserName, 
+    userEmail, 
+    setUserEmail,
+    setUserUsername,
+    setUserBio
+  } = useUser();
   const [activeSidebarTab, setActiveSidebarTab] = useState<string>('today');
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
 
@@ -218,6 +227,7 @@ export default function App() {
             setIsProfileComplete(!needsProfileCompletion);
             setUserName(profile.full_name || profile.username || 'Adrian Vance');
             setUserAvatarUrl(profile.avatar_url || '');
+            setUserUsername(profile.username || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
             } else if (window.location.pathname === '/complete-profile') {
@@ -261,6 +271,7 @@ export default function App() {
             setIsProfileComplete(!needsProfileCompletion);
             setUserName(profile.full_name || profile.username || 'Adrian Vance');
             setUserAvatarUrl(profile.avatar_url || '');
+            setUserUsername(profile.username || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
             } else if (window.location.pathname === '/complete-profile') {
@@ -297,6 +308,7 @@ export default function App() {
               setIsProfileComplete(!needsProfileCompletion);
               setUserName(profile.full_name || profile.username || 'Adrian Vance');
               setUserAvatarUrl(profile.avatar_url || '');
+              setUserUsername(profile.username || '');
             }
           }
         } catch (e) {

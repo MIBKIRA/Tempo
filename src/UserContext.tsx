@@ -8,6 +8,10 @@ interface UserContextType {
   setUserName: (name: string) => void;
   userEmail: string;
   setUserEmail: (email: string) => void;
+  userUsername: string;
+  setUserUsername: (username: string) => void;
+  userBio: string;
+  setUserBio: (bio: string) => void;
   refreshUserProfile: () => Promise<void>;
 }
 
@@ -17,6 +21,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userAvatarUrl, setUserAvatarUrl] = useState<string>('');
   const [userName, setUserName] = useState<string>('Adrian Vance');
   const [userEmail, setUserEmail] = useState<string>('ryuk9079@gmail.com');
+  const [userUsername, setUserUsername] = useState<string>('');
+  const [userBio, setUserBio] = useState<string>('');
 
   const refreshUserProfile = async () => {
     try {
@@ -24,7 +30,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         setUserEmail(session.user.email || 'ryuk9079@gmail.com');
         
-        const { data: profile, error } = await supabase
+        const { data: profile } = await supabase
           .from('profiles')
           .select('full_name, username, avatar_url')
           .eq('id', session.user.id)
@@ -33,6 +39,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (profile) {
           setUserName(profile.full_name || profile.username || 'Adrian Vance');
           setUserAvatarUrl(profile.avatar_url || '');
+          setUserUsername(profile.username || '');
+        }
+
+        // Fetch bio from user metadata as fallback if any
+        if (session.user.user_metadata?.bio) {
+          setUserBio(session.user.user_metadata.bio);
         }
       }
     } catch (e) {
@@ -42,13 +54,47 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     refreshUserProfile();
+
+    // Set up auth state change listener to pull profiles immediately
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUserEmail(session.user.email || 'ryuk9079@gmail.com');
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, username, avatar_url')
+            .eq('id', session.user.id)
+            .single();
+
+          if (profile) {
+            setUserName(profile.full_name || profile.username || 'Adrian Vance');
+            setUserAvatarUrl(profile.avatar_url || '');
+            setUserUsername(profile.username || '');
+          }
+          if (session.user.user_metadata?.bio) {
+            setUserBio(session.user.user_metadata.bio);
+          }
+        } catch (err) {
+          console.error("Error fetching user profile in auth change subscription:", err);
+        }
+      } else {
+        // Reset to initial clean state on sign out
+        setUserAvatarUrl('');
+        setUserName('Adrian Vance');
+        setUserEmail('ryuk9079@gmail.com');
+        setUserUsername('');
+        setUserBio('');
+      }
+    });
     
     // Listen for custom event trigger to sync across tabs/components
     const handleUpdate = () => {
       refreshUserProfile();
     };
     window.addEventListener('tempo-profile-updated', handleUpdate);
+
     return () => {
+      subscription.unsubscribe();
       window.removeEventListener('tempo-profile-updated', handleUpdate);
     };
   }, []);
@@ -61,6 +107,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUserName,
       userEmail,
       setUserEmail,
+      userUsername,
+      setUserUsername,
+      userBio,
+      setUserBio,
       refreshUserProfile
     }}>
       {children}
