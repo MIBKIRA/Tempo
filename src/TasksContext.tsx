@@ -9,92 +9,7 @@ export const triggerAppToast = (msg: string) => {
 
 // Seeding function for initial items when in fallback/localStorage mode
 export const getInitialTasks = (): Task[] => {
-  const now = new Date();
-  
-  const getLocalDateString = (d: Date): string => {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  };
-
-  const getWeeklyDates = (d: Date): string[] => {
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(d);
-    monday.setDate(diff);
-
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-      const current = new Date(monday);
-      current.setDate(monday.getDate() + i);
-      dates.push(getLocalDateString(current));
-    }
-    return dates;
-  };
-
-  const todayStr = getLocalDateString(now);
-  const dates = getWeeklyDates(now);
-
-  return [
-    // Today's Checkbox tasks in Day/Today View (unscheduled)
-    { id: 1, type: 'task', title: "Write documentation for the new endpoints", energy: "deep", duration: "60m", gravity: 87, completed: false, date: todayStr },
-    { id: 2, type: 'task', title: "Update project status in Notion", energy: "admin", duration: "15m", gravity: 45, completed: false, date: todayStr },
-    { id: 3, type: 'task', title: "Code review for @alex's PR", energy: "deep", duration: "45m", gravity: 62, completed: false, date: todayStr },
-    { id: 4, type: 'task', title: "Morning standup", energy: "social", duration: "30m", gravity: 30, completed: true, date: todayStr },
-    { id: 5, type: 'task', title: "Send invoice to TechCorp", energy: "admin", duration: "10m", gravity: 50, completed: false, date: todayStr },
-
-    // Monday scheduled tasks & events (dates[0])
-    { id: 1001, type: 'scheduled_task', title: 'Product Kickoff', energy: 'social', duration: '90m', gravity: 50, completed: false, startTime: '09:00', endTime: '10:30', date: dates[0] },
-    { id: 1002, type: 'scheduled_task', title: 'Code Review Session', energy: 'deep', duration: '60m', gravity: 50, completed: false, startTime: '14:00', endTime: '15:00', date: dates[0] },
-
-    // Tuesday scheduled tasks & events (dates[1])
-    { id: 1003, type: 'event', title: 'Gym Workout', energy: 'light', duration: '60m', gravity: 50, completed: false, startTime: '08:00', endTime: '09:00', date: dates[1], notes: 'Cardio + strength training' },
-    { id: 1004, type: 'scheduled_task', title: 'Feature Sprint', energy: 'deep', duration: '120m', gravity: 50, completed: false, startTime: '10:00', endTime: '12:00', date: dates[1] },
-    { id: 1005, type: 'scheduled_task', title: '1:1 with Sarah', energy: 'social', duration: '30m', gravity: 50, completed: false, startTime: '15:00', endTime: '15:30', date: dates[1] },
-
-    // Wednesday scheduled tasks & events (dates[2])
-    { id: 1006, type: 'scheduled_task', title: 'Architecture Deep Dive', energy: 'deep', duration: '150m', gravity: 50, completed: false, startTime: '09:00', endTime: '11:30', date: dates[2] },
-    { id: 1007, type: 'event', title: 'Lunch with Client', energy: 'social', duration: '60m', gravity: 50, completed: false, startTime: '13:00', endTime: '14:00', date: dates[2], notes: 'Discuss Q3 deliverables' },
-
-    // Thursday scheduled tasks & events (dates[3])
-    { id: 1008, type: 'scheduled_task', title: 'Weekly Review', energy: 'admin', duration: '60m', gravity: 50, completed: false, startTime: '10:00', endTime: '11:00', date: dates[3] },
-    { id: 1009, type: 'scheduled_task', title: 'Focused Writing', energy: 'creative', duration: '120m', gravity: 50, completed: false, startTime: '14:00', endTime: '16:00', date: dates[3] },
-    { id: 1010, type: 'scheduled_task', title: 'Creative Brainstorm', energy: 'creative', duration: '75m', gravity: 50, completed: false, startTime: '15:00', endTime: '16:15', date: dates[3] },
-
-    // Friday scheduled tasks & events (dates[4])
-    { id: 1011, type: 'scheduled_task', title: 'API Integration', energy: 'deep', duration: '90m', gravity: 50, completed: false, startTime: '09:00', endTime: '10:30', date: dates[4] },
-    { id: 1012, type: 'event', title: 'Weekly Core Standup', energy: 'social', duration: '30m', gravity: 50, completed: false, startTime: '10:30', endTime: '11:00', date: dates[4], notes: 'Engineering team alignments' },
-    { id: 1013, type: 'scheduled_task', title: 'Architecture Review', energy: 'deep', duration: '90m', gravity: 50, completed: false, startTime: '14:00', endTime: '15:30', date: dates[4] },
-
-    // Saturday scheduled tasks & events (dates[5])
-    { id: 1014, type: 'event', title: 'Reading Block', energy: 'light', duration: '60m', gravity: 50, completed: false, startTime: '10:00', endTime: '11:00', date: dates[5], notes: 'Self development literature books' },
-
-    // Monday tasks board chips (dates[0])
-    { id: 2001, type: 'task', title: 'Update Jira tickets', energy: 'admin', duration: '15m', gravity: 50, completed: false, date: dates[0] },
-    { id: 2002, type: 'task', title: 'Draft email response', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[0] },
-
-    // Tuesday tasks board chips (dates[1])
-    { id: 2003, type: 'task', title: 'Design review prep', energy: 'creative', duration: '30m', gravity: 50, completed: false, date: dates[1] },
-    { id: 2004, type: 'task', title: 'Fix sidebar bug', energy: 'deep', duration: '20m', gravity: 50, completed: false, date: dates[1] },
-    { id: 2005, type: 'task', title: 'Review analytics schema', energy: 'deep', duration: '45m', gravity: 50, completed: false, date: dates[1] },
-    { id: 2006, type: 'task', title: 'Prepare slides', energy: 'light', duration: '15m', gravity: 50, completed: false, date: dates[1] },
-
-    // Wednesday tasks board chips (dates[2])
-    { id: 2007, type: 'task', title: 'Submit receipts', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[2] },
-
-    // Thursday tasks board chips (dates[3])
-    { id: 2008, type: 'task', title: 'Publish blog post draft', energy: 'creative', duration: '40m', gravity: 50, completed: false, date: dates[3] },
-    { id: 2009, type: 'task', title: 'Schedule alignment sync', energy: 'social', duration: '15m', gravity: 50, completed: false, date: dates[3] },
-    { id: 2010, type: 'task', title: 'Organize drive folders', energy: 'admin', duration: '30m', gravity: 50, completed: false, date: dates[3] },
-
-    // Friday tasks board chips (dates[4])
-    { id: 2011, type: 'task', title: 'Test Stripe billing logic', energy: 'deep', duration: '40m', gravity: 50, completed: false, date: dates[4] },
-    { id: 2012, type: 'task', title: 'Reply on Slack channels', energy: 'social', duration: '15m', gravity: 50, completed: false, date: dates[4] },
-    { id: 2013, type: 'task', title: 'Outline server middleware', energy: 'deep', duration: '30m', gravity: 50, completed: false, date: dates[4] },
-    { id: 2014, type: 'task', title: 'Check deployment container logs', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[4] },
-    { id: 2015, type: 'task', title: 'Configure database backups', energy: 'deep', duration: '20m', gravity: 50, completed: false, date: dates[4] }
-  ];
+  return [];
 };
 
 // ORM Database Column Mappers
@@ -193,10 +108,15 @@ interface TasksContextType {
 
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
+let isMigrating = false;
+
 // Helper: one-time migration of localStorage tasks to Supabase blocks table
 async function migrateLocalToSupabase(userId: string) {
   const MIGRATION_KEY = 'migration_v1_done';
   if (localStorage.getItem(MIGRATION_KEY)) return;
+  if (isMigrating) return;
+  isMigrating = true;
+  localStorage.setItem(MIGRATION_KEY, 'true');
 
   const raw = localStorage.getItem('tempo-tasks-v2') 
            || localStorage.getItem('blocks') 
@@ -227,8 +147,6 @@ async function migrateLocalToSupabase(userId: string) {
       console.error("Migration to Supabase failed:", error);
     }
   }
-
-  localStorage.setItem(MIGRATION_KEY, 'true');
 }
 
 export function TasksProvider({ children }: { children: React.ReactNode }) {

@@ -871,7 +871,9 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
               {filteredTasks.length === 0 && (
                 <div className="p-8 text-center border border-dashed border-[var(--tempo-border)] rounded-xl text-xs text-[var(--tempo-text-muted)]">
-                  No tasks match the active filter
+                  {todayTasks.length === 0 
+                    ? "No tasks yet. Add your first task above ↑" 
+                    : "No tasks match the active filter"}
                 </div>
               )}
             </div>
@@ -1330,7 +1332,13 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 )}
 
                 {/* 4. TIME BLOCKS SCHEDULE CARDS RENDERS */}
-                {blocks.map(block => {
+                {blocks.length === 0 ? (
+                  <div className="absolute inset-x-0 top-1/3 flex flex-col items-center justify-center text-center pointer-events-none select-none z-10">
+                    <p className="text-xs text-[var(--tempo-text-muted)] bg-[var(--tempo-bg-secondary)]/85 border border-[var(--tempo-border)]/40 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">
+                      Click any time slot to schedule a block
+                    </p>
+                  </div>
+                ) : blocks.map(block => {
                   const startY = timeToMinutesFromStart(block.startTime);
                   const endY = timeToMinutesFromStart(block.endTime);
                   const blockHeight = endY - startY;

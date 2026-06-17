@@ -683,6 +683,14 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
             {/* 7 Columns overlay canvas absolute wrapper container */}
             <div className="flex-grow grid grid-cols-7 divide-x divide-[var(--tempo-border)] bg-[var(--tempo-bg-primary)] relative">
               
+              {events.length === 0 && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none select-none z-30">
+                  <p className="text-xs text-[var(--tempo-text-muted)] bg-[var(--tempo-bg-secondary)]/90 border border-[var(--tempo-border)]/40 px-5 py-2.5 rounded-full shadow-lg backdrop-blur-sm">
+                    No events this week. Click a time slot to add one.
+                  </p>
+                </div>
+              )}
+              
               {/* background grids horizontal lines */}
               <div className="absolute inset-0 pointer-events-none z-0">
                 {timeLabels.map((time, idx) => (
