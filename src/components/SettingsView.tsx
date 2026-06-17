@@ -155,7 +155,7 @@ export default function SettingsView({
   const [profileEmail, setProfileEmail] = useState<string>('ahmed.m@tempo.io');
   const [profileUsername, setProfileUsername] = useState<string>('ahmedm');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [profileBio, setProfileBio] = useState<string>('Senior Product Designer. Passionate about productivity ratios and calendar block optimizations.');
+  const [profileBio, setProfileBio] = useState<string>('');
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string>('');
 
   // Extended Profile Settings state
@@ -181,11 +181,27 @@ export default function SettingsView({
         const { data: { user }, error } = await supabase.auth.getUser();
         if (user) {
           if (user.email) setProfileEmail(user.email);
-          const meta = user.user_metadata || {};
-          if (meta.full_name) setProfileName(meta.full_name);
-          if (meta.username) setProfileUsername(meta.username);
-          if (meta.bio) setProfileBio(meta.bio);
-          if (meta.avatar_url) setProfileAvatarUrl(meta.avatar_url);
+          
+          // Fetch from database profiles table
+          const { data: profileData, error: profileErr } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url, bio')
+            .eq('id', user.id)
+            .single();
+
+          if (!profileErr && profileData) {
+            if (profileData.full_name) setProfileName(profileData.full_name);
+            if (profileData.username) setProfileUsername(profileData.username);
+            setProfileBio(profileData.bio || "");
+            if (profileData.avatar_url) setProfileAvatarUrl(profileData.avatar_url);
+          } else {
+            // Fallback to auth metadata if profile entry not found or error
+            const meta = user.user_metadata || {};
+            if (meta.full_name) setProfileName(meta.full_name);
+            if (meta.username) setProfileUsername(meta.username);
+            setProfileBio(meta.bio || "");
+            if (meta.avatar_url) setProfileAvatarUrl(meta.avatar_url);
+          }
         }
       } catch (err) {
         console.error("Failed to load user info from Supabase:", err);
@@ -331,16 +347,36 @@ export default function SettingsView({
       setProfileName(trimmedName);
       setProfileUsername(trimmedUsername);
 
-      const { error } = await supabase.auth.updateUser({
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("No authenticated user session.");
+      }
+
+      // Update Supabase Auth user metadata
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
           full_name: trimmedName,
           username: trimmedUsername,
-          bio: profileBio,
+          bio: profileBio.trim() || null,
           avatar_url: profileAvatarUrl,
         }
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
+
+      // Update DB profiles table
+      const { error: dbError } = await supabase
+        .from('profiles')
+        .update({
+          bio: profileBio.trim() || null,
+          full_name: trimmedName,
+          username: trimmedUsername,
+          avatar_url: profileAvatarUrl,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+
+      if (dbError) throw dbError;
 
       triggerSaveNotification("Profile updated successfully!");
       window.dispatchEvent(new Event("tempo-profile-updated"));
@@ -1488,7 +1524,7 @@ export default function SettingsView({
                       maxLength={160}
                       rows={3}
                       className="px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[#4F8EF7] focus:outline-none rounded-8 text-white leading-relaxed text-sans resize-none"
-                      placeholder="Add a bio statement..."
+                      placeholder="Describe your work style and intentions..."
                     />
                   </div>
                 </div>
