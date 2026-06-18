@@ -84,96 +84,6 @@ export default function App() {
     }, 3000);
   };
 
-  // Helper to generate dynamic seeded tasks for the current week matching Week View events & Today Checkbox
-  const getInitialTasks = (): Task[] => {
-    const now = new Date();
-    
-    const getLocalDateString = (d: Date): string => {
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    };
-
-    const getWeeklyDates = (d: Date): string[] => {
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      const monday = new Date(d);
-      monday.setDate(diff);
-
-      const dates = [];
-      for (let i = 0; i < 7; i++) {
-        const current = new Date(monday);
-        current.setDate(monday.getDate() + i);
-        dates.push(getLocalDateString(current));
-      }
-      return dates;
-    };
-
-    const todayStr = getLocalDateString(now);
-    const dates = getWeeklyDates(now);
-
-    return [
-      // Today's Checkbox tasks in Day View
-      { id: 1, title: "Write documentation for the new endpoints", energy: "deep", duration: "60m", gravity: 87, completed: false, date: todayStr },
-      { id: 2, title: "Update project status in Notion", energy: "admin", duration: "15m", gravity: 45, completed: false, date: todayStr },
-      { id: 3, title: "Code review for @alex's PR", energy: "deep", duration: "45m", gravity: 62, completed: false, date: todayStr },
-      { id: 4, title: "Morning standup", energy: "social", duration: "30m", gravity: 30, completed: true, date: todayStr },
-      { id: 5, title: "Send invoice to TechCorp", energy: "admin", duration: "10m", gravity: 50, completed: false, date: todayStr },
-
-      // Monday events (dates[0])
-      { id: 1001, title: 'Product Kickoff', energy: 'social', duration: '90m', gravity: 50, completed: false, startTime: '09:00', endTime: '10:30', date: dates[0] },
-      { id: 1002, title: 'Code Review Session', energy: 'deep', duration: '60m', gravity: 50, completed: false, startTime: '14:00', endTime: '15:00', date: dates[0] },
-
-      // Tuesday events (dates[1])
-      { id: 1003, title: 'Gym', energy: 'light', duration: '60m', gravity: 50, completed: false, startTime: '08:00', endTime: '09:00', date: dates[1] },
-      { id: 1004, title: 'Feature Sprint', energy: 'deep', duration: '120m', gravity: 50, completed: false, startTime: '10:00', endTime: '12:00', date: dates[1] },
-      { id: 1005, title: '1:1 with Sarah', energy: 'social', duration: '30m', gravity: 50, completed: false, startTime: '15:00', endTime: '15:30', date: dates[1] },
-
-      // Wednesday events (dates[2])
-      { id: 1006, title: 'Architecture Deep Dive', energy: 'deep', duration: '150m', gravity: 50, completed: false, startTime: '09:00', endTime: '11:30', date: dates[2] },
-      { id: 1007, title: 'Lunch with client', energy: 'social', duration: '60m', gravity: 50, completed: false, startTime: '13:00', endTime: '14:00', date: dates[2] },
-
-      // Thursday events (dates[3])
-      { id: 1008, title: 'Weekly Review', energy: 'admin', duration: '60m', gravity: 50, completed: false, startTime: '10:00', endTime: '11:00', date: dates[3] },
-      { id: 1009, title: 'Focused Writing', energy: 'creative', duration: '120m', gravity: 50, completed: false, startTime: '14:00', endTime: '16:00', date: dates[3] },
-      { id: 1010, title: 'Creative Brainstorm', energy: 'creative', duration: '75m', gravity: 50, completed: false, startTime: '15:00', endTime: '16:15', date: dates[3] },
-
-      // Friday events (dates[4])
-      { id: 1011, title: 'API Integration', energy: 'deep', duration: '90m', gravity: 50, completed: false, startTime: '09:00', endTime: '10:30', date: dates[4] },
-      { id: 1012, title: 'Standup', energy: 'social', duration: '30m', gravity: 50, completed: false, startTime: '10:30', endTime: '11:00', date: dates[4] },
-      { id: 1013, title: 'Architecture Review', energy: 'deep', duration: '90m', gravity: 50, completed: false, startTime: '14:00', endTime: '15:30', date: dates[4] },
-
-      // Saturday events (dates[5])
-      { id: 1014, title: 'Read', energy: 'light', duration: '60m', gravity: 50, completed: false, startTime: '10:00', endTime: '11:00', date: dates[5] },
-
-      // Monday tasks board chips (dates[0])
-      { id: 2001, title: 'Update Jira tickets', energy: 'admin', duration: '15m', gravity: 50, completed: false, date: dates[0] },
-      { id: 2002, title: 'Draft email response', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[0] },
-
-      // Tuesday tasks board chips (dates[1])
-      { id: 2003, title: 'Design review prep', energy: 'creative', duration: '30m', gravity: 50, completed: false, date: dates[1] },
-      { id: 2004, title: 'Fix sidebar bug', energy: 'deep', duration: '20m', gravity: 50, completed: false, date: dates[1] },
-      { id: 2005, title: 'Review analytics schema', energy: 'deep', duration: '45m', gravity: 50, completed: false, date: dates[1] },
-      { id: 2006, title: 'Prepare slides', energy: 'light', duration: '15m', gravity: 50, completed: false, date: dates[1] },
-
-      // Wednesday tasks board chips (dates[2])
-      { id: 2007, title: 'Submit receipts', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[2] },
-
-      // Thursday tasks board chips (dates[3])
-      { id: 2008, title: 'Publish blog post draft', energy: 'creative', duration: '40m', gravity: 50, completed: false, date: dates[3] },
-      { id: 2009, title: 'Schedule alignment sync', energy: 'social', duration: '15m', gravity: 50, completed: false, date: dates[3] },
-      { id: 2010, title: 'Organize drive folders', energy: 'admin', duration: '30m', gravity: 50, completed: false, date: dates[3] },
-
-      // Friday tasks board chips (dates[4])
-      { id: 2011, title: 'Test Stripe billing logic', energy: 'deep', duration: '40m', gravity: 50, completed: false, date: dates[4] },
-      { id: 2012, title: 'Reply on Slack channels', energy: 'social', duration: '15m', gravity: 50, completed: false, date: dates[4] },
-      { id: 2013, title: 'Outline server middleware', energy: 'deep', duration: '30m', gravity: 50, completed: false, date: dates[4] },
-      { id: 2014, title: 'Check deployment container logs', energy: 'admin', duration: '10m', gravity: 50, completed: false, date: dates[4] },
-      { id: 2015, title: 'Configure database backups', energy: 'deep', duration: '20m', gravity: 50, completed: false, date: dates[4] }
-    ];
-  };
-
   // Lifted Tasks State from central context provider
   const { tasks } = useTasksData();
 
@@ -335,7 +245,7 @@ export default function App() {
     }
     return null;
   });
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(true);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isEveningReviewOpen, setIsEveningReviewOpen] = useState<boolean>(false);
   const [compactSidebar, setCompactSidebar] = useState<boolean>(() => localStorage.getItem("tempo-compact-sidebar") === "true");
   const [showShortcutsInSidebar, setShowShortcutsInSidebar] = useState<boolean>(() => localStorage.getItem("tempo-show-shortcuts") !== "false");

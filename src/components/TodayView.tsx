@@ -7,6 +7,8 @@ import { Task, Intention, Habit, TimeBlock, EnergyType, ItemType } from '../type
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
 import { useHabits } from '../contexts/HabitsContext';
+import { useMorningIntentions } from '../hooks/useMorningIntentions';
+import MorningIntentionsModal from './MorningIntentionsModal';
 
 // TIMELINE MATH & HELPER CONSTANTS & FUNCTIONS
 // Timeline ranges from 6:00 AM to 10:00 PM (16 hours).
@@ -88,15 +90,23 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
   const [confirmDeleteTaskId, setConfirmDeleteTaskId] = useState<string | number | null>(null);
 
   // Morning Intentions State
-  const [intentions, setIntentions] = useState<Intention[]>([
-    { id: 1, text: "Finish the API integration for onboarding", energy: "deep" },
-    { id: 2, text: "Review Q3 design feedback doc", energy: "light" },
-    { id: 3, text: "Reply to 4 pending emails", energy: "admin" }
-  ]);
-
-  // Is editing intentions flag
-  const [isEditingIntentions, setIsEditingIntentions] = useState(false);
+  const { intentionsRow, showModal, setShowModal, userId, userName: intentionUserName, saveIntentions, skipIntentions } = useMorningIntentions();
   const [intentionsMessage, setIntentionsMessage] = useState<string | null>(null);
+
+  const activeIntentions = useMemo(() => {
+    if (!intentionsRow) return [];
+    const list: Intention[] = [];
+    if (intentionsRow.priority_1) {
+      list.push({ id: 1, text: intentionsRow.priority_1, energy: 'admin' });
+    }
+    if (intentionsRow.priority_2) {
+      list.push({ id: 2, text: intentionsRow.priority_2, energy: 'light' });
+    }
+    if (intentionsRow.priority_3) {
+      list.push({ id: 3, text: intentionsRow.priority_3, energy: 'social' });
+    }
+    return list;
+  }, [intentionsRow]);
 
   // Habits State (collapsed by default)
   const [habitsExpand, setHabitsExpand] = useState(false);
@@ -305,17 +315,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
     setEditingItem(null);
   };
 
-  const handleIntentionChange = (id: number, val: string) => {
-    setIntentions(prev => prev.map(item => item.id === id ? { ...item, text: val } : item));
-  };
 
-  const handleEditIntentionsToggle = () => {
-    if (isEditingIntentions) {
-      setIntentionsMessage("Intentions synced with daily schedule.");
-      setTimeout(() => setIntentionsMessage(null), 3000);
-    }
-    setIsEditingIntentions(!isEditingIntentions);
-  };
 
   const handleCreateBlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -564,12 +564,15 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 <Sun className="w-3.5 h-3.5 text-[#FBBF24]" />
                 Morning Intentions
               </span>
-              <button
-                onClick={handleEditIntentionsToggle}
-                className="text-xs font-sans text-[#4F8EF7] hover:underline cursor-pointer bg-none border-none outline-none"
-              >
-                {isEditingIntentions ? 'Save' : 'Edit'}
-              </button>
+              {userId && (
+                <button
+                  type="button"
+                  onClick={() => setShowModal(true)}
+                  className="text-xs font-sans text-[#4F8EF7] hover:underline cursor-pointer bg-none border-none outline-none"
+                >
+                  {activeIntentions.length > 0 ? 'Edit' : 'Set'}
+                </button>
+              )}
             </div>
 
             {/* Banner message feedback if updated */}
@@ -580,31 +583,34 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             )}
 
             <div className="flex flex-col gap-2.5">
-              {intentions.map((item, index) => (
-                <div key={item.id} className="flex gap-3 items-center">
-                  {/* Number Badge with custom energy colored dots */}
-                  <div 
-                    className="w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] text-white shrink-0 font-bold"
-                    style={{ backgroundColor: getEnergyColor(item.energy) }}
+              {activeIntentions.length === 0 ? (
+                <div className="text-center py-2 text-xs text-[var(--tempo-text-muted)] font-medium">
+                  No intentions set for today —{' '}
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(true)}
+                    className="text-[#4F8EF7] hover:underline font-bold cursor-pointer"
                   >
-                    #{index + 1}
-                  </div>
+                    [Set them now]
+                  </button>
+                </div>
+              ) : (
+                activeIntentions.map((item, index) => (
+                  <div key={item.id} className="flex gap-3 items-center">
+                    {/* Number Badge with custom energy colored dots */}
+                    <div 
+                      className="w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] text-white shrink-0 font-bold"
+                      style={{ backgroundColor: getEnergyColor(item.energy) }}
+                    >
+                      #{index + 1}
+                    </div>
 
-                  {isEditingIntentions ? (
-                    <input
-                      type="text"
-                      aria-label={`Intention priority ${index + 1}`}
-                      value={item.text}
-                      onChange={(e) => handleIntentionChange(item.id, e.target.value)}
-                      className="w-full bg-[var(--tempo-bg-tertiary)] border border-[var(--tempo-border)] px-2.5 py-1 text-xs rounded text-[var(--tempo-text-primary)] focus:outline-none focus:border-[var(--tempo-border-hover)]"
-                    />
-                  ) : (
                     <span className="text-xs font-sans text-[var(--tempo-text-primary)] tracking-wide leading-relaxed truncate">
                       {item.text}
                     </span>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -1635,6 +1641,20 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             </form>
           </div>
         </div>
+      )}
+
+      {/* RENDER MORNING INTENTIONS MODAL */}
+      {userId && (
+        <MorningIntentionsModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          userName={intentionUserName || userName}
+          initialPriority1={intentionsRow?.priority_1 || ''}
+          initialPriority2={intentionsRow?.priority_2 || ''}
+          initialPriority3={intentionsRow?.priority_3 || ''}
+          onSave={saveIntentions}
+          onSkip={skipIntentions}
+        />
       )}
 
     </div>
