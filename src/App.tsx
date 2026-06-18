@@ -804,21 +804,18 @@ export default function App() {
 
               <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'items-center justify-between'} w-full min-w-0`}>
                 <div className={`flex ${compactSidebar ? 'flex-col items-center' : 'items-center gap-2.5'} min-w-0`}>
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] flex items-center justify-center shrink-0 shadow font-mono text-xs text-white font-bold overflow-hidden relative" title={compactSidebar ? `${userName} (${userEmail})` : undefined}>
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] flex items-center justify-center shrink-0 shadow font-mono text-xs text-white font-bold overflow-hidden relative" title={compactSidebar ? `${userName && userName.trim() !== '' ? userName : (userEmail ? userEmail.split('@')[0] : 'User')} (${userEmail})` : undefined}>
                     {userAvatarUrl ? (
                       <img src={userAvatarUrl} alt={userName} className="w-full h-full object-cover animate-fade-in" referrerPolicy="no-referrer" />
                     ) : (
-                      getInitials(userName)
+                      getInitials(userName && userName.trim() !== '' ? userName : (userEmail ? userEmail.split('@')[0] : 'User'))
                     )}
                   </div>
                   
                   {!compactSidebar && (
                     <div className="flex flex-col min-w-0">
                       <span className="text-xs font-semibold text-[#F1F1F1] truncate">
-                        {userName}
-                      </span>
-                      <span className="text-[9px] font-mono text-[#5A5A62] truncate">
-                        {userEmail}
+                        {userName && userName.trim() !== '' ? userName : (userEmail ? userEmail.split('@')[0] : 'User')}
                       </span>
                     </div>
                   )}
