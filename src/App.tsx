@@ -702,7 +702,6 @@ export default function App() {
                   {!compactSidebar && (
                     <div className="flex flex-col min-w-0">
                       <span className="text-xs font-semibold text-[#F1F1F1] truncate">Tempo Workspace</span>
-                      <span className="text-[10px] font-mono text-[#4A4A52] truncate">ryuk-workspace</span>
                     </div>
                   )}
                 </div>
