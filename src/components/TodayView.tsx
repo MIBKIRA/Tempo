@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Sun, Check, Flame, ChevronDown, ChevronUp, Clock, Plus, Activity,
-  Trash2, Edit3, CheckCircle, PlusCircle, AlertTriangle, Play, HelpCircle, LogOut
+  Trash2, Edit3, CheckCircle, PlusCircle, AlertTriangle, Play, HelpCircle, LogOut,
+  Calendar
 } from 'lucide-react';
 import { Task, Intention, Habit, TimeBlock, EnergyType, ItemType } from '../types';
 import { useNow } from '../useNow';
@@ -121,7 +122,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
   const todayStr = getLocalDateString(now);
 
   // Time Blocks are derived dynamically from the unified tasks array for today's date
-  const blocks = React.useMemo<TimeBlock[]>(() => {
+  const blocks = React.useMemo<(TimeBlock & { type?: ItemType })[]>(() => {
     return tasks
       .filter(t => {
         const isDateMatch = t.date === todayStr;
@@ -135,7 +136,8 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
         endTime: t.endTime!,
         energy: t.energy,
         notes: t.notes,
-        completed: t.completed
+        completed: t.completed,
+        type: t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'event')
       }));
   }, [tasks, todayStr]);
 
@@ -144,6 +146,26 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
       const isDateMatch = t.date === todayStr;
       const type = t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'task');
       return isDateMatch && (type === 'task' || type === 'scheduled_task');
+    });
+  }, [tasks, todayStr]);
+
+  const remainingTasksCount = useMemo(() => {
+    return todayTasks.filter(t => !t.completed).length;
+  }, [todayTasks]);
+
+  const remainingEventsCount = useMemo(() => {
+    return tasks.filter(t => {
+      const isDateMatch = t.date === todayStr;
+      const type = t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'event');
+      return isDateMatch && type === 'event' && !t.completed;
+    }).length;
+  }, [tasks, todayStr]);
+
+  const untimedEvents = useMemo(() => {
+    return tasks.filter(t => {
+      const isDateMatch = t.date === todayStr;
+      const type = t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'event');
+      return isDateMatch && type === 'event' && (!t.startTime || !t.endTime);
     });
   }, [tasks, todayStr]);
 
@@ -541,9 +563,9 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 {now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </h2>
               <div className="text-xs text-[var(--tempo-text-secondary)] font-sans mt-1.5 flex items-center gap-1.5">
-                <span>3 tasks remaining</span>
+                <span>{remainingTasksCount} {remainingTasksCount === 1 ? 'task' : 'tasks'} remaining</span>
                 <span>•</span>
-                <span>2 events left</span>
+                <span>{remainingEventsCount} {remainingEventsCount === 1 ? 'event' : 'events'} left</span>
                 <span>•</span>
                 <span className="text-[#34D399] font-semibold">87% Active Energy</span>
               </div>
@@ -599,8 +621,11 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                   <div key={item.id} className="flex gap-3 items-center">
                     {/* Number Badge with custom energy colored dots */}
                     <div 
-                      className="w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] text-white shrink-0 font-bold"
-                      style={{ backgroundColor: getEnergyColor(item.energy) }}
+                      className="w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] shrink-0 font-bold"
+                      style={{ 
+                        backgroundColor: item.id === 1 ? '#F59E0B' : item.id === 3 ? '#EF4444' : getEnergyColor(item.energy),
+                        color: item.id === 1 ? '#92400E' : '#FFFFFF'
+                      }}
                     >
                       #{index + 1}
                     </div>
@@ -1199,6 +1224,26 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
               </form>
             )}
 
+            {untimedEvents.length > 0 && (
+              <div className="flex flex-col gap-2 p-3.5 bg-[var(--tempo-bg-primary)]/80 border border-[var(--tempo-border)]/60 rounded-xl select-none shrink-0">
+                <span className="text-[10px] font-mono text-[var(--tempo-text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-[var(--tempo-accent-blue)]" />
+                  Untimed / All-Day Events ({untimedEvents.length})
+                </span>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {untimedEvents.map(evt => (
+                    <div 
+                      key={evt.id} 
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--tempo-bg-secondary)] border border-[var(--tempo-border)]/60 rounded-lg text-xs font-medium text-[var(--tempo-text-primary)]"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: getEnergyColor(evt.energy) }} />
+                      <span className={evt.completed ? 'line-through text-[var(--tempo-text-muted)]' : ''}>{evt.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* REAL-TIME PIXEL-PERFECT GRAPH/GRID TIMELINE GRAPHIC CONTAINER */}
             <div id="timeline-scroll-area" className="flex-grow overflow-y-auto px-1 py-4 relative bg-[var(--tempo-bg-primary)] border border-[var(--tempo-border)]/60 rounded-xl" style={{ height: '540px' }}>
               
@@ -1380,6 +1425,9 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                       {isCompact ? (
                         <div className="flex items-center justify-between w-full min-w-0 h-full relative pr-12">
                           <div className="flex items-center gap-1.5 min-w-0">
+                            {block.type === 'event' && (
+                              <Calendar className="w-3.5 h-3.5 text-[var(--tempo-accent-blue)] shrink-0 animate-pulse" />
+                            )}
                             <span 
                               className={`text-xs font-semibold tracking-wide truncate ${
                                 block.completed ? 'line-through text-[var(--tempo-text-muted)]' : 'text-[var(--tempo-text-primary)]'
@@ -1399,13 +1447,18 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                           <div className="flex justify-between items-start select-none min-w-0 w-full">
                             {/* Title and stats */}
                             <div className="flex flex-col min-w-0 pr-2">
-                              <span 
-                                className={`text-xs font-semibold text-[var(--tempo-text-primary)] tracking-wide truncate ${
-                                  block.completed ? 'line-through text-[var(--tempo-text-muted)]' : ''
-                                }`}
-                              >
-                                {block.title}
-                              </span>
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                {block.type === 'event' && (
+                                  <Calendar className="w-3.5 h-3.5 text-[var(--tempo-accent-blue)] shrink-0" />
+                                )}
+                                <span 
+                                  className={`text-xs font-semibold text-[var(--tempo-text-primary)] tracking-wide truncate ${
+                                    block.completed ? 'line-through text-[var(--tempo-text-muted)]' : ''
+                                  }`}
+                                >
+                                  {block.title}
+                                </span>
+                              </div>
                               
                               <span className="text-[10px] font-mono text-[var(--tempo-text-secondary)] mt-0.5">
                                 {block.startTime} — {block.endTime}
@@ -1421,6 +1474,12 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                                 >
                                   ⚠️
                                 </div>
+                              )}
+
+                              {block.type === 'event' && (
+                                <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[var(--tempo-accent-blue)]/15 text-[var(--tempo-accent-blue)] border border-[var(--tempo-accent-blue)]/30">
+                                  Event
+                                </span>
                               )}
 
                               <span 
