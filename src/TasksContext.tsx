@@ -99,6 +99,8 @@ interface TasksContextType {
   isLoading: boolean;
   error: Error | null;
   useLocalFallback: boolean;
+  syncStatus: 'synced' | 'syncing' | 'error';
+  lastSynced: Date | null;
   refetch: () => Promise<void>;
   createTask: (data: Partial<Task>) => Promise<Task | null>;
   updateTask: (id: string | number, changes: Partial<Task>) => Promise<Task | null>;
@@ -155,6 +157,8 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   const [useLocalFallback, setUseLocalFallback] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'error'>('synced');
+  const [lastSynced, setLastSynced] = useState<Date | null>(new Date());
 
   // Load from LocalStorage and sanitize
   const loadLocalTasks = useCallback((): Task[] => {
@@ -185,6 +189,7 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
   const fetchTasksFromSupabase = useCallback(async (uid: string) => {
     try {
       setIsLoading(true);
+      setSyncStatus('syncing');
       const { data, error: selectErr } = await supabase
         .from('blocks')
         .select('*')
@@ -196,6 +201,8 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
           setUseLocalFallback(true);
           setTasks(loadLocalTasks());
           setError(null);
+          setSyncStatus('synced');
+          setLastSynced(new Date());
           return;
         }
         throw new Error('Supabase unavailable: ' + selectErr.message);
@@ -205,6 +212,8 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
           .map(mapRowToTask);
         setTasks(mapped);
         setUseLocalFallback(false);
+        setSyncStatus('synced');
+        setLastSynced(new Date());
       }
       setError(null);
     } catch (err: any) {
@@ -212,6 +221,7 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
       setError(err);
       setUseLocalFallback(true);
       setTasks(loadLocalTasks());
+      setSyncStatus('error');
     } finally {
       setIsLoading(false);
     }
@@ -329,9 +339,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
     if (useLocalFallback || !userId) {
       const updated = [newTask, ...previousTasks];
       saveLocalTasks(updated);
+      setSyncStatus('synced');
+      setLastSynced(new Date());
       return newTask;
     } else {
       try {
+        setSyncStatus('syncing');
         const payload = mapTaskToRow(newTask, userId);
         
         const { data: inserted, error: insertErr } = await supabase
@@ -346,10 +359,13 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
 
         const confirmedTask = mapRowToTask(inserted);
         setTasks(prev => prev.map(t => t.id === tempId ? confirmedTask : t));
+        setSyncStatus('synced');
+        setLastSynced(new Date());
         return confirmedTask;
       } catch (err: any) {
         console.error("Failed to insert into Supabase, reverting optimistic change:", err);
         setTasks(previousTasks);
+        setSyncStatus('error');
         triggerAppToast(`Failed to save: ${err.message || err}`);
         return null;
       }
@@ -364,9 +380,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
 
     if (useLocalFallback || !userId) {
       saveLocalTasks(updatedTasks);
+      setSyncStatus('synced');
+      setLastSynced(new Date());
       return updatedTasks.find(t => t.id === id) || null;
     } else {
       try {
+        setSyncStatus('syncing');
         const payload = mapTaskToRow(changes);
         
         // Attempt update on blocks
@@ -378,10 +397,13 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         if (updateErr) {
           throw new Error('Supabase unavailable: ' + updateErr.message);
         }
+        setSyncStatus('synced');
+        setLastSynced(new Date());
         return updatedTasks.find(t => t.id === id) || null;
       } catch (err: any) {
         console.error("Failed to update on Supabase, reverting:", err);
         setTasks(previousTasks);
+        setSyncStatus('error');
         triggerAppToast(`Error updating: ${err.message || err}`);
         return null;
       }
@@ -403,9 +425,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
 
     if (useLocalFallback || !userId) {
       saveLocalTasks(updatedTasks);
+      setSyncStatus('synced');
+      setLastSynced(new Date());
       return true;
     } else {
       try {
+        setSyncStatus('syncing');
         const { error: deleteErr } = await supabase
           .from('blocks')
           .delete()
@@ -414,10 +439,13 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         if (deleteErr) {
           throw new Error('Supabase unavailable: ' + deleteErr.message);
         }
+        setSyncStatus('synced');
+        setLastSynced(new Date());
         return true;
       } catch (err: any) {
         console.error("Failed to delete on Supabase, reverting:", err);
         setTasks(previousTasks);
+        setSyncStatus('error');
         triggerAppToast(`Error deleting: ${err.message || err}`);
         return false;
       }
@@ -429,12 +457,14 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     error,
     useLocalFallback,
+    syncStatus,
+    lastSynced,
     refetch,
     createTask,
     updateTask,
     completeTask,
     deleteTask
-  }), [tasks, isLoading, error, useLocalFallback, refetch, createTask, updateTask, completeTask, deleteTask]);
+  }), [tasks, isLoading, error, useLocalFallback, syncStatus, lastSynced, refetch, createTask, updateTask, completeTask, deleteTask]);
 
   return (
     <TasksContext.Provider value={value}>

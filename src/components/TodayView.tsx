@@ -43,7 +43,7 @@ interface TodayViewProps {
 }
 
 export default function TodayView({ userEmail, userName, onLogout, onViewChange, onStartFocusMode, tasks: propsTasks, setTasks: propsSetTasks }: TodayViewProps) {
-  const { tasks, createTask, updateTask, completeTask, deleteTask } = useTasksData();
+  const { tasks, createTask, updateTask, completeTask, deleteTask, syncStatus, lastSynced, useLocalFallback } = useTasksData();
   const {
     habits: dbHabits,
     todayLogs,
@@ -54,6 +54,42 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
     getOverallStreak
   } = useHabits();
   const now = useNow();
+
+  const [timeAgo, setTimeAgo] = useState('Just now');
+
+  useEffect(() => {
+    if (!lastSynced) {
+      setTimeAgo('Never');
+      return;
+    }
+
+    const updateText = () => {
+      const diffMs = Date.now() - lastSynced.getTime();
+      const diffSecs = Math.floor(diffMs / 1000);
+      const diffMins = Math.floor(diffSecs / 60);
+
+      if (diffSecs < 10) {
+        setTimeAgo('Just now');
+      } else if (diffSecs < 60) {
+        setTimeAgo(`${diffSecs}s ago`);
+      } else if (diffMins === 1) {
+        setTimeAgo('1 minute ago');
+      } else if (diffMins < 60) {
+        setTimeAgo(`${diffMins} minutes ago`);
+      } else {
+        const hours = Math.floor(diffMins / 60);
+        if (hours === 1) {
+          setTimeAgo('1 hour ago');
+        } else {
+          setTimeAgo(`${hours} hours ago`);
+        }
+      }
+    };
+
+    updateText();
+    const interval = setInterval(updateText, 10000);
+    return () => clearInterval(interval);
+  }, [lastSynced]);
 
   // 1. STATE MANAGEMENT
   const [activeTimerTaskId, setActiveTimerTaskId] = useState<string | null>(() => {
@@ -498,12 +534,32 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
       {/* HEADER BAR */}
       <header className="h-[64px] border-b border-[var(--tempo-border)] bg-[var(--tempo-bg-secondary)]/95 px-6 flex items-center justify-between shrink-0 select-none">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono py-1 px-2.5 rounded bg-white/5 border border-white/10 uppercase tracking-widest text-[var(--tempo-text-secondary)]">
-            Cockpit OS v2.4
+        <div className="flex items-center gap-2">
+          {/* Status Dot */}
+          <span className={`inline-flex items-center justify-center p-0.5 rounded-full ${
+            syncStatus === 'syncing' ? 'bg-amber-500/10' :
+            syncStatus === 'error' ? 'bg-red-500/10' :
+            useLocalFallback ? 'bg-white/5' : 'bg-emerald-500/10'
+          }`}>
+            <span className={`h-2 w-2 rounded-full ${
+              syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' :
+              syncStatus === 'error' ? 'bg-red-500 animate-pulse' :
+              useLocalFallback ? 'bg-gray-400' : 'bg-emerald-400'
+            }`} />
           </span>
+
           <span className="text-sm font-sans font-light text-[var(--tempo-text-secondary)] hidden sm:block">
-            Synced · <span className="text-[#34D399] font-medium">Synced securely</span>
+            {syncStatus === 'syncing' && (
+              <span>Syncing database...</span>
+            )}
+            {syncStatus === 'error' && (
+              <span className="text-red-400 font-medium">Sync issue (Offline)</span>
+            )}
+            {syncStatus === 'synced' && (
+              <span>
+                {useLocalFallback ? 'Saved to local' : `Last synced: ${timeAgo}`}
+              </span>
+            )}
           </span>
         </div>
 
