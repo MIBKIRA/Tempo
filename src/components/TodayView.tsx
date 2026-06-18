@@ -589,9 +589,8 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
         <div className="flex items-center gap-4">
           {/* Simulation indicators */}
           <div className="text-right hidden md:block">
-            <span className="text-xs font-mono text-[var(--tempo-text-secondary)] block">
-              {userName && userName.trim() !== '' ? userName : (userEmail ? userEmail.split('@')[0] : 'User')}
-            </span>
+            <span className="text-xs font-mono text-[var(--tempo-text-secondary)] block">{userName}</span>
+            <span className="text-[10px] font-mono text-[var(--tempo-text-muted)] block">{userEmail}</span>
           </div>
           
           <button
