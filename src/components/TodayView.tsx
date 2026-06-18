@@ -17,6 +17,14 @@ import MorningIntentionsModal from './MorningIntentionsModal';
 const TIMELINE_START_HOUR = 6;
 const HOUR_HEIGHT = 60; // 60px per hour
 
+export const ENERGY_TYPES = [
+  { value: 'deep', label: 'Deep', fullName: 'Deep Focus', emoji: '🟣', color: 'var(--color-deep, #8B5CF6)' },
+  { value: 'light', label: 'Light', fullName: 'Light Work', emoji: '🔵', color: 'var(--color-light, #60A5FA)' },
+  { value: 'admin', label: 'Admin', fullName: 'Admin/Inbox', emoji: '🟡', color: 'var(--color-admin, #FBBF24)' },
+  { value: 'creative', label: 'Creative', fullName: 'Creative Scope', emoji: '🔴', color: 'var(--color-creative, #FB7185)' },
+  { value: 'social', label: 'Social', fullName: 'Social Input', emoji: '🟢', color: 'var(--color-social, #2DD4BF)' },
+] as const;
+
 const timeToMinutesFromStart = (timeString: string): number => {
   const [hours, minutes] = timeString.split(':').map(Number);
   const totalMins = hours * 60 + minutes;
@@ -63,7 +71,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
     return () => window.removeEventListener("tempo-active-session-changed", handleActiveSessionChanged);
   }, []);
 
-  const [taskFilter, setTaskFilter] = useState<'all' | 'deep' | 'admin'>('all');
+  const [taskFilter, setTaskFilter] = useState<'all' | EnergyType>('all');
   
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskEnergy, setNewTaskEnergy] = useState<EnergyType>('deep');
@@ -238,23 +246,13 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
   // 2. TIMELINE MATH & HELPER FUNCTIONS
   const getEnergyColor = (type: EnergyType): string => {
-    switch (type) {
-      case 'deep': return 'var(--color-deep, #8B5CF6)'; // purple
-      case 'light': return 'var(--color-light, #60A5FA)'; // light blue
-      case 'admin': return 'var(--color-admin, #FBBF24)'; // amber
-      case 'social': return 'var(--color-social, #2DD4BF)'; // teal
-      case 'creative': return 'var(--color-creative, #FB7185)'; // coral
-      default: return 'var(--color-creative, #FB7185)';
-    }
+    const energy = ENERGY_TYPES.find(e => e.value === type);
+    return energy ? energy.color : 'var(--color-creative, #FB7185)';
   };
 
   const formatEnergyName = (type: EnergyType): string => {
-    switch (type) {
-      case 'deep': return 'Deep Focus';
-      case 'light': return 'Light Work';
-      case 'admin': return 'Admin/Inbox';
-      case 'social': return 'Social Input';
-    }
+    const energy = ENERGY_TYPES.find(e => e.value === type);
+    return energy ? energy.fullName : type;
   };
 
   // 3. HANDLERS
@@ -420,7 +418,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
     const hrs = getBlockDurationHours(b);
     acc[b.energy] = (acc[b.energy] || 0) + hrs;
     return acc;
-  }, { deep: 0, light: 0, admin: 0, social: 0 } as Record<EnergyType, number>);
+  }, { deep: 0, light: 0, admin: 0, creative: 0, social: 0 } as Record<EnergyType, number>);
 
   const totalLoadHours: number = (Object.values(dynamicEnergyLoads) as number[]).reduce((a, b) => a + b, 0) || 1;
 
@@ -651,10 +649,10 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
               <div className="flex justify-between items-center select-none gap-2">
                 {/* Filter list */}
                 <div className="flex gap-1 bg-[var(--tempo-bg-secondary)] p-0.5 rounded-lg border border-[var(--tempo-border)]">
-                  {(['all', 'deep', 'admin'] as const).map(f => (
+                  {['all', ...ENERGY_TYPES.map(e => e.value)].map(f => (
                     <button
                       key={f}
-                      onClick={() => setTaskFilter(f)}
+                      onClick={() => setTaskFilter(f as any)}
                       className={`text-[10px] font-sans px-2.5 py-1 rounded-md transition-all cursor-pointer capitalize font-medium ${
                         taskFilter === f 
                           ? 'bg-[var(--tempo-bg-tertiary)] text-[var(--tempo-text-primary)] shadow-sm' 
@@ -690,10 +688,11 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                   onChange={(e) => setNewTaskEnergy(e.target.value as EnergyType)}
                   className="bg-[var(--tempo-bg-tertiary)] border border-[var(--tempo-border)] rounded text-[10px] text-[var(--tempo-text-secondary)] px-1 focus:outline-none"
                 >
-                  <option value="deep">🟣 Deep</option>
-                  <option value="light">🔵 Light</option>
-                  <option value="admin">🟡 Admin</option>
-                  <option value="social">🟢 Social</option>
+                  {ENERGY_TYPES.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.emoji} {opt.label}
+                    </option>
+                  ))}
                 </select>
 
                 <button
@@ -1040,7 +1039,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
             {/* Master segmented Load bar */}
             <div className="w-full h-2 rounded-full overflow-hidden flex bg-[var(--tempo-bg-tertiary)] p-0 gap-0.5">
-              {(['deep', 'light', 'admin', 'social'] as const).map(type => {
+              {ENERGY_TYPES.map(e => e.value).map(type => {
                 const pct = getLoadPct(type);
                 if (pct <= 0) return null;
                 return (
@@ -1057,8 +1056,8 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             </div>
 
             {/* Labels and values Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
-              {(['deep', 'light', 'admin', 'social'] as const).map(type => {
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-2">
+              {ENERGY_TYPES.map(e => e.value).map(type => {
                 const hrs = dynamicEnergyLoads[type] || 0;
                 return (
                   <div key={type} className="flex gap-2.5 items-center">
@@ -1171,10 +1170,11 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                       onChange={(e) => setAddBlockEnergy(e.target.value as EnergyType)}
                       className="bg-[var(--tempo-bg-secondary)] border border-[var(--tempo-border)] p-2 text-xs rounded text-[var(--tempo-text-primary)] focus:outline-none"
                     >
-                      <option value="deep">🟣 Deep</option>
-                      <option value="light">🔵 Light</option>
-                      <option value="admin">🟡 Admin</option>
-                      <option value="social">🟢 Social</option>
+                      {ENERGY_TYPES.map(opt => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.emoji} {opt.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -1591,10 +1591,11 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                     onChange={(e) => setEditEnergy(e.target.value as EnergyType)}
                     className="bg-[var(--tempo-bg-secondary)] border border-[var(--tempo-border)] p-2 text-xs rounded text-[var(--tempo-text-primary)] focus:outline-none"
                   >
-                    <option value="deep">🟣 Deep</option>
-                    <option value="light">🔵 Light</option>
-                    <option value="admin">🟡 Admin</option>
-                    <option value="social">🟢 Social</option>
+                    {ENERGY_TYPES.map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.emoji} {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
