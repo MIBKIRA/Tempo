@@ -790,17 +790,6 @@ export default function App() {
 
             {/* User Account Profile with click triggers to simulate Logout demo */}
             <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'flex-col gap-4'} border-t border-[#2A2A2D]/40 pt-6 pr-1`}>
-              {/* Simulated switch guide informational note */}
-              {!compactSidebar && (
-                <div className="p-3 rounded-lg border border-[#FB7185]/20 bg-[#FB7185]/5 flex flex-col gap-1 inline-block select-none scale-95">
-                  <span className="text-[10px] font-mono font-bold text-[#FB7185] uppercase tracking-wide">
-                    Reviewer Control
-                  </span>
-                  <span className="text-[9px] font-sans leading-relaxed text-[#8C8C92]">
-                    Sign Out of demo mode to review login visuals & password strength meters.
-                  </span>
-                </div>
-              )}
 
               <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'items-center justify-between'} w-full min-w-0`}>
                 <div className={`flex ${compactSidebar ? 'flex-col items-center' : 'items-center gap-2.5'} min-w-0`}>
