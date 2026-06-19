@@ -7,6 +7,7 @@ import {
 import { Task, Intention, Habit, TimeBlock, EnergyType, ItemType } from '../types';
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
+import { playCheckSound, playUncheckSound } from '../utils/playSound';
 import { useHabits } from '../contexts/HabitsContext';
 import { useMorningIntentions } from '../hooks/useMorningIntentions';
 import MorningIntentionsModal from './MorningIntentionsModal';
@@ -1007,8 +1008,10 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
                       const handleCardClick = () => {
                         if (isCompletedToday) {
+                          playUncheckSound();
                           uncheckIn(habit.id);
                         } else {
+                          playCheckSound();
                           checkIn(habit.id);
                         }
                       };

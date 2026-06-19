@@ -7,6 +7,7 @@ import {
 import { useHabits } from '../contexts/HabitsContext';
 import { DbHabit } from '../hooks/useHabitsData';
 import { useNow } from '../useNow';
+import { playCheckSound, playUncheckSound } from '../utils/playSound';
 
 export default function HabitsView() {
   const {
@@ -158,8 +159,10 @@ export default function HabitsView() {
         setConfettiBurst(prev => prev.filter(p => !dots.find(d => d.id === p.id)));
       }, 1000);
 
+      playCheckSound();
       checkIn(id);
     } else {
+      playUncheckSound();
       uncheckIn(id);
     }
   };
