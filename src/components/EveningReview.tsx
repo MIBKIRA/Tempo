@@ -3,6 +3,9 @@ import {
   X, Check, AlertCircle, ChevronDown, ChevronUp, Plus, Flame, 
   Calendar, Clock, Zap, Target, BookOpen, AlertTriangle, PartyPopper
 } from 'lucide-react';
+import { useMorningIntentions } from '../hooks/useMorningIntentions';
+import { useTasksData } from '../TasksContext';
+import { Task } from '../types';
 
 interface IntentionItem {
   id: number;
@@ -75,11 +78,26 @@ export default function EveningReview({
   }, []);
 
   // STEP 1: Intentions Check State
-  const [intentions, setIntentions] = useState<IntentionItem[]>([
-    { id: 1, text: 'Finish the API integration', status: 'done', timeSpent: '65 min' },
-    { id: 2, text: 'Review Q3 design feedback', status: 'done', timeSpent: '40 min' },
-    { id: 3, text: 'Reply to 4 pending emails', status: 'missed', timeSpent: '—' }
-  ]);
+  const { intentionsRow } = useMorningIntentions();
+  const [intentions, setIntentions] = useState<IntentionItem[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const list: IntentionItem[] = [];
+      if (intentionsRow) {
+        if (intentionsRow.priority_1) {
+          list.push({ id: 1, text: intentionsRow.priority_1, status: 'done', timeSpent: '—' });
+        }
+        if (intentionsRow.priority_2) {
+          list.push({ id: 2, text: intentionsRow.priority_2, status: 'done', timeSpent: '—' });
+        }
+        if (intentionsRow.priority_3) {
+          list.push({ id: 3, text: intentionsRow.priority_3, status: 'done', timeSpent: '—' });
+        }
+      }
+      setIntentions(list);
+    }
+  }, [isOpen, intentionsRow]);
 
   const completedCount = useMemo(() => {
     return intentions.filter(i => i.status === 'done').length;
@@ -143,33 +161,90 @@ export default function EveningReview({
   const [lessonText, setLessonText] = useState<string>('');
   const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
 
-  // STEP 4: Tomorrow Setup State
-  // Checklist tasks can be checked/unchecked interactively
-  const [tomorrowTasks, setTomorrowTasks] = useState<TomorrowTask[]>([
-    { id: 1, text: 'Write documentation specifications', highGravity: true },
-    { id: 2, text: 'Fix TypeScript lint errors gracefully' },
-    { id: 3, text: 'Code review for @alex onboarding stack' },
-    { id: 4, text: 'Send billing invoice package' }
-  ]);
-  const [tasksChecked, setTasksChecked] = useState<Record<number, boolean>>({});
-  const [quickAddVal, setQuickAddVal] = useState<string>('');
+  // Live Tomorrow Data
+  const { tasks, createTask, completeTask } = useTasksData();
 
-  const handleToggleTomorrowCheck = (id: number) => {
-    setTasksChecked(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+  const tomorrowStr = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }, []);
+
+  const tomorrowEvents = useMemo(() => {
+    return tasks
+      .filter(t => {
+        if (t.date !== tomorrowStr) return false;
+        const type = t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'event');
+        return type === 'event';
+      })
+      .sort((a, b) => {
+        if (!a.startTime || !b.startTime) return 0;
+        return a.startTime.localeCompare(b.startTime);
+      });
+  }, [tasks, tomorrowStr]);
+
+  const getEnergyColor = (energy: string): string => {
+    switch (energy) {
+      case 'deep': return '#8B5CF6';
+      case 'light': return '#60A5FA';
+      case 'admin': return '#FBBF24';
+      case 'creative': return '#FB7185';
+      case 'social': return '#2DD4BF';
+      default: return '#60A5FA';
+    }
   };
 
-  const handleQuickAddTomorrowTask = (e?: React.FormEvent) => {
+  const formatTimeToAMPM = (timeStr?: string): string => {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':');
+    if (parts.length < 2) return timeStr;
+    const hour = parseInt(parts[0], 10);
+    const min = parseInt(parts[1], 10);
+    if (isNaN(hour) || isNaN(min)) return timeStr;
+    const isPM = hour >= 12;
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    const displayMin = String(min).padStart(2, '0');
+    const ampm = isPM ? 'PM' : 'AM';
+    return `${displayHour}:${displayMin} ${ampm}`;
+  };
+
+  // STEP 4: Tomorrow Setup State
+  // Real tasks from database for tomorrow with type !== 'event'
+  const tomorrowTasks = useMemo(() => {
+    return tasks.filter(t => {
+      if (t.date !== tomorrowStr) return false;
+      const type = t.type || (t.startTime && t.endTime ? 'scheduled_task' : 'event');
+      return type !== 'event';
+    });
+  }, [tasks, tomorrowStr]);
+
+  const [quickAddVal, setQuickAddVal] = useState<string>('');
+
+  const handleToggleTomorrowCheck = async (id: number | string) => {
+    await completeTask(id);
+  };
+
+  const handleQuickAddTomorrowTask = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!quickAddVal.trim()) return;
-    const newTask: TomorrowTask = {
-      id: Date.now(),
-      text: quickAddVal.trim(),
-      highGravity: quickAddVal.toLowerCase().includes('high') || quickAddVal.includes('🔥')
+    
+    const isHigh = quickAddVal.toLowerCase().includes('high') || quickAddVal.includes('🔥');
+    const gravityVal = isHigh ? 85 : 50;
+
+    const newTask: Partial<Task> = {
+      title: quickAddVal.trim(),
+      energy: 'deep', // default to deep work
+      completed: false,
+      date: tomorrowStr,
+      type: 'task',
+      duration: '30m',
+      gravity: gravityVal
     };
-    setTomorrowTasks(prev => [...prev, newTask]);
+
+    await createTask(newTask);
     setQuickAddVal('');
   };
 
@@ -386,6 +461,12 @@ export default function EveningReview({
 
               {/* LIST OF INTENTIONS */}
               <div className="flex flex-col gap-3 my-2">
+                {intentions.length === 0 && (
+                  <div className="p-4 rounded-12 bg-[#141416]/50 border border-dashed border-[#2A2A2D] text-center flex flex-col items-center justify-center py-8 gap-2">
+                    <Target className="w-6 h-6 text-[#8A8A90] opacity-55 animate-pulse" />
+                    <span className="text-xs text-[#8A8A90] font-sans">No priority intentions recorded for today.</span>
+                  </div>
+                )}
                 {intentions.map((item) => {
                   return (
                     <div 
@@ -443,13 +524,14 @@ export default function EveningReview({
                     <Target className="w-3.5 h-3.5" />
                   </div>
                   <span className="text-xs font-bold text-[#F1F1F1]">
-                    {completedCount}/3 Intentions Complete
+                    {completedCount}/{intentions.length} Intentions Complete
                   </span>
                 </div>
                 
                 <p className="text-[12px] text-[#34D399] italic pl-7 font-sans">
-                  {completedCount === 3 ? "Incredible performance! Clean sweep." :
-                   completedCount === 2 ? "That's a solid day. Steady progression." :
+                  {intentions.length === 0 ? "Set morning intentions tomorrow to track them here." :
+                   completedCount === intentions.length ? "Incredible performance! Clean sweep." :
+                   completedCount >= Math.ceil(intentions.length * 0.6) ? "That's a solid day. Steady progression." :
                    "Tomorrow is a fresh canvas. Rest up."}
                 </p>
               </div>
@@ -627,31 +709,32 @@ export default function EveningReview({
                   Scheduled Events (Read-Only)
                 </span>
 
-                <div className="flex flex-col gap-1.5 bg-[#141416]/50 border border-[#2A2A2D]/80 p-2.5 rounded-12">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]" />
-                      <span className="text-xs font-semibold">Team Standup</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-[#8A8A90]">09:00 AM</span>
+                {tomorrowEvents.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center p-4 py-8 rounded-12 bg-[#141416]/30 border border-dashed border-[#2A2A2D] text-center gap-1.5">
+                    <Calendar className="w-5 h-5 text-[#8A8A90] opacity-40" />
+                    <span className="text-xs text-[#8A8A90] font-sans">No events scheduled for tomorrow yet.</span>
                   </div>
-                  
-                  <div className="flex items-center justify-between border-t border-[#2A2A2D]/40 pt-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
-                      <span className="text-xs font-semibold">Client Demo Prep Session</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-[#8A8A90]">11:00 AM</span>
+                ) : (
+                  <div className="flex flex-col gap-1.5 bg-[#141416]/50 border border-[#2A2A2D]/80 p-2.5 rounded-12">
+                    {tomorrowEvents.map((event, idx) => (
+                      <div 
+                        key={event.id} 
+                        className={`flex items-center justify-between ${idx > 0 ? 'border-t border-[#2A2A2D]/40 pt-1.5' : ''}`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0 flex-grow mr-2">
+                          <span 
+                            className="w-1.5 h-1.5 rounded-full shrink-0" 
+                            style={{ backgroundColor: getEnergyColor(event.energy) }}
+                          />
+                          <span className="text-xs font-semibold truncate text-[#F1F1F1]">{event.title}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-[#8A8A90] shrink-0">
+                          {event.startTime ? formatTimeToAMPM(event.startTime) : 'All day'}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-
-                  <div className="flex items-center justify-between border-t border-[#2A2A2D]/40 pt-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
-                      <span className="text-xs font-semibold">Architecture design specs</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-[#8A8A90]">02:00 PM</span>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* TASKS FLAGGED FOR TOMORROW (INTERACTIVE CHECKLIST) */}
@@ -661,34 +744,42 @@ export default function EveningReview({
                 </span>
 
                 <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
-                  {tomorrowTasks.map((task) => {
-                    const isChecked = !!tasksChecked[task.id];
-                    return (
-                      <div 
-                        key={task.id}
-                        onClick={() => handleToggleTomorrowCheck(task.id)}
-                        className="flex items-center justify-between p-2 rounded-8 bg-[#1C1C1F]/40 border border-[#2A2A2D]/70 hover:border-[#3D3D42] text-xs cursor-pointer select-none transition-colors"
-                      >
-                        <div className="flex items-center gap-2.5 flex-grow min-w-0">
-                          <input 
-                            type="checkbox" 
-                            checked={isChecked}
-                            onChange={() => {}} // Handle on parent container click instead
-                            className="rounded accent-[#4F8EF7] shrink-0" 
-                          />
-                          <span className={`truncate ${isChecked ? 'line-through text-[#4A4A52]' : 'text-white'}`}>
-                            {task.text}
-                          </span>
+                  {tomorrowTasks.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center p-4 py-6 rounded-12 bg-[#141416]/30 border border-dashed border-[#2A2A2D] text-center gap-1">
+                      <Zap className="w-5 h-5 text-[#8A8A90] opacity-35" />
+                      <span className="text-xs text-[#8A8A90] font-sans">No tasks planned for tomorrow yet.</span>
+                    </div>
+                  ) : (
+                    tomorrowTasks.map((task) => {
+                      const isChecked = !!task.completed;
+                      const hasHighGravity = task.gravity >= 80;
+                      return (
+                        <div 
+                          key={task.id}
+                          onClick={() => handleToggleTomorrowCheck(task.id)}
+                          className="flex items-center justify-between p-2 rounded-8 bg-[#1C1C1F]/40 border border-[#2A2A2D]/70 hover:border-[#3D3D42] text-xs cursor-pointer select-none transition-colors"
+                        >
+                          <div className="flex items-center gap-2.5 flex-grow min-w-0">
+                            <input 
+                              type="checkbox" 
+                              checked={isChecked}
+                              onChange={() => {}} // Handle on parent container click instead
+                              className="rounded accent-[#4F8EF7] shrink-0" 
+                            />
+                            <span className={`truncate ${isChecked ? 'line-through text-[#4A4A52]' : 'text-white'}`}>
+                              {task.title}
+                            </span>
+                          </div>
+                          
+                          {hasHighGravity && (
+                            <span className="text-[9px] font-bold text-[#FB7185] bg-[#FB7185]/15 px-1 py-0.2 rounded uppercase ml-1 shrink-0">
+                              High 🔥
+                            </span>
+                          )}
                         </div>
-                        
-                        {task.highGravity && (
-                          <span className="text-[9px] font-bold text-[#FB7185] bg-[#FB7185]/15 px-1 py-0.2 rounded uppercase ml-1 shrink-0">
-                            High 🔥
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
 
