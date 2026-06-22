@@ -11,6 +11,7 @@ import { playCheckSound, playUncheckSound } from '../utils/playSound';
 import { useHabits } from '../contexts/HabitsContext';
 import { useMorningIntentions } from '../hooks/useMorningIntentions';
 import MorningIntentionsModal from './MorningIntentionsModal';
+import { supabase } from '../supabaseClient';
 
 // TIMELINE MATH & HELPER CONSTANTS & FUNCTIONS
 // Timeline ranges from 6:00 AM to 10:00 PM (16 hours).
@@ -138,6 +139,38 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
   // Morning Intentions State
   const { intentionsRow, showModal, setShowModal, userId, userName: intentionUserName, saveIntentions, skipIntentions } = useMorningIntentions();
   const [intentionsMessage, setIntentionsMessage] = useState<string | null>(null);
+
+  // Local state for the header username to ensure real-time updates and responsiveness from event triggers
+  const [headerUserName, setHeaderUserName] = useState<string>(userName);
+
+  useEffect(() => {
+    setHeaderUserName(userName);
+  }, [userName]);
+
+  useEffect(() => {
+    const handleProfileUpdated = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, username')
+            .eq('id', session.user.id)
+            .single();
+          if (profile) {
+            setHeaderUserName(profile.full_name || profile.username || userName);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching latest profile name in TodayView:", err);
+      }
+    };
+
+    window.addEventListener("tempo-profile-updated", handleProfileUpdated);
+    return () => {
+      window.removeEventListener("tempo-profile-updated", handleProfileUpdated);
+    };
+  }, [userName]);
 
   const activeIntentions = useMemo(() => {
     if (!intentionsRow) return [];
@@ -590,7 +623,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
         <div className="flex items-center gap-4">
           {/* Simulation indicators */}
           <div className="text-right hidden md:block">
-            <span className="text-xs font-mono text-[var(--tempo-text-secondary)] block">{userName}</span>
+            <span className="text-xs font-mono text-[var(--tempo-text-secondary)] block">{headerUserName}</span>
             <span className="text-[10px] font-mono text-[var(--tempo-text-muted)] block">{userEmail}</span>
           </div>
           
