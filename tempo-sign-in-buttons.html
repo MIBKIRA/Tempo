@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Tempo — Auth Controls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   TOKENS — edit these to re-theme. Everything below reads
+   from this list; no hard-coded colors/spacing elsewhere.
+   ============================================================ */
+:root{
+  /* surfaces */
+  --bg:#000000;
+  --bg-alt:#0a0a0a;
+  --bg-grid: rgba(255,255,255,.035);
+  --surface:#101013;
+  --surface-secondary:#0d0d10;
+  --surface-pressed:#07070a;
+
+  /* borders */
+  --border:rgba(255,255,255,.16);
+  --border-strong:rgba(255,255,255,.34);
+
+  /* text */
+  --text:#f5f5f2;
+  --text-dim:rgba(245,245,242,.62);
+  --text-faint:rgba(245,245,242,.38);
+
+  /* brand accent — same hexes as the existing gradient,
+     reused as flat structural color, never as a fill/blend */
+  --accent-blue:#3b5bfd;
+  --accent-purple:#7c5cfc;
+
+  /* shape */
+  --radius-sharp:2px;
+  --radius-cut:14px;
+
+  /* motion */
+  --ease-mech:cubic-bezier(.2,.8,.2,1);
+  --dur-fast:120ms;
+  --dur-med:200ms;
+
+  /* mechanism geometry */
+  --shadow-step:4px;   /* depth of the plate stack at rest */
+  --lift-step:2px;     /* how far the button rises on hover */
+
+  /* spacing scale */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-7:32px; --space-8:48px;
+
+  /* control sizing */
+  --control-h:52px;
+  --control-h-sm:48px;
+
+  --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size:44px 44px;
+  color:var(--text);
+  font-family:var(--font-mono);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:var(--space-8) var(--space-6);
+}
+
+/* ============================================================
+   PAGE SCAFFOLD (demo chrome — not part of the component)
+   ============================================================ */
+.stage{ width:100%; max-width:880px; display:flex; flex-direction:column; gap:var(--space-8); }
+
+.stage__header{ border-bottom:1px solid var(--border); padding-bottom:var(--space-6); }
+.eyebrow{
+  margin:0 0 var(--space-3); font-size:11px; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--text-faint);
+}
+.stage__title{
+  margin:0; font-family:var(--font-serif); font-style:italic; font-weight:400;
+  font-size:clamp(20px,3vw,28px); color:var(--text-dim);
+}
+
+.stage__row{ display:flex; flex-wrap:wrap; gap:var(--space-7); }
+.control-block{ display:flex; flex-direction:column; gap:var(--space-3); flex:0 1 auto; }
+.control-label{
+  margin:0; font-size:11px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--text-faint);
+}
+.control-caption{ margin:0; font-size:11px; color:var(--text-faint); letter-spacing:.02em; }
+
+.stage__footer{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:var(--space-5); padding-top:var(--space-6); border-top:1px solid var(--border);
+}
+.key-legend{ display:flex; gap:var(--space-3); }
+.key{
+  font-size:10px; letter-spacing:.08em; color:var(--text-faint);
+  border:1px solid var(--border); border-radius:2px 6px 2px 6px; padding:4px 8px;
+}
+.disable-toggle{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-size:10px; letter-spacing:.1em; color:var(--text-faint);
+  cursor:pointer; user-select:none;
+}
+.disable-toggle input{ accent-color:var(--accent-blue); }
+
+.note{
+  border:1px solid var(--border);
+  border-radius:var(--radius-sharp) var(--radius-cut) var(--radius-sharp) var(--radius-cut);
+  padding:var(--space-5) var(--space-6); background:var(--surface);
+}
+.note__label{ margin:0 0 var(--space-2); font-size:11px; font-weight:600; letter-spacing:.16em; color:var(--text-faint); }
+.note__text{ margin:0; font-size:12.5px; line-height:1.7; color:var(--text-dim); max-width:64ch; }
+
+/* ============================================================
+   BUTTON — shared base
+   ============================================================ */
+.btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-3);
+  height:var(--control-h);
+  min-height:44px;
+  min-width:200px;
+  padding:0 var(--space-6);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sharp) var(--radius-cut) var(--radius-sharp) var(--radius-cut);
+  color:var(--text);
+  font-family:var(--font-mono);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transform:translate(0,0);
+  transition:
+    transform var(--dur-fast) var(--ease-mech),
+    box-shadow var(--dur-fast) var(--ease-mech),
+    background-color var(--dur-fast) var(--ease-mech),
+    border-color var(--dur-fast) var(--ease-mech),
+    opacity var(--dur-fast) var(--ease-mech);
+}
+.btn:focus{ outline:none; }
+
+/* shared tactile mechanics — the plate colors differ per variant below,
+   but the *motion* of lifting and flattening is one shared mechanism */
+.btn:not(:disabled):hover{
+  transform:translate(calc(var(--lift-step) * -1), calc(var(--lift-step) * -1));
+  border-color:var(--border-strong);
+}
+.btn:not(:disabled):active{
+  transform:translate(var(--shadow-step), var(--shadow-step));
+  background:var(--surface-pressed);
+}
+.btn:disabled{
+  opacity:.36;
+  cursor:not-allowed;
+  box-shadow:none;
+  transform:none;
+  background:var(--surface);
+}
+
+/* corner brackets — the focus-visible indicator. Not an outline:
+   two viewfinder marks lock onto the control on keyboard focus only. */
+.btn::before, .btn::after{
+  content:"";
+  position:absolute;
+  width:10px; height:10px;
+  border:2px solid var(--accent-blue);
+  opacity:0;
+  transition:opacity var(--dur-fast) ease;
+  pointer-events:none;
+}
+.btn::before{ top:-6px; left:-6px; border-right:none; border-bottom:none; }
+.btn::after{ bottom:-6px; right:-6px; border-left:none; border-top:none; }
+.btn:not(:disabled):focus-visible::before,
+.btn:not(:disabled):focus-visible::after{ opacity:1; }
+
+/* corner micro-label */
+.btn__hint{
+  position:absolute; top:6px; right:12px;
+  font-size:9px; letter-spacing:.06em; color:var(--text-faint);
+  opacity:0; transform:translateY(-2px);
+  transition:opacity var(--dur-fast) var(--ease-mech), transform var(--dur-fast) var(--ease-mech);
+}
+.btn:not(:disabled):hover .btn__hint,
+.btn:not(:disabled):focus-visible .btn__hint{ opacity:1; transform:translateY(0); }
+
+/* status dot */
+.btn__dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--text-faint); flex:0 0 auto;
+  transition:background-color var(--dur-fast) var(--ease-mech), box-shadow var(--dur-fast) var(--ease-mech);
+}
+.btn:not(:disabled):hover .btn__dot{ background:var(--accent-blue); box-shadow:0 0 6px rgba(59,91,253,.6); }
+.btn:not(:disabled):active .btn__dot{ background:var(--accent-purple); box-shadow:none; }
+
+/* ============================================================
+   PRIMARY VARIANT — "Sign In" — carries the full plate mechanism
+   ============================================================ */
+.btn--primary{
+  box-shadow:
+    var(--shadow-step) var(--shadow-step) 0 0 rgba(59,91,253,.32),
+    calc(var(--shadow-step) * 2) calc(var(--shadow-step) * 2) 0 0 rgba(124,92,252,.2);
+}
+.btn--primary:not(:disabled):hover{
+  box-shadow:
+    calc(var(--shadow-step) + var(--lift-step)) calc(var(--shadow-step) + var(--lift-step)) 0 0 rgba(59,91,253,.9),
+    calc(var(--shadow-step) * 2 + var(--lift-step) + 1px) calc(var(--shadow-step) * 2 + var(--lift-step) + 1px) 0 0 rgba(124,92,252,.55);
+}
+.btn--primary:not(:disabled):active{
+  box-shadow:
+    0 0 0 0 rgba(59,91,253,0),
+    0 0 0 0 rgba(124,92,252,0);
+}
+
+.btn__arrow{ transition:transform var(--dur-med) var(--ease-mech); }
+.btn:not(:disabled):hover .btn__arrow{ transform:translateX(3px); }
+.btn:not(:disabled):active .btn__arrow{ transform:translateX(1px); }
+
+/* loading — a four-bar meter, not a spinner */
+.btn__text{ display:inline; }
+.btn.is-loading .btn__text{ display:none; }
+.btn.is-loading .btn__arrow{ display:none; }
+
+.btn__loading{ display:none; align-items:center; gap:var(--space-2); }
+.btn.is-loading .btn__loading{ display:inline-flex; }
+
+.btn__ticks{ display:inline-flex; align-items:flex-end; gap:3px; height:12px; }
+.btn__ticks i{
+  width:3px; height:100%; border-radius:1px;
+  background:var(--text-faint); display:inline-block;
+  animation:tick 1s var(--ease-mech) infinite;
+}
+.btn__ticks i:nth-child(1){ animation-delay:0s; }
+.btn__ticks i:nth-child(2){ animation-delay:.15s; }
+.btn__ticks i:nth-child(3){ animation-delay:.3s; }
+.btn__ticks i:nth-child(4){ animation-delay:.45s; }
+@keyframes tick{
+  0%,100%{ background:var(--text-faint); transform:scaleY(.45); }
+  40%{ background:var(--accent-blue); transform:scaleY(1); }
+}
+.btn__loading-text{ font-size:11px; letter-spacing:.14em; color:var(--text-dim); }
+.btn.is-loading .btn__dot{ background:var(--accent-blue); animation:pulse .9s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ opacity:.35; } 50%{ opacity:1; } }
+
+/* ============================================================
+   SECONDARY VARIANT — "Continue with Google" — same mechanism,
+   quieter: one neutral plate instead of two accent plates
+   ============================================================ */
+.btn--secondary{
+  background:var(--surface-secondary);
+  box-shadow: var(--shadow-step) var(--shadow-step) 0 0 rgba(255,255,255,.1);
+}
+.btn--secondary:not(:disabled):hover{
+  box-shadow: calc(var(--shadow-step) + var(--lift-step)) calc(var(--shadow-step) + var(--lift-step)) 0 0 rgba(255,255,255,.22);
+}
+.btn--secondary:not(:disabled):active{
+  box-shadow:0 0 0 0 rgba(255,255,255,0);
+}
+
+.btn__g{
+  width:22px; height:22px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid var(--border);
+  border-radius:2px 6px 2px 6px;
+  background:var(--bg-alt);
+  flex:0 0 auto;
+}
+.btn__g svg{ width:13px; height:13px; display:block; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:520px){
+  body{ padding:var(--space-6) var(--space-4); }
+  .btn{ height:var(--control-h-sm); font-size:12px; padding:0 var(--space-5); min-width:0; width:100%; }
+  .control-block{ flex:1 1 100%; }
+  .stage__footer{ flex-direction:column; align-items:flex-start; }
+}
+@media (prefers-reduced-motion:reduce){
+  .btn, .btn *{ transition:none!important; animation:none!important; }
+}
+</style>
+</head>
+<body>
+
+<main class="stage">
+
+  <header class="stage__header">
+    <p class="eyebrow">TEMPO — AUTH</p>
+    <h1 class="stage__title">Every hour. Intentional.</h1>
+  </header>
+
+  <section class="stage__row">
+
+    <div class="control-block">
+      <p class="control-label">Direct auth</p>
+      <button type="button" class="btn btn--primary" id="signInBtn">
+        <span class="btn__dot" aria-hidden="true"></span>
+        <span class="btn__text">Sign In</span>
+        <span class="btn__loading">
+          <span class="btn__ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="btn__loading-text">Syncing</span>
+        </span>
+        <span class="btn__arrow" aria-hidden="true">→</span>
+        <span class="btn__hint" aria-hidden="true">↵ enter</span>
+      </button>
+      <p class="control-caption">Click to preview the loading state.</p>
+    </div>
+
+    <div class="control-block">
+      <p class="control-label">Federated auth</p>
+      <button type="button" class="btn btn--secondary" id="googleBtn">
+        <span class="btn__g" aria-hidden="true">
+          <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#4285F4" d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9086c1.7018-1.5668 2.6836-3.8741 2.6836-6.615z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.4673-.8059 5.9564-2.1805l-2.9086-2.2581c-.8059.54-1.8368.8591-3.0477.8591-2.3436 0-4.3282-1.5818-5.0359-3.7104H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18z"/>
+            <path fill="#FBBC05" d="M3.9641 10.71c-.18-.54-.2827-1.1168-.2827-1.71s.1027-1.17.2827-1.71V4.9582H.9573C.3477 6.1732 0 7.5477 0 9s.3477 2.8268.9573 4.0418L3.9641 10.71z"/>
+            <path fill="#EA4335" d="M9 3.5795c1.3214 0 2.5077.4541 3.4409 1.346l2.5814-2.5814C13.4632.8918 11.4259 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9641 7.29C4.6718 5.1614 6.6564 3.5795 9 3.5795z"/>
+          </svg>
+        </span>
+        <span class="btn__text">Continue with Google</span>
+      </button>
+      <p class="control-caption">Click to preview the redirect state.</p>
+    </div>
+
+  </section>
+
+  <section class="stage__footer">
+    <div class="key-legend">
+      <span class="key">⇥ tab</span>
+      <span class="key">␣ space</span>
+      <span class="key">↵ enter</span>
+    </div>
+    <label class="disable-toggle">
+      <input type="checkbox" id="disableToggle">
+      <span>Preview disabled state</span>
+    </label>
+  </section>
+
+  <section class="note">
+    <p class="note__label">Design note</p>
+    <p class="note__text">
+      Engineered control, not gradient decoration. The color behind each button is two flat plates, not a blurred glow —
+      hover lifts the button off them, a press flattens it flush, like a real toggle switch bottoming out. Corners are
+      cut on one diagonal, not rounded on all four. Focus draws two viewfinder brackets instead of a browser outline.
+      Loading is a four-bar meter, not a spinner.
+    </p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var signInBtn = document.getElementById('signInBtn');
+  var googleBtn = document.getElementById('googleBtn');
+  var disableToggle = document.getElementById('disableToggle');
+  var signInTimer;
+
+  signInBtn.addEventListener('click', function(){
+    if (signInBtn.classList.contains('is-loading') || signInBtn.disabled) return;
+    signInBtn.classList.add('is-loading');
+    signInBtn.setAttribute('aria-busy', 'true');
+    signInBtn.disabled = true;
+    clearTimeout(signInTimer);
+    signInTimer = setTimeout(function(){
+      signInBtn.classList.remove('is-loading');
+      signInBtn.removeAttribute('aria-busy');
+      signInBtn.disabled = disableToggle.checked;
+    }, 1800);
+  });
+
+  googleBtn.addEventListener('click', function(){
+    if (googleBtn.disabled) return;
+    var label = googleBtn.querySelector('.btn__text');
+    var original = label.textContent;
+    label.textContent = 'Redirecting…';
+    googleBtn.disabled = true;
+    setTimeout(function(){
+      label.textContent = original;
+      googleBtn.disabled = disableToggle.checked;
+    }, 1200);
+  });
+
+  disableToggle.addEventListener('change', function(){
+    signInBtn.disabled = this.checked;
+    googleBtn.disabled = this.checked;
+  });
+})();
+</script>
+
+</body>
+</html>

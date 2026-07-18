@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, Command, Check, AlertCircle, Calendar, AtSign } from 'lucide-react';
 import { Logo, LogoSm } from './Logo';
 import { supabase } from '../supabaseClient';
+import EngineeredButton from './EngineeredButton';
 
 interface AuthScreenProps {
   onLoginSuccess: (email: string, name: string) => void;
@@ -680,21 +681,18 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   </label>
                 </div>
 
-                <button
-                  id="signin-btn-submit"
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-gradient w-full h-[44px] rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Sign In</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                <div className="flex justify-center w-full">
+                  <EngineeredButton
+                    id="signin-btn-submit"
+                    type="submit"
+                    variant="primary"
+                    isLoading={isSubmitting}
+                    hasError={!!errorMessage}
+                    hintText="↵ enter"
+                  >
+                    Sign In
+                  </EngineeredButton>
+                </div>
 
                 <div className="flex items-center gap-3 my-2 select-none">
                   <div className="h-[1px] flex-grow bg-[#2A2A2D]" />
@@ -704,16 +702,17 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   <div className="h-[1px] flex-grow bg-[#2A2A2D]" />
                 </div>
 
-                <button
-                  id="signin-google-sso"
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={handleGoogleSSO}
-                  className="w-full h-[44px] rounded-lg border border-[#2A2A2D] bg-[#141416] hover:bg-[#1C1C1F] hover:border-[#3D3D42] text-sm text-[#F1F1F1] flex items-center justify-center gap-2.5 transition-all duration-150 cursor-pointer"
-                >
-                  <Chrome className="w-4 h-4 text-[#FB7185]" />
-                  <span className="font-sans font-medium">Continue with Google</span>
-                </button>
+                <div className="flex justify-center w-full">
+                  <EngineeredButton
+                    id="signin-google-sso"
+                    type="button"
+                    variant="secondary"
+                    disabled={isSubmitting}
+                    onClick={handleGoogleSSO}
+                  >
+                    Continue with Google
+                  </EngineeredButton>
+                </div>
               </form>
             ) : isSignupSuccess ? (
               <div id="signup-success-view" className="flex flex-col gap-6 py-4 animate-[slide-up-fade_0.20s_ease-out]">
@@ -726,20 +725,21 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   </p>
                 </div>
                 
-                <button
-                  id="go-to-signin-btn"
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('signin');
-                    setIsSignupSuccess(false);
-                    setSuccessMessage(null);
-                    setErrorMessage(null);
-                  }}
-                  className="btn-gradient w-full h-[44px] rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-lg cursor-pointer"
-                >
-                  <span>Go to Sign In</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                <div className="flex justify-center w-full">
+                  <EngineeredButton
+                    id="go-to-signin-btn"
+                    type="button"
+                    variant="primary"
+                    onClick={() => {
+                      setActiveTab('signin');
+                      setIsSignupSuccess(false);
+                      setSuccessMessage(null);
+                      setErrorMessage(null);
+                    }}
+                  >
+                    Go to Sign In
+                  </EngineeredButton>
+                </div>
               </div>
             ) : (
               <form id="signup-form" onSubmit={handleSignUp} className="flex flex-col gap-4">
@@ -960,21 +960,18 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   )}
                 </div>
 
-                <button
-                  id="signup-btn-submit"
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-gradient w-full h-[44px] rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer mt-2"
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Create Account</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                <div className="flex justify-center w-full mt-2">
+                  <EngineeredButton
+                    id="signup-btn-submit"
+                    type="submit"
+                    variant="primary"
+                    isLoading={isSubmitting}
+                    hasError={!!errorMessage}
+                    hintText="↵ enter"
+                  >
+                    Create Account
+                  </EngineeredButton>
+                </div>
 
                 <div className="flex items-center gap-3 my-2 select-none">
                   <div className="h-[1px] flex-grow bg-[#2A2A2D]" />
@@ -984,16 +981,17 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   <div className="h-[1px] flex-grow bg-[#2A2A2D]" />
                 </div>
 
-                <button
-                  id="signup-google-sso"
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={handleGoogleSSO}
-                  className="w-full h-[44px] rounded-lg border border-[#2A2A2D] bg-[#141416] hover:bg-[#1C1C1F] hover:border-[#3D3D42] text-sm text-[#F1F1F1] flex items-center justify-center gap-2.5 transition-all duration-150 cursor-pointer"
-                >
-                  <Chrome className="w-4 h-4 text-[#FB7185]" />
-                  <span className="font-sans font-medium">Continue with Google</span>
-                </button>
+                <div className="flex justify-center w-full">
+                  <EngineeredButton
+                    id="signup-google-sso"
+                    type="button"
+                    variant="secondary"
+                    disabled={isSubmitting}
+                    onClick={handleGoogleSSO}
+                  >
+                    Continue with Google
+                  </EngineeredButton>
+                </div>
 
                 <p id="signup-disclaimer" className="text-[11px] text-[#4A4A52] font-sans text-center mt-3 leading-relaxed">
                   By signing up you agree to our{' '}
