@@ -126,8 +126,8 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
       {/* Title Header */}
       <div className="flex flex-col mb-8 select-none">
         <div className="flex items-center gap-2 mb-1.5">
-          <span className="p-1 px-1.5 rounded-md bg-[#4F8EF7]/10 text-[#4F8EF7] text-[10px] font-bold font-mono tracking-wider uppercase flex items-center gap-1">
-            <Zap className="w-3 h-3 text-[#4F8EF7]" /> Active Catalyst
+          <span className="p-1 px-1.5 rounded-md bg-[var(--tempo-accent-blue)]/10 text-[var(--tempo-accent-blue)] text-[10px] font-bold font-mono tracking-wider uppercase flex items-center gap-1">
+            <Zap className="w-3 h-3 text-[var(--tempo-accent-blue)]" /> Active Catalyst
           </span>
         </div>
         <h1 className="text-xl font-bold tracking-tight text-white font-sans">
@@ -191,24 +191,24 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
           {/* Card 3: Continue Scheduled Now */}
           <button
             onClick={() => setActiveChoice('now')}
-            className="flex flex-col text-left p-6 rounded-xl border border-[#1C1C1F] bg-[#121214] hover:border-[#4F8EF7]/60 hover:bg-[#0C1525]/40 transition-all duration-200 cursor-pointer text-inherit outline-none focus:border-[#4F8EF7] shadow-md group relative overflow-hidden"
+            className="flex flex-col text-left p-6 rounded-xl border border-[#1C1C1F] bg-[#121214] hover:border-[var(--tempo-accent-blue)]/60 hover:bg-[var(--tempo-accent-blue)]/5 transition-all duration-200 cursor-pointer text-inherit outline-none focus:border-[var(--tempo-accent-blue)] shadow-md group relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[#4F8EF7]/5 rounded-full blur-2xl origin-top-right transition-all group-hover:scale-125" />
-            <div className="w-10 h-10 rounded-lg bg-[#4F8EF7]/10 text-[#4F8EF7] flex items-center justify-center mb-4.5 relative">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--tempo-accent-blue)]/5 rounded-full blur-2xl origin-top-right transition-all group-hover:scale-125" />
+            <div className="w-10 h-10 rounded-lg bg-[var(--tempo-accent-blue)]/10 text-[var(--tempo-accent-blue)] flex items-center justify-center mb-4.5 relative">
               <Calendar className="w-5 h-5" />
               {activeNowBlocks.length > 0 && (
                 <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
               )}
             </div>
             
-            <h3 className="text-sm font-semibold text-white tracking-tight group-hover:text-[#4F8EF7] transition-colors">
+            <h3 className="text-sm font-semibold text-white tracking-tight group-hover:text-[var(--tempo-accent-blue)] transition-colors">
               Scheduled Calendar Slot
             </h3>
             <p className="text-xs text-[#8A8A90] mt-1.5 leading-relaxed flex-grow">
               Sync with your timeline blocks. Automatically fetches whatever activity block is scheduled now.
             </p>
             
-            <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#4F8EF7] font-bold uppercase mt-5">
+            <div className="flex items-center gap-1.5 text-[10px] font-mono text-[var(--tempo-accent-blue)] font-bold uppercase mt-5">
               <span>Scan schedule</span>
               {activeNowBlocks.length > 0 ? (
                 <span className="ml-auto text-[9px] bg-[#10B981]/15 text-[#10B981] px-1.5 py-0.5 rounded border border-[#10B981]/25 font-bold animate-pulse">
@@ -357,7 +357,7 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
           {/* Header row */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-[#4F8EF7]/15 rounded text-[#4F8EF7] flex items-center justify-center">
+              <div className="w-7 h-7 bg-[var(--tempo-accent-blue)]/15 rounded text-[var(--tempo-accent-blue)] flex items-center justify-center">
                 <Calendar className="w-4 h-4" />
               </div>
               <div>
@@ -414,7 +414,7 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
 
                           <button
                             onClick={() => handleStartBlockSession(block)}
-                            className="shrink-0 px-4 py-2 text-xs font-bold font-mono tracking-wide uppercase bg-[#4F8EF7]/15 border border-[#4F8EF7]/30 hover:bg-[#4F8EF7] hover:text-[#0C1525] text-[#4F8EF7] hover:border-[#4F8EF7] rounded transition-all cursor-pointer flex items-center gap-1.5 shadow-md transform hover:scale-105 active:scale-95"
+                            className="shrink-0 px-4 py-2 text-xs font-bold font-mono tracking-wide uppercase bg-[var(--tempo-accent-blue)]/15 border border-[var(--tempo-accent-blue)]/30 hover:bg-[var(--tempo-accent-blue)] hover:text-[var(--tempo-bg-primary)] text-[var(--tempo-accent-blue)] hover:border-[var(--tempo-accent-blue)] rounded transition-all cursor-pointer flex items-center gap-1.5 shadow-md transform hover:scale-105 active:scale-95"
                           >
                             <Play className="w-3 h-3 fill-current" />
                             <span>Start Focus</span>

@@ -1,38 +1,38 @@
 .btn {
-  /* surfaces */
-  --bg: #000000;
-  --bg-alt: #0a0a0a;
+  /* surfaces — mapped to tempo variables for automatic theme adaptability */
+  --bg: var(--tempo-bg-primary, #0D0D0F);
+  --bg-alt: var(--tempo-bg-secondary, #141416);
   --bg-grid: rgba(255,255,255,.035);
-  --surface: #101013;
-  --surface-secondary: #0d0d10;
-  --surface-pressed: #07070a;
+  --surface: var(--tempo-bg-secondary, #141416);
+  --surface-secondary: var(--tempo-bg-tertiary, #1C1C1F);
+  --surface-pressed: var(--tempo-bg-primary, #0D0D0F);
 
-  /* borders */
-  --border: rgba(255,255,255,.16);
-  --border-strong: rgba(255,255,255,.34);
+  /* borders — mapped to tempo variables */
+  --border: var(--tempo-border, #2A2A2D);
+  --border-strong: var(--tempo-border-hover, #3D3D42);
 
-  /* text */
-  --text: #f5f5f2;
-  --text-dim: rgba(245,245,242,.62);
-  --text-faint: rgba(245,245,242,.38);
+  /* text — mapped to tempo variables */
+  --text: var(--tempo-text-primary, #F1F1F1);
+  --text-dim: var(--tempo-text-secondary, #8A8A90);
+  --text-faint: var(--tempo-text-muted, #4A4A52);
 
-  /* brand accent */
-  --accent-blue: #3b5bfd;
-  --accent-purple: #7c5cfc;
-  --accent-coral: #fb7185;
+  /* brand accent — mapped to tempo variables for dynamic accent alignment */
+  --accent-blue: var(--tempo-accent-blue);
+  --accent-purple: var(--tempo-accent-purple);
+  --accent-coral: var(--tempo-accent-coral, #fb7185);
 
-  /* shape */
-  --radius-sharp: 2px;
-  --radius-cut: 14px;
+  /* shape — reading from unified global design tokens */
+  --radius-sharp: var(--tcs-radius-sharp);
+  --radius-cut: var(--tcs-radius-cut);
 
-  /* motion */
-  --ease-mech: cubic-bezier(.2,.8,.2,1);
-  --dur-fast: 120ms;
-  --dur-med: 200ms;
+  /* motion — reading from unified global design tokens */
+  --ease-mech: var(--tcs-ease-mech);
+  --dur-fast: var(--tcs-dur-fast);
+  --dur-med: var(--tcs-dur-med);
 
-  /* mechanism geometry */
-  --shadow-step: 4px;   /* depth of the plate stack at rest */
-  --lift-step: 2px;     /* how far the button rises on hover */
+  /* mechanism geometry — reading from unified global design tokens */
+  --shadow-step: var(--tcs-shadow-step);
+  --lift-step: var(--tcs-lift-step);
 
   --control-h: 52px;
   --control-h-sm: 48px;
@@ -65,6 +65,12 @@
     background-color var(--dur-fast) var(--ease-mech),
     border-color var(--dur-fast) var(--ease-mech),
     opacity var(--dur-fast) var(--ease-mech);
+}
+
+.fullWidth {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
 }
 
 .btn:focus {

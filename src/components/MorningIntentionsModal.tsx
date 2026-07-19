@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import EngineeredButton from './EngineeredButton';
 
 interface MorningIntentionsModalProps {
   isOpen: boolean;
@@ -193,13 +194,15 @@ export default function MorningIntentionsModal({
                 Skip for today
               </button>
               
-              <button
+              <EngineeredButton
+                variant="primary"
                 type="submit"
+                isLoading={isSaving}
                 disabled={isSaving || isAllEmpty}
-                className="px-4.5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-[#4F8EF7] to-[#8B5CF6] hover:from-[#5f9bfb] hover:to-[#9a6eff] disabled:from-[var(--tempo-border)] disabled:to-[var(--tempo-border)] disabled:text-[var(--tempo-text-muted)] shadow-md disabled:shadow-none hover:shadow-lg rounded-xl active:scale-98 transition-all duration-150 flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                showArrow={true}
               >
-                {isSaving ? 'Syncing...' : 'Start My Day →'}
-              </button>
+                Start My Day
+              </EngineeredButton>
             </div>
           </form>
         </motion.div>

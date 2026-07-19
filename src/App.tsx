@@ -21,6 +21,8 @@ import { LogoSm } from './components/Logo';
 import { useTasksData } from './TasksContext';
 import CompleteProfile from './components/CompleteProfile';
 import AuthCallback from './components/AuthCallback';
+import EngineeredButton from './components/EngineeredButton';
+import EngineeredRocker from './components/EngineeredRocker';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
@@ -646,7 +648,7 @@ export default function App() {
     if (isLoadingSession) {
       return (
         <div className="min-h-screen w-full bg-[#0D0D0F] flex flex-col items-center justify-center p-6 select-none">
-          <LogoSm className="w-12 h-12 mb-4 animate-pulse text-[#4F8EF7]" />
+          <LogoSm className="w-12 h-12 mb-4 animate-pulse text-[var(--tempo-accent-blue)]" />
         </div>
       );
     }
@@ -730,37 +732,45 @@ export default function App() {
                   { id: 'focus', name: 'Energy Planner', icon: Activity, badge: null },
                   { id: 'analytics', name: 'Velocity stats', icon: BarChart3, badge: '87%' },
                   { id: 'integrations', name: 'App Settings', icon: Settings, badge: null }
-                ].map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => navigateToTab(item.id)}
-                    title={compactSidebar ? item.name : undefined}
-                    className={`w-full flex items-center ${
-                      compactSidebar ? 'justify-center py-2.5 px-0' : 'justify-between px-3 py-2'
-                    } rounded-lg text-xs font-medium cursor-pointer transition-all duration-150 ${
-                      activeSidebarTab === item.id
-                        ? 'bg-[#1C1C1F] border border-[#2A2A2D] text-[#F1F1F1]'
-                        : 'border border-transparent text-[#8A8A90] hover:text-[#F1F1F1] hover:bg-white/[0.02]'
-                    }`}
-                  >
-                    <div className={`flex items-center ${compactSidebar ? 'justify-center' : 'gap-2.5'}`}>
-                      <item.icon className={`w-4 h-4 shrink-0 ${
-                        activeSidebarTab === item.id ? 'text-[#4F8EF7]' : 'text-[#4A4A52]'
-                      }`} />
-                      {!compactSidebar && <span>{item.name}</span>}
-                    </div>
+                ].map(item => {
+                  const isActive = activeSidebarTab === item.id;
+                  return (
+                    <div key={item.id} className="w-full">
+                      <EngineeredRocker
+                        fullWidth
+                        options={[
+                          {
+                            id: item.id,
+                            label: (
+                              <div className={`w-full flex items-center ${
+                                compactSidebar ? 'justify-center py-0.5' : 'justify-between py-0.5'
+                              }`}>
+                                <div className={`flex items-center ${compactSidebar ? 'justify-center' : 'gap-2.5'}`}>
+                                  <item.icon className={`w-4 h-4 shrink-0 ${
+                                    isActive ? 'text-[var(--tempo-accent-blue)]' : 'text-[#4A4A52]'
+                                  }`} />
+                                  {!compactSidebar && <span>{item.name}</span>}
+                                </div>
 
-                    {!compactSidebar && showShortcutsInSidebar && item.badge && (
-                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded uppercase font-bold scale-95 ${
-                        item.id === 'today' 
-                          ? 'bg-[#FB7185]/15 text-[#FB7185]' 
-                          : 'bg-white/10 text-[#8A8A90]'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
+                                {!compactSidebar && showShortcutsInSidebar && item.badge && (
+                                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded uppercase font-bold scale-95 ${
+                                    item.id === 'today' 
+                                      ? 'bg-[#FB7185]/15 text-[#FB7185]' 
+                                      : 'bg-white/10 text-[#8A8A90]'
+                                  }`}>
+                                    {item.badge}
+                                  </span>
+                                )}
+                              </div>
+                            )
+                          }
+                        ]}
+                        activeId={isActive ? item.id : ''}
+                        onChange={() => navigateToTab(item.id)}
+                      />
+                    </div>
+                  );
+                })}
 
                 <div className="h-[1px] bg-[#2A2A2D]/55 my-2" />
                 
@@ -793,7 +803,7 @@ export default function App() {
 
               <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'items-center justify-between'} w-full min-w-0`}>
                 <div className={`flex ${compactSidebar ? 'flex-col items-center' : 'items-center gap-2.5'} min-w-0`}>
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] flex items-center justify-center shrink-0 shadow font-mono text-xs text-white font-bold overflow-hidden relative" title={compactSidebar ? `${userName} (${userEmail})` : undefined}>
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[var(--tempo-accent-purple)] to-[var(--tempo-accent-blue)] flex items-center justify-center shrink-0 shadow font-mono text-xs text-white font-bold overflow-hidden relative" title={compactSidebar ? `${userName} (${userEmail})` : undefined}>
                     {userAvatarUrl ? (
                       <img src={userAvatarUrl} alt={userName} className="w-full h-full object-cover animate-fade-in" referrerPolicy="no-referrer" />
                     ) : (
@@ -888,12 +898,13 @@ export default function App() {
                   <p className="text-xs text-[#8A8A90] max-w-sm mt-1 mb-4">
                     You requested to open {activeSidebarTab}. Access remains optimized on the core Today view cockpit.
                   </p>
-                  <button
+                  <EngineeredButton
+                    variant="primary"
                     onClick={() => setActiveSidebarTab('today')}
-                    className="px-4 py-1.5 text-xs text-white btn-gradient rounded-md cursor-pointer font-medium"
+                    showArrow={false}
                   >
                     Return to Today
-                  </button>
+                  </EngineeredButton>
                 </div>
               )}
             </AnimatedPage>
@@ -911,7 +922,7 @@ export default function App() {
           {/* Floating Toast Notification Overlay */}
           {toastMessage && (
             <div id="tempo-floating-toast" className="fixed bottom-6 left-6 z-[99999] flex items-center gap-2.5 px-4 py-3 rounded-12 bg-[#121214]/95 border border-[#2B2B30] text-xs font-semibold text-[#F1F1F1] shadow-[0_8px_32px_rgba(0,0,0,0.85)] animate-fade-in backdrop-blur-md">
-              <div className="w-5 h-5 rounded-full bg-[#4F8EF7]/15 flex items-center justify-center text-[#4F8EF7] text-[10px]">
+              <div className="w-5 h-5 rounded-full bg-[var(--tempo-accent-blue)]/15 flex items-center justify-center text-[var(--tempo-accent-blue)] text-[10px]">
                 ⚡
               </div>
               <span className="font-sans text-[11px] font-bold text-[#f5f5f7]">{toastMessage}</span>
@@ -944,7 +955,7 @@ export default function App() {
           {!isCommandPaletteOpen && (
             <button
               onClick={() => setIsCommandPaletteOpen(true)}
-              className="fixed bottom-6 right-6 z-[999] px-4 py-2.5 rounded-12 bg-[#141416] border border-[#2A2A2D] hover:border-[#4F8EF7]/50 hover:bg-[#1C1C1F] text-xs font-semibold text-[#F1F1F1] flex items-center gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.6)] cursor-pointer transition-all duration-150 transform hover:translate-y-[-1px] active:scale-95 group font-mono"
+              className="fixed bottom-6 right-6 z-[999] px-4 py-2.5 rounded-12 bg-[#141416] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)]/50 hover:bg-[#1C1C1F] text-xs font-semibold text-[#F1F1F1] flex items-center gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.6)] cursor-pointer transition-all duration-150 transform hover:translate-y-[-1px] active:scale-95 group font-mono"
             >
               <LogoSm className="w-5 h-5 rounded shadow-sm" />
               <span>Toggle Command Palette</span>

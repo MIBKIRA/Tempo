@@ -1,0 +1,113 @@
+.container {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 12px;
+  position: relative;
+  /* padding to avoid shadow clipping when items translate */
+  padding: 4px;
+}
+
+.full_width {
+  display: flex;
+  width: 100%;
+}
+
+.btn_full_width {
+  flex: 1;
+}
+
+.rocker_btn {
+  /* Mechanism colors */
+  --bg: var(--tempo-bg-primary, #0D0D0F);
+  --surface: var(--tempo-bg-secondary, #141416);
+  --surface-secondary: var(--tempo-bg-tertiary, #1C1C1F);
+  --surface-pressed: var(--tempo-bg-primary, #0D0D0F);
+  --border: var(--tempo-border, #2A2A2D);
+  --border-strong: var(--tempo-border-hover, #3D3D42);
+  --text: var(--tempo-text-primary, #F1F1F1);
+  --text-dim: var(--tempo-text-secondary, #8A8A90);
+  --text-faint: var(--tempo-text-muted, #4A4A52);
+  
+  --radius-sharp: var(--tcs-radius-sharp, 2px);
+  --radius-cut: var(--tcs-radius-cut, 14px);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  min-height: 34px;
+  padding: 0 16px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sharp) var(--radius-cut) var(--radius-sharp) var(--radius-cut);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  outline: none;
+  transition:
+    transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    box-shadow var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    border-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+/* INACTIVE POSITION: Sits raised on plate */
+.inactive {
+  transform: translate(calc(var(--tcs-lift-step, 2px) * -1), calc(var(--tcs-lift-step, 2px) * -1));
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 rgba(255, 255, 255, .08);
+  color: var(--text-dim);
+}
+
+.inactive:hover {
+  transform: translate(calc((var(--tcs-lift-step, 2px) + 1px) * -1), calc((var(--tcs-lift-step, 2px) + 1px) * -1));
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 rgba(255, 255, 255, 0.16);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.inactive:active {
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent;
+  background: var(--surface-pressed);
+}
+
+/* ACTIVE POSITION: pressed/flat, no plate */
+.active {
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent;
+  background: var(--surface-pressed);
+  border-color: var(--border);
+  color: var(--text);
+  cursor: default;
+}
+
+/* 2px vertical leading edge rail */
+.rail {
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--active-color, var(--tempo-accent-blue, #4F8EF7));
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--active-color, var(--tempo-accent-blue, #4F8EF7));
+  animation: pulse_rail 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse_rail {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.label {
+  display: inline-block;
+  padding-left: 6px;
+}

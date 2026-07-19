@@ -661,7 +661,7 @@ export default function VelocityDashboard() {
                 <span className="text-[#8A8A90]">Planned</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded bg-[#4F8EF7] inline-block" />
+                <span className="w-2.5 h-2.5 rounded bg-[var(--tempo-accent-blue)] inline-block" />
                 <span className="text-[#8A8A90]">Completed</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -736,7 +736,7 @@ export default function VelocityDashboard() {
                 const plannedY = 160 - plannedHeight;
                 const completedY = 160 - completedHeight;
 
-                const completedColor = item.isAlert ? '#FB7185' : '#4F8EF7';
+                const completedColor = item.isAlert ? '#FB7185' : 'var(--tempo-accent-blue)';
 
                 return (
                   <g 
@@ -931,7 +931,7 @@ export default function VelocityDashboard() {
               className="absolute bg-[#1C1C1F] border border-[#2A2A2D] text-[10px] p-2 rounded shadow-2xl z-30 leading-snug font-mono text-[#F1F1F1] pointer-events-none max-w-[160px]"
               style={{ left: heatmapTooltip.x, top: heatmapTooltip.y }}
             >
-              <div className="font-bold text-[#4F8EF7]">{heatmapTooltip.day} at {heatmapTooltip.hour}</div>
+              <div className="font-bold text-[var(--tempo-accent-blue)]">{heatmapTooltip.day} at {heatmapTooltip.hour}</div>
               <div>Productivity: <span className="font-bold text-white uppercase">{heatmapTooltip.level}</span></div>
             </div>
           )}
@@ -1018,9 +1018,9 @@ export default function VelocityDashboard() {
             <div className="flex gap-1.5 items-center font-mono ml-auto">
               <span className="text-[#4A4A52]">Intensity:</span>
               <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#141416]" title="silent" />
-              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#4F8EF7]/25" title="low" />
-              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#4F8EF7]/60" title="medium" />
-              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#4F8EF7]" title="high" />
+              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[var(--tempo-accent-blue)]/25" title="low" />
+              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[var(--tempo-accent-blue)]/60" title="medium" />
+              <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[var(--tempo-accent-blue)]" title="high" />
             </div>
           </div>
 
@@ -1048,7 +1048,7 @@ export default function VelocityDashboard() {
               {thisWeek.overdueBlocks.slice(0, 5).map((item) => {
                 const isCritical = item.count >= 3;
                 const isWarning = item.count === 2;
-                const barColor = isCritical ? '#FB7185' : isWarning ? '#FBBF24' : '#4F8EF7';
+                const barColor = isCritical ? '#FB7185' : isWarning ? '#FBBF24' : 'var(--tempo-accent-blue)';
                 const textHighlight = isCritical ? 'text-[#FB7185]' : isWarning ? 'text-[#FBBF24]' : 'text-white';
 
                 return (

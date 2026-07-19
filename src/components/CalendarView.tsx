@@ -10,7 +10,7 @@ const getCategoryColor = (category?: string | null): string => {
   if (!category) return '#4A4A4F';
   switch (category.toLowerCase()) {
     case 'deep': return '#7C3AED';
-    case 'light': return '#4F8EF7';
+    case 'light': return 'var(--tempo-accent-blue)';
     case 'admin': return 'var(--color-admin, #FBBF24)';
     case 'creative': return 'var(--color-creative, #FB7185)';
     case 'social': return 'var(--color-social, #2DD4BF)';
@@ -982,7 +982,7 @@ export default function CalendarView({ onDayClick, onViewChange, tasks: propsTas
             )}
 
             {/* Bottom link helper */}
-            <div className="flex items-center gap-1.5 justify-end pt-2 border-t border-[var(--tempo-border)]/30 mt-2 text-[10px] text-[#4F8EF7] font-bold leading-none select-none">
+            <div className="flex items-center gap-1.5 justify-end pt-2 border-t border-[var(--tempo-border)]/30 mt-2 text-[10px] text-[var(--tempo-accent-blue)] font-bold leading-none select-none">
               <span>Open Day view</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
@@ -1007,10 +1007,6 @@ function StyleTags() {
 
       .pulse-indicator {
         animation: active-pulse 2.2s infinite ease-in-out;
-      }
-
-      .btn-gradient {
-        background: linear-gradient(135deg, var(--tempo-accent-blue) 0%, var(--tempo-accent-purple) 100%);
       }
 
       @keyframes fadeIn {

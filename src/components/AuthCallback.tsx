@@ -67,12 +67,12 @@ export default function AuthCallback({ onComplete }: AuthCallbackProps) {
           animation: loading-bar 1.5s infinite linear;
         }
       `}</style>
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#4f8ef7]/5 rounded-full filter blur-[80px] pointer-events-none" />
-      <LogoSm className="w-12 h-12 mb-4 animate-pulse text-[#4F8EF7]" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-[var(--tempo-accent-blue)]/5 rounded-full filter blur-[80px] pointer-events-none" />
+      <LogoSm className="w-12 h-12 mb-4 animate-pulse text-[var(--tempo-accent-blue)]" />
       <h2 className="text-sm font-semibold text-[#F1F1F1] tracking-wide">Syncing Authentication</h2>
       <p className="text-xs text-[#8A8A90] mt-1.5">Establishing secure workspace session...</p>
       <div className="mt-6 w-24 h-1 rounded-full bg-[#1C1C1F] overflow-hidden relative">
-        <div className="h-full bg-gradient-to-r from-[#4F8EF7] to-[#8B5CF6] w-full animate-loading-bar absolute inset-0" />
+        <div className="h-full bg-gradient-to-r from-[var(--tempo-accent-blue)] to-[var(--tempo-accent-purple)] w-full animate-loading-bar absolute inset-0" />
       </div>
     </div>
   );

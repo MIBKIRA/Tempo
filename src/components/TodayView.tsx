@@ -11,6 +11,9 @@ import { playCheckSound, playUncheckSound } from '../utils/playSound';
 import { useHabits } from '../contexts/HabitsContext';
 import { useMorningIntentions } from '../hooks/useMorningIntentions';
 import MorningIntentionsModal from './MorningIntentionsModal';
+import EngineeredButton from './EngineeredButton';
+import EngineeredRocker from './EngineeredRocker';
+import EngineeredLed from './EngineeredLed';
 import { supabase } from '../supabaseClient';
 
 // TIMELINE MATH & HELPER CONSTANTS & FUNCTIONS
@@ -598,27 +601,19 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
         </div>
 
         {/* View Mode Segment Switchers */}
-        <div className="flex bg-[var(--tempo-bg-primary)] p-0.5 rounded-lg border border-[var(--tempo-border)] w-fit font-sans">
-          <button
-            onClick={() => onViewChange && onViewChange('day')}
-            className="px-3.5 py-1 text-[11px] font-medium rounded-md text-[var(--tempo-text-primary)] relative transition-all"
-          >
-            Day
-            <span className="absolute bottom-0 left-[25%] right-[25%] h-[1.5px] bg-[#4F8EF7] rounded-full" />
-          </button>
-          <button
-            onClick={() => onViewChange && onViewChange('week')}
-            className="px-3.5 py-1 text-[11px] font-medium rounded-md text-[var(--tempo-text-secondary)] hover:text-[var(--tempo-text-primary)] cursor-pointer transition-all"
-          >
-            Week
-          </button>
-          <button
-            onClick={() => onViewChange && onViewChange('month')}
-            className="px-3.5 py-1 text-[11px] font-medium rounded-md text-[var(--tempo-text-secondary)] hover:text-[var(--tempo-text-primary)] cursor-pointer transition-all"
-          >
-            Month
-          </button>
-        </div>
+        <EngineeredRocker
+          options={[
+            { id: 'day', label: 'Day' },
+            { id: 'week', label: 'Week' },
+            { id: 'month', label: 'Month' },
+          ]}
+          activeId="day"
+          onChange={(id) => {
+            if (onViewChange) {
+              onViewChange(id as 'day' | 'week' | 'month');
+            }
+          }}
+        />
 
         <div className="flex items-center gap-4">
           {/* Simulation indicators */}
@@ -660,7 +655,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             </div>
             
             {/* Avatar display */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#8B5CF6] to-[#4F8EF7] p-0.5 shadow-lg flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--tempo-accent-purple)] to-[var(--tempo-accent-blue)] p-0.5 shadow-lg flex items-center justify-center shrink-0">
               <span className="text-xs font-mono font-bold text-white uppercase select-none">
                 AV
               </span>
@@ -678,7 +673,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 <button
                   type="button"
                   onClick={() => setShowModal(true)}
-                  className="text-xs font-sans text-[#4F8EF7] hover:underline cursor-pointer bg-none border-none outline-none"
+                  className="text-xs font-sans text-[var(--tempo-accent-blue)] hover:underline cursor-pointer bg-none border-none outline-none"
                 >
                   {activeIntentions.length > 0 ? 'Edit' : 'Set'}
                 </button>
@@ -699,7 +694,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                   <button
                     type="button"
                     onClick={() => setShowModal(true)}
-                    className="text-[#4F8EF7] hover:underline font-bold cursor-pointer"
+                    className="text-[var(--tempo-accent-blue)] hover:underline font-bold cursor-pointer"
                   >
                     [Set them now]
                   </button>
@@ -800,7 +795,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
                 <button
                   type="submit"
-                  className="p-1 text-[#4F8EF7] hover:text-white hover:bg-white/5 rounded duration-150 cursor-pointer"
+                  className="p-1 text-[var(--tempo-accent-blue)] hover:text-white hover:bg-white/5 rounded duration-150 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -861,7 +856,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                           className={`text-xs font-sans tracking-wide truncate transition-all duration-300 ${
                             task.completed 
                               ? 'line-through text-[var(--tempo-text-muted)]' 
-                              : 'text-[var(--tempo-text-primary)] hover:text-[#4F8EF7]'
+                              : 'text-[var(--tempo-text-primary)] hover:text-[var(--tempo-accent-blue)]'
                           }`}
                         >
                           {task.title}
@@ -1153,7 +1148,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 const hrs = dynamicEnergyLoads[type] || 0;
                 return (
                   <div key={type} className="flex gap-2.5 items-center">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor(type) }} />
+                    <EngineeredLed color={getEnergyColor(type)} />
                     <div className="flex flex-col">
                       <span className="text-[11px] font-sans font-medium text-[var(--tempo-text-primary)] capitalize">{type}</span>
                       <span className="text-[10px] font-mono text-[var(--tempo-text-secondary)] mt-0.5">
@@ -1181,13 +1176,16 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
               </div>
 
               {/* Add block trigger button */}
-              <button
+              <EngineeredButton
+                variant="primary"
                 onClick={() => setIsAddingBlock(!isAddingBlock)}
-                className="px-3.5 py-1.5 text-xs text-white btn-gradient rounded-lg font-medium cursor-pointer shadow flex items-center gap-1.5"
+                showArrow={false}
               >
-                <Plus className="w-4 h-4" />
-                <span>+ Add Block</span>
-              </button>
+                <span className="flex items-center gap-1.5 justify-center">
+                  <Plus className="w-4 h-4" />
+                  <span>+ Add Block</span>
+                </span>
+              </EngineeredButton>
             </div>
 
             {/* Quick Adding TimeBlock form overlay */}
@@ -1217,28 +1215,15 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
 
                 {/* Block Type selector */}
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setAddBlockType('scheduled_task')}
-                    className={`flex-1 py-1 text-[10px] font-mono rounded select-none border transition-all ${
-                      addBlockType === 'scheduled_task'
-                        ? 'bg-[var(--tempo-accent-purple)]/20 border-[var(--tempo-accent-purple)]/60 text-[var(--tempo-accent-purple)] font-bold'
-                        : 'bg-white/5 border-transparent text-[var(--tempo-text-secondary)] hover:bg-white/10'
-                    }`}
-                  >
-                    ⚡ Scheduled Task
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAddBlockType('event')}
-                    className={`flex-1 py-1 text-[10px] font-mono rounded select-none border transition-all ${
-                      addBlockType === 'event'
-                        ? 'bg-[var(--tempo-accent-blue)]/20 border-[var(--tempo-accent-blue)]/60 text-[var(--tempo-accent-blue)] font-bold'
-                        : 'bg-white/5 border-transparent text-[var(--tempo-text-secondary)] hover:bg-white/10'
-                    }`}
-                  >
-                    📅 Event Block
-                  </button>
+                  <EngineeredRocker
+                    fullWidth
+                    options={[
+                      { id: 'scheduled_task', label: '⚡ Scheduled Task', color: 'var(--tempo-accent-purple)' },
+                      { id: 'event', label: '📅 Event Block', color: 'var(--tempo-accent-blue)' },
+                    ]}
+                    activeId={addBlockType}
+                    onChange={(id) => setAddBlockType(id as 'scheduled_task' | 'event')}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1307,12 +1292,14 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                   />
                 </div>
 
-                <button
+                <EngineeredButton
+                  variant="primary"
                   type="submit"
-                  className="w-full text-center py-2 text-xs font-semibold btn-gradient rounded-lg scale-[1.01] hover:scale-[1.02] active:scale-95 duration-100 mt-1"
+                  fullWidth
+                  showArrow={false}
                 >
                   Create & Position Block
-                </button>
+                </EngineeredButton>
               </form>
             )}
 
@@ -1448,7 +1435,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                       }}
                     >
                       <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center gap-1.5 pointer-events-none">
-                        <PlusCircle className="w-3 h-3 text-[#4F8EF7]" /> Add / Drop Task Here ({slot.start} — {slot.end})
+                        <PlusCircle className="w-3 h-3 text-[var(--tempo-accent-blue)]" /> Add / Drop Task Here ({slot.start} — {slot.end})
                       </span>
                     </div>
                   );
@@ -1616,7 +1603,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                           <button
                             onClick={() => handleOpenEditModal(block)}
                             title="Edit detailed block parameters"
-                            className="p-1 rounded text-[#8A8A90] hover:text-[#4F8EF7] hover:bg-white/5 cursor-pointer flex items-center justify-center"
+                            className="p-1 rounded text-[#8A8A90] hover:text-[var(--tempo-accent-blue)] hover:bg-white/5 cursor-pointer flex items-center justify-center"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
@@ -1784,12 +1771,14 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 />
               </div>
 
-              <button
+              <EngineeredButton
+                variant="primary"
                 type="submit"
-                className="w-full text-center py-2 text-xs font-semibold btn-gradient rounded-lg scale-[1.01] hover:scale-[1.02] active:scale-95 duration-100 mt-2 hover:opacity-90"
+                fullWidth
+                showArrow={false}
               >
                 Save Changes
-              </button>
+              </EngineeredButton>
             </form>
           </div>
         </div>

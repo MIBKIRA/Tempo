@@ -5,6 +5,9 @@ import {
 } from 'lucide-react';
 import { useMorningIntentions } from '../hooks/useMorningIntentions';
 import { useTasksData } from '../TasksContext';
+import EngineeredButton from './EngineeredButton';
+import EngineeredStepMeter from './EngineeredStepMeter';
+import EngineeredStateCell from './EngineeredStateCell';
 import { Task } from '../types';
 
 interface IntentionItem {
@@ -385,53 +388,16 @@ export default function EveningReview({
           </div>
 
           {/* DOT PROGRESS INDICATOR COLUMN */}
-          <div className="flex items-center justify-between mt-4">
-            
-            {/* Dots */}
-            <div className="flex items-center gap-2">
-              {[1, 2, 3, 4].map((step) => {
-                const isActive = currentStep === step;
-                const isPassed = currentStep > step;
-                return (
-                  <span 
-                    key={step}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      isActive 
-                        ? 'w-5 bg-[#4F8EF7]' 
-                        : isPassed 
-                          ? 'w-2 bg-[#34D399]' 
-                          : 'w-2 bg-[#2A2A2D]'
-                    }`}
-                  />
-                );
-              })}
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold text-[#8A8A90] uppercase">
+                Progress Meter
+              </span>
+              <span className="text-[10px] font-mono font-bold text-[#8A8A90] uppercase">
+                Step {currentStep} of 4
+              </span>
             </div>
-
-            {/* Step text number badge */}
-            <span className="text-[10px] font-mono font-bold text-[#8A8A90] uppercase">
-              Step {currentStep} of 4
-            </span>
-          </div>
-
-          {/* 4 SECMENTS THIN HORIZONTAL SEGMENT BAR */}
-          <div className="w-full flex gap-1 mt-3">
-            {[1, 2, 3, 4].map((step) => {
-              const isCompleted = currentStep > step;
-              const isActive = currentStep === step;
-              return (
-                <div 
-                  key={step} 
-                  className="h-[3px] flex-1 rounded-full transition-all duration-300"
-                  style={{
-                    backgroundColor: isCompleted 
-                      ? '#34D399' 
-                      : isActive 
-                        ? '#4F8EF7' 
-                        : '#2A2A2D'
-                  }}
-                />
-              );
-            })}
+            <EngineeredStepMeter mode="progress" currentStep={currentStep} totalSteps={4} />
           </div>
 
         </header>
@@ -476,17 +442,10 @@ export default function EveningReview({
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         
                         {/* Interactive state trigger button */}
-                        <button
-                          onClick={() => cycleIntentionStatus(item.id)}
-                          className={`w-[34px] h-[34px] rounded-8 shrink-0 flex items-center justify-center font-bold text-sm cursor-pointer transition-all duration-150 transform active:scale-95 ${
-                            item.status === 'done' ? 'bg-[#34D399]/20 text-[#34D399] border border-[#34D399]/40' :
-                            item.status === 'partial' ? 'bg-[#FBBF24]/20 text-[#FBBF24] border border-[#FBBF24]/40' :
-                            'bg-[#FB7185]/20 text-[#FB7185] border border-[#FB7185]/40'
-                          }`}
-                          title="Click Status"
-                        >
-                          {item.status === 'done' ? '✓' : item.status === 'partial' ? '~' : '✗'}
-                        </button>
+                        <EngineeredStateCell
+                          status={item.status}
+                          onCycle={() => cycleIntentionStatus(item.id)}
+                        />
 
                         <div className="flex flex-col min-w-0">
                           <span className={`text-xs font-semibold leading-normal truncate ${
@@ -836,32 +795,29 @@ export default function EveningReview({
             )}
 
             {currentStep < 4 ? (
-              <button
+              <EngineeredButton
+                variant="primary"
                 type="button"
                 onClick={goToNextStep}
-                className="flex-1 h-[40px] bg-[#4F8EF7] hover:bg-[#3D7FE5] text-xs font-bold text-white transition-all cursor-pointer rounded-8 shadow-md"
+                showArrow={true}
               >
-                Next Step →
-              </button>
+                Next Step
+              </EngineeredButton>
             ) : (
-              <button
+              <EngineeredButton
+                variant="primary"
                 type="button"
                 onClick={handleCompleteReview}
                 disabled={isFinishing}
-                className={`flex-grow h-[46px] select-none text-xs font-bold transition-all duration-150 cursor-pointer rounded-10 shadow-lg relative overflow-hidden text-center flex items-center justify-center ${
-                  isFinishedSuccess ? 'bg-[#34D399] text-black' : 'bg-gradient-to-r from-[#4F8EF7] to-[#8B5CF6] text-white hover:opacity-90 active:scale-95'
-                }`}
+                isLoading={isFinishing && !isFinishedSuccess}
+                fullWidth
+                showArrow={false}
+                style={isFinishedSuccess ? { backgroundColor: '#34D399', color: '#000000' } : undefined}
               >
-                {isFinishing ? (
-                  isFinishedSuccess ? (
-                    <span className="flex items-center gap-2 animate-bounce">
-                      <PartyPopper className="w-4 h-4" /> Great work today! 🎉
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" /> Saving Reflection Log...
-                    </span>
-                  )
+                {isFinishedSuccess ? (
+                  <span className="flex items-center gap-2 animate-bounce text-black font-bold">
+                    <PartyPopper className="w-4 h-4 text-black" /> Great work today! 🎉
+                  </span>
                 ) : (
                   <span>Complete Review & Wind-down</span>
                 )}
@@ -882,7 +838,7 @@ export default function EveningReview({
                     />
                   );
                 })}
-              </button>
+              </EngineeredButton>
             )}
           </div>
 

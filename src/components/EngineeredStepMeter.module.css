@@ -1,0 +1,62 @@
+/* Container for loading animation ticks */
+.ticks {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 12px;
+}
+
+.ticks i {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--tempo-text-muted, #4A4A52);
+  display: inline-block;
+  animation: tick_anim 1s var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)) infinite;
+}
+
+.ticks i:nth-child(1) { animation-delay: 0s; }
+.ticks i:nth-child(2) { animation-delay: .15s; }
+.ticks i:nth-child(3) { animation-delay: .3s; }
+.ticks i:nth-child(4) { animation-delay: .45s; }
+
+@keyframes tick_anim {
+  0%, 100% {
+    background: var(--tempo-text-muted, #4A4A52);
+    transform: scaleY(.45);
+  }
+  40% {
+    background: var(--tempo-accent-blue, #4F8EF7);
+    transform: scaleY(1);
+  }
+}
+
+/* Container for static progress steps */
+.progress_container {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 12px;
+}
+
+.tick {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  display: inline-block;
+  transition:
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    box-shadow var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+.empty {
+  background: var(--tempo-text-muted, #4A4A52);
+  transform: scaleY(.45);
+}
+
+.filled {
+  background: var(--tempo-accent-blue, #4F8EF7);
+  transform: scaleY(1);
+  box-shadow: 0 0 4px var(--tempo-accent-blue, rgba(59, 91, 253, .4));
+}

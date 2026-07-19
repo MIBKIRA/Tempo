@@ -1,0 +1,83 @@
+.cell {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--tcs-radius-sharp, 2px) var(--tcs-radius-cut, 14px) var(--tcs-radius-sharp, 2px) var(--tcs-radius-cut, 14px);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  
+  /* Mechanism offsets */
+  transform: translate(calc(var(--tcs-lift-step, 2px) * -1), calc(var(--tcs-lift-step, 2px) * -1));
+  transition:
+    transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    box-shadow var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    border-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+.cell:hover {
+  transform: translate(calc((var(--tcs-lift-step, 2px) + 1px) * -1), calc((var(--tcs-lift-step, 2px) + 1px) * -1));
+}
+
+.cell:active {
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent !important;
+}
+
+/* STATE: done (green) */
+.done {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34D399;
+  border-color: rgba(52, 211, 153, 0.4);
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 rgba(52, 211, 153, 0.18);
+}
+
+.done:hover {
+  background: rgba(52, 211, 153, 0.22);
+  border-color: rgba(52, 211, 153, 0.6);
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 rgba(52, 211, 153, 0.3);
+}
+
+/* STATE: partial (yellow) */
+.partial {
+  background: rgba(251, 191, 36, 0.15);
+  color: #FBBF24;
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 rgba(251, 191, 36, 0.18);
+}
+
+.partial:hover {
+  background: rgba(251, 191, 36, 0.22);
+  border-color: rgba(251, 191, 36, 0.6);
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 rgba(251, 191, 36, 0.3);
+}
+
+/* STATE: missed (red) */
+.missed {
+  background: rgba(251, 113, 133, 0.15);
+  color: #FB7185;
+  border-color: rgba(251, 113, 133, 0.4);
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 rgba(251, 113, 133, 0.18);
+}
+
+.missed:hover {
+  background: rgba(251, 113, 133, 0.22);
+  border-color: rgba(251, 113, 133, 0.6);
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 rgba(251, 113, 133, 0.3);
+}
+
+.glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}

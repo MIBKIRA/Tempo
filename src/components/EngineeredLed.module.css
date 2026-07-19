@@ -1,0 +1,16 @@
+.led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tempo-text-muted, #4A4A52);
+  flex: 0 0 auto;
+  display: inline-block;
+  transition:
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    box-shadow var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+.active {
+  background: var(--led-color, var(--tempo-accent-blue, #4F8EF7));
+  box-shadow: 0 0 6px var(--led-color, rgba(59, 91, 253, .6));
+}

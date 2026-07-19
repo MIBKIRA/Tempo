@@ -28,6 +28,15 @@
   --color-admin: #FBBF24;
   --color-creative: #FB7185;
   --color-social: #2DD4BF;
+
+  /* Engineered Control mechanism global design tokens */
+  --tcs-shadow-step: 4px;
+  --tcs-lift-step: 2px;
+  --tcs-radius-sharp: 2px;
+  --tcs-radius-cut: 14px;
+  --tcs-ease-mech: cubic-bezier(.2,.8,.2,1);
+  --tcs-dur-fast: 120ms;
+  --tcs-dur-med: 200ms;
 }
 
 /* 1. PAPER LIGHT THEME */

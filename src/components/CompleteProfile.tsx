@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Lock, User, Calendar, AtSign, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { LogoSm } from './Logo';
 import { supabase } from '../supabaseClient';
+import EngineeredButton from './EngineeredButton';
 
 interface CompleteProfileProps {
   onSetupSuccess: (username: string, dob: string) => void;
@@ -262,21 +263,17 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
           </div>
 
           {/* Complete Button */}
-          <button
+          <EngineeredButton
             id="complete-btn-submit"
+            variant="primary"
             type="submit"
             disabled={isSubmitting || usernameStatus === 'checking' || usernameStatus === 'taken' || usernameStatus === 'invalid'}
-            className="btn-gradient w-full h-[44px] rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer mt-4"
+            isLoading={isSubmitting}
+            fullWidth
+            showArrow={true}
           >
-            {isSubmitting ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <>
-                <span>Complete Setup</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
+            Complete Setup
+          </EngineeredButton>
 
           <button
             type="button"

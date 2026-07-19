@@ -1323,7 +1323,7 @@ export default function SettingsView({
                       placeholder="Search triggers..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-6 py-1.5 bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[#4F8EF7] focus:outline-none rounded-8 text-xs text-white placeholder-[#4A4A52]"
+                      className="w-full pl-9 pr-6 py-1.5 bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[var(--tempo-accent-blue)] focus:outline-none rounded-8 text-xs text-white placeholder-[#4A4A52]"
                     />
                   </div>
                 </header>
@@ -1359,7 +1359,7 @@ export default function SettingsView({
                               </span>
 
                               {/* Right key caps indicator */}
-                              <kbd className="settings-mono text-[11px] font-bold tracking-tight bg-[#1C1C1F] text-[#4F8EF7] hover:text-white border border-[#3D3D42] px-2.5 py-1 rounded-6 shadow-sm shadow-black shrink-0 transition-colors">
+                              <kbd className="settings-mono text-[11px] font-bold tracking-tight bg-[#1C1C1F] text-[var(--tempo-accent-blue)] hover:text-white border border-[#3D3D42] px-2.5 py-1 rounded-6 shadow-sm shadow-black shrink-0 transition-colors">
                                 {row.key}
                               </kbd>
                             </div>
@@ -1397,7 +1397,7 @@ export default function SettingsView({
 
                 {/* Avatar upload section */}
                 <div className="flex flex-col sm:flex-row items-center gap-5 border border-[#2A2A2D]/40 bg-[#141416]/30 p-4 rounded-12">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#4F8EF7] to-[#FB7185] flex items-center justify-center font-bold text-2xl text-white select-none shadow-lg relative overflow-hidden shrink-0 border border-[#2A2A2D]">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[var(--tempo-accent-blue)] to-[#FB7185] flex items-center justify-center font-bold text-2xl text-white select-none shadow-lg relative overflow-hidden shrink-0 border border-[#2A2A2D]">
                     {profileAvatarUrl ? (
                       <img src={profileAvatarUrl} alt={profileName} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
@@ -1412,7 +1412,7 @@ export default function SettingsView({
                     <div className="flex items-center gap-3 justify-center sm:justify-start mt-1">
                       <label className="px-3.5 py-1.5 rounded-8 bg-[#1C1C1F] hover:bg-white/5 text-[11px] font-mono font-bold text-white border border-[#2A2A2D] cursor-pointer transition-colors duration-150 shadow flex items-center gap-1.5">
                         {isUploading ? (
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#4F8EF7]" />
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin text-[var(--tempo-accent-blue)]" />
                         ) : (
                           <Upload className="w-3.5 h-3.5" />
                         )}
@@ -1443,12 +1443,12 @@ export default function SettingsView({
                     </div>
                     {uploadProgress > 0 && (
                       <div className="w-full max-w-[200px] mt-2 mx-auto sm:mx-0">
-                        <div className="flex items-center justify-between text-[9px] font-mono mb-1 text-[#4F8EF7]">
+                        <div className="flex items-center justify-between text-[9px] font-mono mb-1 text-[var(--tempo-accent-blue)]">
                           <span>Progress</span>
                           <span>{uploadProgress}%</span>
                         </div>
                         <div className="w-full h-1 bg-[#232326] rounded-full overflow-hidden">
-                          <div className="h-full bg-[#4F8EF7] duration-150 transition-all" style={{ width: `${uploadProgress}%` }}></div>
+                          <div className="h-full bg-[var(--tempo-accent-blue)] duration-150 transition-all" style={{ width: `${uploadProgress}%` }}></div>
                         </div>
                       </div>
                     )}
@@ -1474,7 +1474,7 @@ export default function SettingsView({
                           });
                         }
                       }}
-                      className="px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[#4F8EF7] focus:outline-none rounded-8 text-white text-sans"
+                      className="px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[var(--tempo-accent-blue)] focus:outline-none rounded-8 text-white text-sans"
                       placeholder="Ahmed Mohamed"
                     />
                     {profileErrors.fullName && (
@@ -1484,7 +1484,7 @@ export default function SettingsView({
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-mono text-[#8A8A90] uppercase font-bold tracking-wider">Username</label>
-                    <div className="flex bg-[#0D0D0F] border border-[#2A2A2D] rounded-8 overflow-hidden focus-within:border-[#4F8EF7]">
+                    <div className="flex bg-[#0D0D0F] border border-[#2A2A2D] rounded-8 overflow-hidden focus-within:border-[var(--tempo-accent-blue)]">
                       <span className="text-[11px] font-mono text-[#4A4A52] bg-[#1C1C1F] border-r border-[#2A2A2D] px-3 py-2 select-none">tempo.io/@</span>
                       <input 
                         type="text" 
@@ -1523,7 +1523,7 @@ export default function SettingsView({
                       onChange={(e) => setProfileBio(e.target.value.slice(0, 160))}
                       maxLength={160}
                       rows={3}
-                      className="px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[#4F8EF7] focus:outline-none rounded-8 text-white leading-relaxed text-sans resize-none"
+                      className="px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] focus:border-[var(--tempo-accent-blue)] focus:outline-none rounded-8 text-white leading-relaxed text-sans resize-none"
                       placeholder="Describe your work style and intentions..."
                     />
                   </div>
@@ -1540,7 +1540,7 @@ export default function SettingsView({
                   type="button"
                   onClick={handleSaveProfile}
                   disabled={isSaving}
-                  className="w-full sm:w-fit px-6 py-2.5 rounded-8 bg-[#4F8EF7] hover:bg-[#3D7FE5] disabled:bg-[#4F8EF7]/50 disabled:cursor-not-allowed text-xs font-bold text-white transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 mt-2"
+                  className="w-full sm:w-fit px-6 py-2.5 rounded-8 bg-[var(--tempo-accent-blue)] hover:opacity-90 disabled:bg-[var(--tempo-accent-blue)]/50 disabled:cursor-not-allowed text-xs font-bold text-white transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 mt-2"
                 >
                   {isSaving && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isSaving ? "Saving..." : "Save Profile Changes"}</span>
@@ -1568,7 +1568,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setNotificationEmailToday(!notificationEmailToday); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationEmailToday ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationEmailToday ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${notificationEmailToday ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1582,7 +1582,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setNotificationEmailWeek(!notificationEmailWeek); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationEmailWeek ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationEmailWeek ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${notificationEmailWeek ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1596,7 +1596,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setNotificationSoundEnabled(!notificationSoundEnabled); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationSoundEnabled ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${notificationSoundEnabled ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${notificationSoundEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1632,7 +1632,7 @@ export default function SettingsView({
                 <div className="flex flex-col gap-4">
                   
                   {/* Google Calendar sync setup */}
-                  <div className="flex items-center justify-between p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] hover:border-[#4F8EF7]/45 transition-colors">
+                  <div className="flex items-center justify-between p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)]/45 transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">🌍</span>
                       <div className="flex flex-col">
@@ -1646,7 +1646,7 @@ export default function SettingsView({
                       className={`px-3 py-1.5 rounded text-[10px] font-mono uppercase tracking-wider font-bold transition-all ${
                         gcalConnected 
                           ? 'bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/35 hover:bg-[#34D399]/25' 
-                          : 'bg-[#4F8EF7] text-white hover:opacity-90'
+                          : 'bg-[var(--tempo-accent-blue)] text-white hover:opacity-90'
                       }`}
                     >
                       {gcalConnected ? 'Connected ✓' : 'Disconnect'}
@@ -1654,7 +1654,7 @@ export default function SettingsView({
                   </div>
 
                   {/* iCal connect */}
-                  <div className="flex items-center justify-between p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] hover:border-[#4F8EF7]/45 transition-colors">
+                  <div className="flex items-center justify-between p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)]/45 transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">🍎</span>
                       <div className="flex flex-col">
@@ -1828,7 +1828,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setAiEnabled(!aiEnabled); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiEnabled ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiEnabled ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1842,7 +1842,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setAiAutomateReflections(!aiAutomateReflections); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiAutomateReflections ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiAutomateReflections ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiAutomateReflections ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1856,7 +1856,7 @@ export default function SettingsView({
                     </div>
                     <button
                       onClick={() => { setAiInterruptionShield(!aiInterruptionShield); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiInterruptionShield ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'}`}
+                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiInterruptionShield ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
                     >
                       <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiInterruptionShield ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -1917,7 +1917,7 @@ export default function SettingsView({
                   <div className="p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] flex flex-col gap-3">
                     <div>
                       <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-                        <Download className="w-4 h-4 text-[#4F8EF7]" />
+                        <Download className="w-4 h-4 text-[var(--tempo-accent-blue)]" />
                         <span>Export database</span>
                       </h4>
                       <p className="text-[11px] text-[#8A8A90] mt-1">Download standard structured JSON format reflecting your habits and velocity stats.</p>
@@ -1974,11 +1974,11 @@ export default function SettingsView({
                 <div className="flex flex-col gap-4 bg-[#141416] border border-[#2A2A2D] p-5 rounded-12 relative overflow-hidden">
                   
                   {/* Decorative background visual glow */}
-                  <div className="absolute right-0 top-0 w-36 h-36 bg-[#4F8EF7]/5 rounded-full blur-2xl pointer-events-none" />
+                  <div className="absolute right-0 top-0 w-36 h-36 bg-[var(--tempo-accent-blue)]/5 rounded-full blur-2xl pointer-events-none" />
 
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-[#4F8EF7] font-bold uppercase tracking-wider">CURRENT SUBSCRIPTION</span>
+                      <span className="text-[10px] font-mono text-[var(--tempo-accent-blue)] font-bold uppercase tracking-wider">CURRENT SUBSCRIPTION</span>
                       <h3 className="text-lg font-bold text-white mt-1">Tempo Professional</h3>
                       <span className="text-xs text-[#8A8A90]">$12 per seat / month • Next charge date: July 1, 2026</span>
                     </div>
@@ -2014,7 +2014,7 @@ export default function SettingsView({
                       <span className="text-white font-semibold">Pro Plan Sub ($12.00)</span>
                       <button 
                         onClick={() => { setIsCopiedInvoice('june'); setTimeout(() => setIsCopiedInvoice(null), 1500); }}
-                        className="text-[10px] font-mono text-[#4F8EF7] bg-[#4F8EF7]/10 hover:bg-[#4F8EF7]/20 px-2.0 py-1.0 rounded"
+                        className="text-[10px] font-mono text-[var(--tempo-accent-blue)] bg-[var(--tempo-accent-blue)]/10 hover:bg-[var(--tempo-accent-blue)]/20 px-2.0 py-1.0 rounded"
                       >
                         {isCopiedInvoice === 'june' ? 'Saved! ✓' : 'Invoice PDF'}
                       </button>
@@ -2025,7 +2025,7 @@ export default function SettingsView({
                       <span className="text-white font-semibold">Pro Plan Sub ($12.00)</span>
                       <button 
                         onClick={() => { setIsCopiedInvoice('may'); setTimeout(() => setIsCopiedInvoice(null), 1500); }}
-                        className="text-[10px] font-mono text-[#4F8EF7] bg-[#4F8EF7]/10 hover:bg-[#4F8EF7]/20 px-2.0 py-1.0 rounded"
+                        className="text-[10px] font-mono text-[var(--tempo-accent-blue)] bg-[var(--tempo-accent-blue)]/10 hover:bg-[var(--tempo-accent-blue)]/20 px-2.0 py-1.0 rounded"
                       >
                         {isCopiedInvoice === 'may' ? 'Saved! ✓' : 'Invoice PDF'}
                       </button>

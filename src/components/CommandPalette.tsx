@@ -494,7 +494,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onThemeCha
         
         {/* INTERACTION ACTION NOTIFICATION FEEDBACK TOAST */}
         {actionFeedback && (
-          <div className="absolute top-[52px] left-0 right-0 z-[100] bg-[#4F8EF7] text-white text-[11px] font-mono px-4 py-2.5 flex items-center justify-between shadow-lg feedback-banner-slide border-b border-[#2A2A2D]">
+          <div className="absolute top-[52px] left-0 right-0 z-[100] bg-[var(--tempo-accent-blue)] text-white text-[11px] font-mono px-4 py-2.5 flex items-center justify-between shadow-lg feedback-banner-slide border-b border-[#2A2A2D]">
             <div className="flex items-center gap-2">
               <Check className="w-3.5 h-3.5 stroke-[3px]" />
               <span className="font-bold">Command Executed:</span>
@@ -570,7 +570,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onThemeCha
                               : 'text-[#8A8A90] hover:text-[#F1F1F1] hover:bg-[#1C1C1F]'
                           }`}
                           style={{
-                            borderLeft: isActive ? '2px solid #4F8EF7' : '2px solid transparent'
+                            borderLeft: isActive ? '2px solid var(--tempo-accent-blue)' : '2px solid transparent'
                           }}
                         >
                           <div className="flex items-center gap-3 min-w-0">

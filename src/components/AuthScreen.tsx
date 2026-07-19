@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, Command, Check, Aler
 import { Logo, LogoSm } from './Logo';
 import { supabase } from '../supabaseClient';
 import EngineeredButton from './EngineeredButton';
+import EngineeredRocker from './EngineeredRocker';
 
 interface AuthScreenProps {
   onLoginSuccess: (email: string, name: string) => void;
@@ -420,19 +421,6 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
           border-color: var(--tempo-accent-blue);
           box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.15);
         }
-        .btn-gradient {
-          background: linear-gradient(135deg, var(--tempo-accent-blue), var(--tempo-accent-purple));
-          color: #FFFFFF;
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-gradient:hover:not(:disabled) {
-          opacity: 0.92;
-          transform: translateY(-1px) scale(1.01);
-          box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25), 0 0 0 2px rgba(79, 142, 247, 0.2);
-        }
-        .btn-gradient:active:not(:disabled) {
-          transform: scale(0.97);
-        }
         .strength-bar {
           transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
         }
@@ -448,8 +436,8 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       `}</style>
 
       {lastKeyPressed && (
-        <div id="keyboard-toast" className="fixed top-8 right-8 z-50 bg-[#141416]/95 border border-[#4F8EF7]/40 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 backdrop-blur-xl animate-[slide-up-fade_0.2s_ease-out]">
-          <div className="flex p-1 bg-[#1C1C1F] border border-white/10 rounded px-1.5 py-0.5 text-xs font-mono text-[#4F8EF7] font-semibold uppercase">
+        <div id="keyboard-toast" className="fixed top-8 right-8 z-50 bg-[#141416]/95 border border-[var(--tempo-accent-blue)]/40 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 backdrop-blur-xl animate-[slide-up-fade_0.2s_ease-out]">
+          <div className="flex p-1 bg-[#1C1C1F] border border-white/10 rounded px-1.5 py-0.5 text-xs font-mono text-[var(--tempo-accent-blue)] font-semibold uppercase">
             {lastKeyPressed}
           </div>
           <span className="text-sm font-sans text-[#F1F1F1]">Triggered Shortcut</span>
@@ -552,47 +540,20 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
 
         <div id="auth-card" className="w-full max-w-[400px] mx-auto p-6 md:p-8 bg-[#141416] border border-[#2A2A2D] rounded-2xl shadow-2xl relative z-10 transition-all duration-300">
           
-          <div className="flex border-b border-[#2A2A2D] pb-3 relative mb-8 select-none">
-            <button
-              id="tab-signin"
-              onClick={() => {
-                setActiveTab('signin');
+          <div className="flex border-b border-[#2A2A2D] pb-3 relative mb-8 select-none justify-center">
+            <EngineeredRocker
+              fullWidth
+              options={[
+                { id: 'signin', label: 'Sign In' },
+                { id: 'signup', label: 'Sign Up' },
+              ]}
+              activeId={activeTab}
+              onChange={(id) => {
+                setActiveTab(id as 'signin' | 'signup');
                 setErrorMessage(null);
                 setSuccessMessage(null);
                 setValidationErrors({});
                 setIsSignupSuccess(false);
-              }}
-              className="w-1/2 text-center py-2 text-sm font-sans font-medium cursor-pointer relative transition-colors duration-200"
-              style={{ color: activeTab === 'signin' ? '#F1F1F1' : '#4A4A52' }}
-            >
-              Sign In
-              <span className="ml-1.5 text-[10px] font-mono opacity-40 hover:opacity-100 hidden sm:inline-block border border-white/10 bg-white/5 rounded px-1">
-                Alt+1
-              </span>
-            </button>
-            <button
-              id="tab-signup"
-              onClick={() => {
-                setActiveTab('signup');
-                setErrorMessage(null);
-                setSuccessMessage(null);
-                setValidationErrors({});
-                setIsSignupSuccess(false);
-              }}
-              className="w-1/2 text-center py-2 text-sm font-sans font-medium cursor-pointer relative transition-colors duration-200"
-              style={{ color: activeTab === 'signup' ? '#F1F1F1' : '#4A4A52' }}
-            >
-              Sign Up
-              <span className="ml-1.5 text-[10px] font-mono opacity-40 hover:opacity-100 hidden sm:inline-block border border-white/10 bg-white/5 rounded px-1">
-                Alt+2
-              </span>
-            </button>
-            
-            <div 
-              className="absolute bottom-0 left-0 h-[2px] bg-[#4F8EF7] tab-underline"
-              style={{
-                width: '50%',
-                transform: activeTab === 'signin' ? 'translateX(0%)' : 'translateX(100%)',
               }}
             />
           </div>
@@ -641,7 +602,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                       type="button"
                       id="forgot-password-link"
                       onClick={handleForgotPassword}
-                      className="text-xs font-sans text-[#4F8EF7] hover:underline cursor-pointer bg-none border-none outline-none"
+                      className="text-xs font-sans text-[var(--tempo-accent-blue)] hover:underline cursor-pointer bg-none border-none outline-none"
                     >
                       Forgot password?
                     </button>
@@ -674,7 +635,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 bg-[#1C1C1F] border border-[#2A2A2D] rounded text-[#4F8EF7] focus:ring-1 focus:ring-offset-0 focus:ring-[#4F8EF7]"
+                    className="w-4 h-4 bg-[#1C1C1F] border border-[#2A2A2D] rounded text-[var(--tempo-accent-blue)] focus:ring-1 focus:ring-offset-0 focus:ring-[var(--tempo-accent-blue)]"
                   />
                   <label htmlFor="signin-remember" className="text-xs text-[#8A8A90] cursor-pointer hover:text-[#F1F1F1] transition-colors duration-150">
                     Stay logged in on this machine
