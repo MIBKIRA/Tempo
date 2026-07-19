@@ -619,7 +619,7 @@ export default function SettingsView({
   };
 
   return (
-    <div id="settings-view" className="flex-grow w-full max-w-7xl mx-auto px-6 py-6 overflow-hidden flex flex-col font-sans text-[#F1F1F1] selection:bg-[#4F8EF7]/30 select-none">
+    <div id="settings-view" className="flex-grow w-full max-w-7xl mx-auto px-6 py-6 overflow-hidden flex flex-col font-sans text-[#F1F1F1] selection:bg-[var(--tempo-accent-blue)]/30 select-none">
       
       {/* LOCAL STYLES AND HIGHLIGHT PREVIEWS */}
       <style dangerouslySetInnerHTML={{ __html: `
@@ -680,7 +680,7 @@ export default function SettingsView({
             
             {/* Top user account Profile Circle block */}
             <div className="flex items-center gap-3 p-1.5 rounded-12 bg-[#141416]/40 border border-[#2A2A2D]/40">
-              <div className="w-10 h-10 rounded-full shrink-0 bg-gradient-to-tr from-[#4F8EF7] to-[#FB7185] flex items-center justify-center font-bold text-sm text-white select-none shadow overflow-hidden relative">
+              <div className="w-10 h-10 rounded-full shrink-0 bg-gradient-to-tr from-[var(--tempo-accent-blue)] to-[#FB7185] flex items-center justify-center font-bold text-sm text-white select-none shadow overflow-hidden relative">
                 {profileAvatarUrl ? (
                   <img src={profileAvatarUrl} alt={profileName} className="w-full h-full object-cover animate-fade-in" referrerPolicy="no-referrer" />
                 ) : (
@@ -697,7 +697,7 @@ export default function SettingsView({
                 
                 {/* Pro badge indicators */}
                 <div className="flex">
-                  <span className="px-1.5 py-0.2 rounded bg-[#4F8EF7]/15 border border-[#4F8EF7]/20 text-[8px] font-mono font-bold text-[#4F8EF7] uppercase tracking-wider">
+                  <span className="px-1.5 py-0.2 rounded bg-[var(--tempo-accent-blue)]/15 border border-[var(--tempo-accent-blue)]/20 text-[8px] font-mono font-bold text-[var(--tempo-accent-blue)] uppercase tracking-wider">
                     Pro Pack
                   </span>
                 </div>
@@ -796,19 +796,19 @@ export default function SettingsView({
                       }}
                       className={`rounded-12 p-3.5 bg-[#0D0D0F] border cursor-pointer select-none relative group transition-all transform hover:translate-y-[-1px] ${
                         activeTheme === 'midnight' 
-                          ? 'border-[#4F8EF7] ring-2 ring-[#4F8EF7]/10' 
+                          ? 'border-[var(--tempo-accent-blue)] ring-2 ring-[var(--tempo-accent-blue)]/10' 
                           : 'border-[#2A2A2D] hover:border-[#3D3D42]'
                       }`}
                     >
                       {activeTheme === 'midnight' && (
-                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#4F8EF7] flex items-center justify-center text-white p-0.5">
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[var(--tempo-accent-blue)] flex items-center justify-center text-white p-0.5">
                           <Check className="w-3.5 h-3.5 stroke-[3px]" />
                         </div>
                       )}
                       {/* Mini visual frame representation */}
                       <div className="w-full h-20 rounded-8 bg-[#0D0D0F] border border-[#2A2A2D] p-2 flex flex-col justify-between mb-2">
                         <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#4F8EF7]" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-[var(--tempo-accent-blue)]" />
                           <div className="w-8 h-1 bg-[#1C1C1F] rounded" />
                         </div>
                         <div className="space-y-1">
@@ -827,12 +827,12 @@ export default function SettingsView({
                       }}
                       className={`rounded-12 p-3.5 bg-[#F9F9FB] border cursor-pointer select-none relative group transition-all transform hover:translate-y-[-1px] ${
                         activeTheme === 'paper' 
-                          ? 'border-[#4F8EF7] ring-2 ring-[#4F8EF7]/10' 
+                          ? 'border-[var(--tempo-accent-blue)] ring-2 ring-[var(--tempo-accent-blue)]/10' 
                           : 'border-[#2A2A2D] hover:border-[#3D3D42]'
                       }`}
                     >
                       {activeTheme === 'paper' && (
-                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#4F8EF7] flex items-center justify-center text-white p-0.5">
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[var(--tempo-accent-blue)] flex items-center justify-center text-white p-0.5">
                           <Check className="w-3.5 h-3.5 stroke-[3px]" />
                         </div>
                       )}
@@ -858,12 +858,12 @@ export default function SettingsView({
                       }}
                       className={`rounded-12 p-3.5 bg-[#0B1510] border cursor-pointer select-none relative group transition-all transform hover:translate-y-[-1px] ${
                         activeTheme === 'forest' 
-                          ? 'border-[#4F8EF7] ring-2 ring-[#4F8EF7]/10' 
+                          ? 'border-[var(--tempo-accent-blue)] ring-2 ring-[var(--tempo-accent-blue)]/10' 
                           : 'border-[#2A2A2D] hover:border-[#3D3D42]'
                       }`}
                     >
                       {activeTheme === 'forest' && (
-                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#4F8EF7] flex items-center justify-center text-white p-0.5">
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[var(--tempo-accent-blue)] flex items-center justify-center text-white p-0.5">
                           <Check className="w-3.5 h-3.5 stroke-[3px]" />
                         </div>
                       )}
@@ -976,7 +976,7 @@ export default function SettingsView({
                           triggerSaveNotification();
                         }}
                         className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          compactSidebar ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'
+                          compactSidebar ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
                         }`}
                       >
                         <div 
@@ -1001,7 +1001,7 @@ export default function SettingsView({
                           triggerSaveNotification();
                         }}
                         className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          showShortcutsInSidebar ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'
+                          showShortcutsInSidebar ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
                         }`}
                       >
                         <div 
@@ -1046,7 +1046,7 @@ export default function SettingsView({
                             onChange={(e) => {
                               handleColorChange('deep', e.target.value);
                             }}
-                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[#4F8EF7]"
+                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           />
                         </div>
                       </div>
@@ -1080,7 +1080,7 @@ export default function SettingsView({
                             onChange={(e) => {
                               handleColorChange('light', e.target.value);
                             }}
-                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[#4F8EF7]"
+                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           />
                         </div>
                       </div>
@@ -1114,7 +1114,7 @@ export default function SettingsView({
                             onChange={(e) => {
                               handleColorChange('admin', e.target.value);
                             }}
-                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[#4F8EF7]"
+                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           />
                         </div>
                       </div>
@@ -1148,7 +1148,7 @@ export default function SettingsView({
                             onChange={(e) => {
                               handleColorChange('creative', e.target.value);
                             }}
-                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[#4F8EF7]"
+                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           />
                         </div>
                       </div>
@@ -1182,7 +1182,7 @@ export default function SettingsView({
                             onChange={(e) => {
                               handleColorChange('social', e.target.value);
                             }}
-                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[#4F8EF7]"
+                            className="w-20 px-2 py-1 text-right text-[11px] font-mono uppercase bg-[#141416] border border-[#2A2A2D] text-[#F1F1F1] rounded focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           />
                         </div>
                       </div>
@@ -1244,7 +1244,7 @@ export default function SettingsView({
                           triggerSaveNotification();
                         }}
                         className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          reduceMotion ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'
+                          reduceMotion ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
                         }`}
                       >
                         <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${reduceMotion ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -1267,7 +1267,7 @@ export default function SettingsView({
                           triggerSaveNotification();
                         }}
                         className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          gravityPulse ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'
+                          gravityPulse ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
                         }`}
                       >
                         <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${gravityPulse ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -1289,7 +1289,7 @@ export default function SettingsView({
                           triggerSaveNotification();
                         }}
                         className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          pageTransitions ? 'bg-[#4F8EF7]' : 'bg-[#2A2A2D]'
+                          pageTransitions ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
                         }`}
                       >
                         <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${pageTransitions ? 'translate-x-5' : 'translate-x-0'}`} />

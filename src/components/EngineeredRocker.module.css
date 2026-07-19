@@ -62,13 +62,13 @@
 /* INACTIVE POSITION: Sits raised on plate */
 .inactive {
   transform: translate(calc(var(--tcs-lift-step, 2px) * -1), calc(var(--tcs-lift-step, 2px) * -1));
-  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 rgba(255, 255, 255, .08);
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text-dim);
 }
 
 .inactive:hover {
   transform: translate(calc((var(--tcs-lift-step, 2px) + 1px) * -1), calc((var(--tcs-lift-step, 2px) + 1px) * -1));
-  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 rgba(255, 255, 255, 0.16);
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 color-mix(in srgb, var(--text) 16%, transparent);
   border-color: var(--border-strong);
   color: var(--text);
 }
@@ -96,9 +96,9 @@
   top: 8px;
   bottom: 8px;
   width: 2px;
-  background: var(--active-color, var(--tempo-accent-blue, #4F8EF7));
+  background: var(--active-color, var(--tempo-accent-blue));
   border-radius: 1px;
-  box-shadow: 0 0 6px var(--active-color, var(--tempo-accent-blue, #4F8EF7));
+  box-shadow: 0 0 6px var(--active-color, var(--tempo-accent-blue));
   animation: pulse_rail 1.5s ease-in-out infinite alternate;
 }
 
@@ -110,4 +110,10 @@
 .label {
   display: inline-block;
   padding-left: 6px;
+}
+
+.rocker_btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--active-color, var(--tempo-accent-blue)) !important;
+  z-index: 10;
 }

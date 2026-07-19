@@ -465,7 +465,7 @@ export default function EveningReview({
                           type="text" 
                           value={item.timeSpent}
                           onChange={(e) => handleTimeSpentChange(item.id, e.target.value)}
-                          className="w-14 text-center py-1 bg-[#1C1C1F] border border-[#2A2A2D] rounded-6 text-[11px] font-mono text-white focus:outline-none focus:border-[#4F8EF7]"
+                          className="w-14 text-center py-1 bg-[#1C1C1F] border border-[#2A2A2D] rounded-6 text-[11px] font-mono text-white focus:outline-none focus:border-[var(--tempo-accent-blue)]"
                           placeholder="—"
                           title="Time spent"
                         />
@@ -562,7 +562,7 @@ export default function EveningReview({
                         onClick={() => toggleMoodTag(tag)}
                         className={`py-1.5 px-2 rounded-8 border text-[11px] cursor-pointer font-sans duration-100 font-medium ${
                           isSelected 
-                            ? 'bg-[#4F8EF7]/15 border-[#4F8EF7]/50 text-[#4F8EF7]' 
+                            ? 'bg-[var(--tempo-accent-blue)]/15 border-[var(--tempo-accent-blue)]/50 text-[var(--tempo-accent-blue)]' 
                             : 'bg-transparent border-[#2A2A2D] hover:border-[#3D3D42] text-[#8A8A90]'
                         } ${isShaking ? 'shake-pill' : ''}`}
                       >
@@ -604,7 +604,7 @@ export default function EveningReview({
                   }}
                   rows={4}
                   placeholder="Today I learned that..."
-                  className="w-full bg-[#1C1C1F] border border-[#2A2A2D] focus:border-[#4F8EF7] rounded-12 p-3 text-xs text-white leading-relaxed focus:outline-none placeholder-[#4A4A52] resize-none"
+                  className="w-full bg-[#1C1C1F] border border-[#2A2A2D] focus:border-[var(--tempo-accent-blue)] rounded-12 p-3 text-xs text-white leading-relaxed focus:outline-none placeholder-[#4A4A52] resize-none"
                 />
 
                 <span className="text-[10px] font-mono text-[#4A4A52] absolute bottom-3 right-3 select-none">
@@ -723,7 +723,7 @@ export default function EveningReview({
                               type="checkbox" 
                               checked={isChecked}
                               onChange={() => {}} // Handle on parent container click instead
-                              className="rounded accent-[#4F8EF7] shrink-0" 
+                              className="rounded accent-[var(--tempo-accent-blue)] shrink-0" 
                             />
                             <span className={`truncate ${isChecked ? 'line-through text-[#4A4A52]' : 'text-white'}`}>
                               {task.title}
@@ -749,11 +749,11 @@ export default function EveningReview({
                   placeholder="Quick capture to tomorrow checklist..."
                   value={quickAddVal}
                   onChange={(e) => setQuickAddVal(e.target.value)}
-                  className="flex-grow px-3 py-1.5 bg-[#1C1C1F] border border-[#2A2A2D] focus:border-[#4F8EF7] text-xs text-white placeholder-[#4A4A52] rounded-8 focus:outline-none"
+                  className="flex-grow px-3 py-1.5 bg-[#1C1C1F] border border-[#2A2A2D] focus:border-[var(--tempo-accent-blue)] text-xs text-white placeholder-[#4A4A52] rounded-8 focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="w-8 h-8 rounded-8 bg-[#4F8EF7] hover:bg-[#3D7FE5] flex items-center justify-center cursor-pointer text-white"
+                  className="w-8 h-8 rounded-8 bg-[var(--tempo-accent-blue)] hover:opacity-90 flex items-center justify-center cursor-pointer text-white"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -833,7 +833,7 @@ export default function EveningReview({
                       style={{ 
                         left: `${leftOffset}%`, 
                         animationDelay: `${flyDelay}s`,
-                        backgroundColor: i % 2 === 0 ? '#34D399' : i % 3 === 0 ? '#4F8EF7' : '#FB7185'
+                        backgroundColor: i % 2 === 0 ? '#34D399' : i % 3 === 0 ? 'var(--tempo-accent-blue)' : '#FB7185'
                       }} 
                     />
                   );

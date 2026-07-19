@@ -81,3 +81,9 @@
   justify-content: center;
   pointer-events: none;
 }
+
+.cell:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--tempo-bg-primary), 0 0 0 4px var(--tempo-accent-blue) !important;
+  z-index: 10;
+}

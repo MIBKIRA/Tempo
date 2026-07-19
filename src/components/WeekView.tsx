@@ -398,7 +398,7 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
           --tempo-bg-tertiary: #1C1C1F;
           --tempo-border: #2A2A2D;
           --tempo-border-hover: #3D3D42;
-          --tempo-accent-blue: #4F8EF7;
+          --tempo-accent-blue: var(--color-accent, #3b82f6);
           --tempo-accent-purple: #8B5CF6;
           --tempo-accent-green: #34D399;
           --tempo-accent-amber: #FBBF24;

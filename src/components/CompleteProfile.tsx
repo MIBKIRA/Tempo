@@ -185,7 +185,7 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
       <div className="w-full max-w-[420px] p-6 md:p-8 bg-[#141416] border border-[#2A2A2D] rounded-2xl shadow-2xl relative z-10">
         
         <div className="flex flex-col items-center text-center mb-8">
-          <LogoSm className="w-10 h-10 mb-3 text-[#4F8EF7]" />
+          <LogoSm className="w-10 h-10 mb-3 text-[var(--tempo-accent-blue)]" />
           <h2 className="text-xl font-bold tracking-tight text-[#F1F1F1]">Complete Your Profile</h2>
           <p className="text-xs text-[#8A8A90] mt-1">Just two more things to get started</p>
         </div>

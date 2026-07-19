@@ -11,6 +11,6 @@
 }
 
 .active {
-  background: var(--led-color, var(--tempo-accent-blue, #4F8EF7));
-  box-shadow: 0 0 6px var(--led-color, rgba(59, 91, 253, .6));
+  background: var(--led-color, var(--tempo-accent-blue));
+  box-shadow: 0 0 6px var(--led-color, color-mix(in srgb, var(--tempo-accent-blue) 60%, transparent));
 }

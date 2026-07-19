@@ -26,7 +26,7 @@
     transform: scaleY(.45);
   }
   40% {
-    background: var(--tempo-accent-blue, #4F8EF7);
+    background: var(--tempo-accent-blue);
     transform: scaleY(1);
   }
 }
@@ -56,7 +56,7 @@
 }
 
 .filled {
-  background: var(--tempo-accent-blue, #4F8EF7);
+  background: var(--tempo-accent-blue);
   transform: scaleY(1);
-  box-shadow: 0 0 4px var(--tempo-accent-blue, rgba(59, 91, 253, .4));
+  box-shadow: 0 0 4px color-mix(in srgb, var(--tempo-accent-blue) 40%, transparent);
 }
