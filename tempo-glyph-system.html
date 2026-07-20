@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Tempo — Glyph System (replaces emoji)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;
+  --surface:#101013;
+  --surface-2:#0d0d10;
+  --border:rgba(255,255,255,.16);
+  --border-strong:rgba(255,255,255,.34);
+  --text:#f5f5f2;
+  --text-dim:rgba(245,245,242,.62);
+  --text-faint:rgba(245,245,242,.38);
+
+  --tcs-radius-sharp:2px;
+  --tcs-radius-cut:12px;
+  --tcs-shadow-step:3px;
+
+  /* real category tokens from the app — colours untouched, only the shape changes */
+  --color-deep:#8B5CF6;
+  --color-light:#60A5FA;
+  --color-admin:#FBBF24;
+  --color-creative:#FB7185;
+  --color-social:#2DD4BF;
+  --color-streak:#F59E0B;
+  --color-evening:#FB7185;
+  --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+*,*::before,*::after{box-sizing:border-box;}
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:44px 44px;
+  color:var(--text);
+  font-family:var(--font-mono);
+  min-height:100vh;
+  padding:48px 24px 80px;
+}
+.stage{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:56px;}
+.stage__header{border-bottom:1px solid var(--border);padding-bottom:24px;}
+.eyebrow{margin:0 0 10px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);}
+h1{margin:0 0 8px;font-size:22px;font-weight:600;}
+.sub{margin:0;font-size:12.5px;color:var(--text-dim);line-height:1.6;max-width:66ch;}
+
+section h2{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-faint);margin:0 0 18px;display:flex;align-items:center;gap:10px;
+}
+section h2::after{content:"";flex:1;height:1px;background:var(--border);}
+
+.grid{display:flex;flex-wrap:wrap;gap:16px;}
+
+.chip{
+  position:relative;
+  width:132px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:20px 12px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--tcs-radius-sharp) var(--tcs-radius-cut) var(--tcs-radius-sharp) var(--tcs-radius-cut);
+  box-shadow: var(--tcs-shadow-step) var(--tcs-shadow-step) 0 0 rgba(255,255,255,.06);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.chip:hover{
+  transform:translate(-2px,-2px);
+  border-color:var(--border-strong);
+  box-shadow: 5px 5px 0 0 rgba(255,255,255,.14);
+}
+.chip__icon-box{
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);
+  border-radius:2px 8px 2px 8px;
+  background:var(--surface-2);
+}
+.chip__icon-box svg{width:22px;height:22px;}
+.chip__label{font-size:11px;font-weight:600;letter-spacing:.04em;text-align:center;}
+.chip__old{font-size:10px;color:var(--text-faint);text-align:center;letter-spacing:.02em;}
+.chip__copy{
+  position:absolute;top:6px;right:8px;
+  font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-faint);background:none;border:none;cursor:pointer;
+  font-family:var(--font-mono);opacity:0;transition:opacity .12s ease;
+  padding:2px 4px;
+}
+.chip:hover .chip__copy{opacity:1;}
+.chip__copy:hover{color:var(--text);}
+.chip__copy:focus-visible{outline:2px solid var(--text-dim);outline-offset:2px;opacity:1;}
+
+/* --- gauge --- */
+.gauge-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
+.gauge-card{
+  width:104px;padding:16px 10px 14px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--tcs-radius-sharp) var(--tcs-radius-cut) var(--tcs-radius-sharp) var(--tcs-radius-cut);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  cursor:pointer;user-select:none;
+  transition:border-color .15s ease, transform .12s ease;
+}
+.gauge-card:hover{border-color:var(--border-strong);}
+.gauge-card:active{transform:translateY(2px);}
+.gauge-card.is-active{border-color:var(--tempo-accent-blue,#4F8EF7);}
+.gauge-bars{display:flex;align-items:flex-end;gap:3px;height:34px;}
+.gauge-bars i{
+  width:6px;border-radius:1px;
+  background:rgba(245,245,242,.18);
+  display:block;
+  transition:background-color .15s ease;
+}
+.gauge-bars i:nth-child(1){height:34%;}
+.gauge-bars i:nth-child(2){height:52%;}
+.gauge-bars i:nth-child(3){height:68%;}
+.gauge-bars i:nth-child(4){height:84%;}
+.gauge-bars i:nth-child(5){height:100%;}
+.gauge-card[data-level="1"] .gauge-bars i:nth-child(-n+1),
+.gauge-card[data-level="2"] .gauge-bars i:nth-child(-n+2),
+.gauge-card[data-level="3"] .gauge-bars i:nth-child(-n+3),
+.gauge-card[data-level="4"] .gauge-bars i:nth-child(-n+4),
+.gauge-card[data-level="5"] .gauge-bars i:nth-child(-n+5){
+  background:#4F8EF7;
+}
+.gauge-label{font-size:11px;font-weight:600;}
+.gauge-old{font-size:15px;opacity:.5;}
+
+/* --- before/after --- */
+.compare{display:flex;flex-wrap:wrap;gap:16px;}
+.compare-card{
+  flex:1 1 260px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--tcs-radius-sharp) var(--tcs-radius-cut) var(--tcs-radius-sharp) var(--tcs-radius-cut);
+  padding:16px 18px;display:flex;flex-direction:column;gap:10px;
+}
+.compare-card__tag{font-size:9px;letter-spacing:.14em;color:var(--text-faint);}
+.compare-row{display:flex;align-items:center;gap:10px;font-size:13px;}
+.compare-row .emoji-old{font-size:16px;opacity:.55;}
+.compare-row svg{width:18px;height:18px;flex:0 0 auto;}
+.arrow{color:var(--text-faint);font-size:11px;}
+
+.note{
+  border:1px solid var(--border);
+  border-radius:var(--tcs-radius-sharp) var(--tcs-radius-cut) var(--tcs-radius-sharp) var(--tcs-radius-cut);
+  padding:18px 22px;background:var(--surface);
+}
+.note p{margin:0;font-size:12.5px;line-height:1.7;color:var(--text-dim);max-width:70ch;}
+.note p + p{margin-top:10px;}
+.note strong{color:var(--text);font-weight:600;}
+
+@media (max-width:520px){
+  .chip{width:calc(50% - 8px);}
+}
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <header class="stage__header">
+    <p class="eyebrow">TEMPO — GLYPH SYSTEM v1</p>
+    <h1>Replacing 145 emoji with one small, connected icon language</h1>
+    <p class="sub">Every glyph below is built from the same two ideas already in the product: the tick-meter (loading, step progress) and the cut corner (every panel, every button). Nothing here is a new visual idea — it's the existing ones, applied further.</p>
+  </header>
+
+  <!-- ENERGY TYPES -->
+  <section>
+    <h2>Energy &amp; focus types — replaces 🟣 🔵 🟡 🔴 🟢</h2>
+    <div class="grid">
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="deep">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-deep)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/>
+            <rect x="9.5" y="9.5" width="5" height="5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="chip__label">Deep</div>
+        <div class="chip__old">was 🟣</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="light">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-light)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 14 L14 8 M14 8 L14 11.3 M14 8 L10.7 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </div>
+        <div class="chip__label">Light</div>
+        <div class="chip__old">was 🔵</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="admin">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-admin)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="7.5" y1="9" x2="16.5" y2="9" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="7.5" y1="12" x2="14.5" y2="12" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="7.5" y1="15" x2="12.5" y2="15" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="chip__label">Admin</div>
+        <div class="chip__old">was 🟡</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="creative">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-creative)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 4 H4 V20 H20 V9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="square"/>
+          </svg>
+        </div>
+        <div class="chip__label">Creative</div>
+        <div class="chip__old">was 🔴</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="social">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-social)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="11" height="11" stroke="currentColor" stroke-width="1.6"/>
+            <rect x="11" y="11" width="9" height="9" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="chip__label">Social</div>
+        <div class="chip__old">was 🟢</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STREAK + EVENING -->
+  <section>
+    <h2>Momentum &amp; evening — replaces 🔥 🌙</h2>
+    <div class="grid">
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="streak">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-streak)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.5 L15.5 9 L13.5 9.5 L17 15 L12 21.5 L7 15 L10.5 9.5 L8.5 9 Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="chip__label">Streak</div>
+        <div class="chip__old">was 🔥</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="evening">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-evening)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.5 4.2c-4.4 0-8 3.6-8 8s3.6 8 8 8c1.6 0 3.1-.5 4.4-1.3-.4.05-.9.08-1.3.08-4.4 0-8-3.6-8-8 0-3.1 1.8-5.9 4.4-7.2-.5-.4-1-.5-1.5-.58z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="chip__label">Evening</div>
+        <div class="chip__old">was 🌙</div>
+      </div>
+
+    </div>
+    <p class="chip__old" style="margin-top:14px;max-width:60ch;">Evening is the one curved glyph in the set, on purpose — every other mark is built from straight lines. Night is the one moment the panel is allowed to soften.</p>
+  </section>
+
+  <!-- MOOD GAUGE -->
+  <section>
+    <h2>Evening check-in — replaces ⚡ 💪 😐 😴 🤒 (click to preview a level)</h2>
+    <div class="gauge-row" id="gaugeRow">
+      <div class="gauge-card" data-level="5"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Peak</div><div class="gauge-old">was ⚡</div></div>
+      <div class="gauge-card" data-level="4"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Good</div><div class="gauge-old">was 💪</div></div>
+      <div class="gauge-card" data-level="3"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">OK</div><div class="gauge-old">was 😐</div></div>
+      <div class="gauge-card" data-level="2"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Drained</div><div class="gauge-old">was 😴</div></div>
+      <div class="gauge-card" data-level="1"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Rough</div><div class="gauge-old">was 🤒</div></div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER IN CONTEXT -->
+  <section>
+    <h2>In context</h2>
+    <div class="compare">
+      <div class="compare-card">
+        <div class="compare-card__tag">SIDEBAR — STREAK BADGE</div>
+        <div class="compare-row"><span class="emoji-old">🔥</span><span>12 day streak</span></div>
+        <div class="arrow">↓</div>
+        <div class="compare-row" style="color:var(--color-streak)">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5 L15.5 9 L13.5 9.5 L17 15 L12 21.5 L7 15 L10.5 9.5 L8.5 9 Z" fill="currentColor"/></svg>
+          <span style="color:var(--text)">12 day streak</span>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card__tag">ENERGY LEGEND — DEEP</div>
+        <div class="compare-row"><span class="emoji-old">🟣</span><span>Deep · 0m</span></div>
+        <div class="arrow">↓</div>
+        <div class="compare-row" style="color:var(--color-deep)">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="9.5" width="5" height="5" fill="currentColor"/></svg>
+          <span style="color:var(--text)">Deep · 0m</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="note">
+    <p><strong>What this covers, what it doesn't yet.</strong> These 12 glyphs handle the highest-traffic emoji — the ones repeated across TodayView, WeekView, CalendarView, EnergyPlannerView, and EveningReview. Left untouched for now: the ambient-sound icons in FocusMode (🌧 🌊 🌲 ☕), the redundant emoji on the Settings tab list (it already has real lucide icons sitting right next to them — those emoji look like dead leftovers, worth confirming before designing anything new for them), and a handful of one-off alert emoji (🚀 🙌 💡). Same grammar, same corner-chip housing — just not drawn yet, pending your go-ahead on this direction first.</p>
+    <p>Every chip has a <strong>copy svg</strong> button in the top-right corner (hover to see it) — copies that icon's raw markup for whoever's wiring this in.</p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  // mood gauge — click to preview a level (visual only, matches EveningReview's actual scale)
+  document.querySelectorAll('.gauge-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.gauge-card').forEach(function(c){ c.classList.remove('is-active'); });
+      card.classList.add('is-active');
+    });
+  });
+
+  // per-icon "copy svg" — grabs that chip's actual svg markup
+  var svgLibrary = {
+    deep: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="9.5" width="5" height="5" fill="currentColor"/></svg>',
+    light: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/><path d="M8 14 L14 8 M14 8 L14 11.3 M14 8 L10.7 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg>',
+    admin: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1.6"/><line x1="7.5" y1="9" x2="16.5" y2="9" stroke="currentColor" stroke-width="1.6"/><line x1="7.5" y1="12" x2="14.5" y2="12" stroke="currentColor" stroke-width="1.6"/><line x1="7.5" y1="15" x2="12.5" y2="15" stroke="currentColor" stroke-width="1.6"/></svg>',
+    creative: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 4 H4 V20 H20 V9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="square"/></svg>',
+    social: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="11" height="11" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="11" width="9" height="9" stroke="currentColor" stroke-width="1.6"/></svg>',
+    streak: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5 L15.5 9 L13.5 9.5 L17 15 L12 21.5 L7 15 L10.5 9.5 L8.5 9 Z" fill="currentColor"/></svg>',
+    evening: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 4.2c-4.4 0-8 3.6-8 8s3.6 8 8 8c1.6 0 3.1-.5 4.4-1.3-.4.05-.9.08-1.3.08-4.4 0-8-3.6-8-8 0-3.1 1.8-5.9 4.4-7.2-.5-.4-1-.5-1.5-.58z" fill="currentColor"/></svg>'
+  };
+
+  document.querySelectorAll('.chip__copy').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var key = btn.getAttribute('data-copy');
+      var svg = svgLibrary[key];
+      if (!svg) return;
+      var original = btn.textContent;
+      var reset = function(){ btn.textContent = original; };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(svg).then(function(){
+          btn.textContent = 'copied';
+          setTimeout(reset, 1200);
+        }).catch(function(){
+          btn.textContent = 'select & copy';
+          setTimeout(reset, 1200);
+        });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
