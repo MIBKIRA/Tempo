@@ -5,6 +5,7 @@ import {
 import { EnergyType, Task } from '../types';
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
+import { TempoIcons } from './icons/TempoIcons';
 
 const getCategoryColor = (category?: string | null): string => {
   if (!category) return '#4A4A4F';
@@ -632,8 +633,8 @@ export default function CalendarView({ onDayClick, onViewChange, tasks: propsTas
                           🏗
                         </span>
                       ) : day.isHighGravity ? (
-                        <span className="text-[10px] flex items-center justify-center animate-bounce text-[var(--tempo-accent-coral)]" title="High gravity day">
-                          🔥
+                        <span className="flex items-center justify-center animate-bounce text-[#FB7185]" title="High gravity day">
+                          <TempoIcons.Streak size={12} className="inline-block" />
                         </span>
                       ) : null}
                     </div>

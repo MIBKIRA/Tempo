@@ -1,0 +1,24 @@
+.gauge_container {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 34px;
+}
+
+.bar {
+  width: 6px;
+  border-radius: 1px;
+  display: block;
+  transition:
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+.empty {
+  background-color: color-mix(in srgb, var(--tempo-text-primary, #F1F1F1) 18%, transparent);
+}
+
+.filled {
+  /* Dynamic background color is set via inline styles */
+  box-shadow: 0 0 4px color-mix(in srgb, var(--tempo-accent-blue) 30%, transparent);
+}

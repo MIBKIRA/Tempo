@@ -4,6 +4,7 @@ import {
   Sparkles, Check, CheckCircle2, ChevronLeft, Calendar, Info 
 } from 'lucide-react';
 import { Task, EnergyType } from '../types';
+import { TempoIcons } from './icons/TempoIcons';
 
 interface FocusModeProps {
   task: Task | null;
@@ -366,11 +367,11 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
 
   // Helpers for sound labels and emojis
   const soundChips = [
-    { id: 'rain', label: '🌧 Rain' },
-    { id: 'ocean', label: '🌊 Ocean' },
-    { id: 'forest', label: '🌲 Forest' },
-    { id: 'cafe', label: '☕ Café' },
-    { id: 'none', label: '∞ None' },
+    { id: 'rain', label: 'Rain' },
+    { id: 'ocean', label: 'Ocean' },
+    { id: 'forest', label: 'Forest' },
+    { id: 'cafe', label: 'Café' },
+    { id: 'none', label: 'None' },
   ] as const;
 
   return (
@@ -604,10 +605,15 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
               </span>
 
               {/* Break expectation forecast alerts */}
-              <span className="text-[11px] text-[#4A4A52] italic font-sans select-none">
-                {timerState.sessionCount >= 4 
-                  ? "🙌 Milestone completed! Long break ready" 
-                  : `Short break in ${4 - timerState.sessionCount} sessions`}
+              <span className="text-[11px] text-[#4A4A52] italic font-sans select-none flex items-center justify-center gap-1">
+                {timerState.sessionCount >= 4 ? (
+                  <>
+                    <TempoIcons.Milestone size={14} style={{ color: '#34D399' }} className="inline-block" />
+                    <span>Milestone completed! Long break ready</span>
+                  </>
+                ) : (
+                  <span>{`Short break in ${4 - timerState.sessionCount} sessions`}</span>
+                )}
               </span>
             </div>
 
@@ -631,6 +637,7 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
             <div className="grid grid-cols-5 gap-1.5">
               {soundChips.map((chip) => {
                 const isActive = activeSound === chip.id;
+                const iconColor = isActive ? 'var(--tempo-accent-blue)' : '#8A8A90';
                 return (
                   <button
                     key={chip.id}
@@ -638,7 +645,7 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
                       setActiveSound(chip.id);
                       console.log(`Ambient Sound selection: scaled and selected "${chip.id}"`);
                     }}
-                    className={`py-2 px-1 rounded-lg border text-center transition-all duration-150 relative scale-tap flex items-center justify-center flex-col gap-0.5 cursor-pointer ${
+                    className={`py-2 px-1 rounded-lg border text-center transition-all duration-150 relative scale-tap flex items-center justify-center flex-col gap-1 cursor-pointer ${
                       isActive 
                         ? 'bg-[var(--tempo-bg-tertiary)] text-white shadow font-medium' 
                         : 'bg-[#121214]/60 border-[#2A2A2D] text-[#8A8A90] hover:text-white'
@@ -648,8 +655,12 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
                       boxShadow: isActive ? `0 0 8px ${themeColor}20` : 'none'
                     }}
                   >
-                    <span className="text-xs font-semibold block uppercase tracking-tight">{chip.label.split(' ')[0]}</span>
-                    <span className="text-[10px] text-[#8A8A90] block">{chip.label.split(' ')[1]}</span>
+                    {chip.id === 'rain' && <TempoIcons.Rain size={16} style={{ color: iconColor }} />}
+                    {chip.id === 'ocean' && <TempoIcons.Ocean size={16} style={{ color: iconColor }} />}
+                    {chip.id === 'forest' && <TempoIcons.Forest size={16} style={{ color: iconColor }} />}
+                    {chip.id === 'cafe' && <TempoIcons.Cafe size={16} style={{ color: iconColor }} />}
+                    {chip.id === 'none' && <span className="text-[10px] text-[#8A8A90] block leading-none font-semibold">Ø</span>}
+                    <span className="text-[10px] text-[#8A8A90] block mt-0.5 leading-none">{chip.label}</span>
                   </button>
                 );
               })}
@@ -706,9 +717,9 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
             </div>
 
             {/* Stat Box 3: Streak Count */}
-            <div className="bg-[#141416] p-3 border border-[#2A2A2D] rounded-xl text-center shadow-sm">
-              <span className="text-[10px] font-mono text-[#8A8A90] uppercase block whitespace-nowrap font-serif">
-                🔥 Focus Streak
+            <div className="bg-[#141416] p-3 border border-[#2A2A2D] rounded-xl text-center shadow-sm flex flex-col items-center justify-center">
+              <span className="text-[10px] font-mono text-[#8A8A90] uppercase flex items-center justify-center gap-1 whitespace-nowrap font-serif">
+                <TempoIcons.Streak size={11} className="text-[var(--tempo-accent-blue)]" /> Focus Streak
               </span>
               <span className="text-sm font-sans font-medium text-[#F1F1F1] block mt-0.5">
                 {streakDays} days

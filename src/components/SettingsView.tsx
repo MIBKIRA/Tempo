@@ -5,6 +5,7 @@ import {
   Download, Upload, RefreshCw, Smartphone, Eye, EyeOff
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import EngineeredToggle from './EngineeredToggle';
 
 // Define the interface for keyboard shortcuts
 interface ShortcutRow {
@@ -595,16 +596,16 @@ export default function SettingsView({
 
   // Navigation Items on Left Sidebar
   const sidebarNavItems = [
-    { id: 'profile', name: 'Profile', icon: User, emoji: '👤' },
-    { id: 'notifications', name: 'Notifications', icon: Bell, emoji: '🔔' },
-    { id: 'shortcuts', name: 'Keyboard Shortcuts', icon: Keyboard, emoji: '⌨️' },
-    { id: 'appearance', name: 'Appearance', icon: Palette, emoji: '🎨' },
-    { id: 'calendar', name: 'Calendar & Sync', icon: Calendar, emoji: '📅' },
-    { id: 'focus_pomo', name: 'Focus & Pomodoro', icon: Timer, emoji: '⏱' },
-    { id: 'ai_assistant', name: 'AI Assistant', icon: Bot, emoji: '🤖' },
-    { id: 'privacy', name: 'Privacy', icon: Lock, emoji: '🔒' },
-    { id: 'data', name: 'Data & Export', icon: Database, emoji: '💾' },
-    { id: 'billing', name: 'Billing', icon: CreditCard, emoji: '💳' }
+    { id: 'profile', name: 'Profile', icon: User },
+    { id: 'notifications', name: 'Notifications', icon: Bell },
+    { id: 'shortcuts', name: 'Keyboard Shortcuts', icon: Keyboard },
+    { id: 'appearance', name: 'Appearance', icon: Palette },
+    { id: 'calendar', name: 'Calendar & Sync', icon: Calendar },
+    { id: 'focus_pomo', name: 'Focus & Pomodoro', icon: Timer },
+    { id: 'ai_assistant', name: 'AI Assistant', icon: Bot },
+    { id: 'privacy', name: 'Privacy', icon: Lock },
+    { id: 'data', name: 'Data & Export', icon: Database },
+    { id: 'billing', name: 'Billing', icon: CreditCard }
   ];
 
   // Simulated Save Handler
@@ -730,7 +731,7 @@ export default function SettingsView({
                     }}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 truncate">
-                      <span className="shrink-0 text-sm leading-none">{item.emoji}</span>
+                      <item.icon className="w-4 h-4 shrink-0 text-[var(--tempo-text-secondary)]" />
                       <span className="truncate">{item.name}</span>
                     </div>
 
@@ -969,22 +970,13 @@ export default function SettingsView({
                         <span className="text-[11px] text-[#8A8A90]">Reduces navigation links to clean symbolic representation</span>
                       </div>
 
-                      {/* Custom input toggle switch */}
-                      <button
-                        onClick={() => {
-                          setCompactSidebar(!compactSidebar);
+                      <EngineeredToggle
+                        checked={!!compactSidebar}
+                        onChange={(val) => {
+                          setCompactSidebar(val);
                           triggerSaveNotification();
                         }}
-                        className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          compactSidebar ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
-                        }`}
-                      >
-                        <div 
-                          className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${
-                            compactSidebar ? 'translate-x-5' : 'translate-x-0'
-                          }`}
-                        />
-                      </button>
+                      />
                     </div>
 
                     {/* Sidebar Row 2 */}
@@ -994,22 +986,13 @@ export default function SettingsView({
                         <span className="text-[11px] text-[#8A8A90]">Display helper hotkey badges directly beside items</span>
                       </div>
 
-                      {/* Custom input toggle switch */}
-                      <button
-                        onClick={() => {
-                          setShowShortcutsInSidebar(!showShortcutsInSidebar);
+                      <EngineeredToggle
+                        checked={!!showShortcutsInSidebar}
+                        onChange={(val) => {
+                          setShowShortcutsInSidebar(val);
                           triggerSaveNotification();
                         }}
-                        className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          showShortcutsInSidebar ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
-                        }`}
-                      >
-                        <div 
-                          className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${
-                            showShortcutsInSidebar ? 'translate-x-5' : 'translate-x-0'
-                          }`}
-                        />
-                      </button>
+                      />
                     </div>
 
                   </div>
@@ -1234,21 +1217,16 @@ export default function SettingsView({
                         <span className="text-xs font-bold text-white">Reduce motion (Accessibility)</span>
                         <span className="text-[11px] text-[#8A8A90]">Smooths transitions to protect vestibular comfort limits</span>
                       </div>
-                      <button
-                        onClick={() => {
-                          const val = !reduceMotion;
+                      <EngineeredToggle
+                        checked={reduceMotion}
+                        onChange={(val) => {
                           setReduceMotion(val);
                           localStorage.setItem("tempo-reduce-motion", String(val));
                           document.documentElement.classList.toggle("reduce-motion", val);
                           window.dispatchEvent(new Event("tempo-settings-changed"));
                           triggerSaveNotification();
                         }}
-                        className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          reduceMotion ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
-                        }`}
-                      >
-                        <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${reduceMotion ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </button>
+                      />
                     </div>
 
                     {/* Switch 2 */}
@@ -1257,21 +1235,16 @@ export default function SettingsView({
                         <span className="text-xs font-bold text-white">Gravity pulse animation</span>
                         <span className="text-[11px] text-[#8A8A90]">Radial energy glow when focus metrics scale up high on reviews</span>
                       </div>
-                      <button
-                        onClick={() => {
-                          const val = !gravityPulse;
+                      <EngineeredToggle
+                        checked={gravityPulse}
+                        onChange={(val) => {
                           setGravityPulse(val);
                           localStorage.setItem("tempo-gravity-pulse", String(val));
                           document.documentElement.classList.toggle("gravity-pulse-disabled", !val);
                           window.dispatchEvent(new Event("tempo-settings-changed"));
                           triggerSaveNotification();
                         }}
-                        className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          gravityPulse ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
-                        }`}
-                      >
-                        <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${gravityPulse ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </button>
+                      />
                     </div>
 
                     {/* Switch 3 */}
@@ -1280,20 +1253,15 @@ export default function SettingsView({
                         <span className="text-xs font-bold text-white">Full layout page transitions</span>
                         <span className="text-[11px] text-[#8A8A90]">Staggers rendering of stats cards upon route switches</span>
                       </div>
-                      <button
-                        onClick={() => {
-                          const val = !pageTransitions;
+                      <EngineeredToggle
+                        checked={pageTransitions}
+                        onChange={(val) => {
                           setPageTransitions(val);
                           localStorage.setItem("tempo-page-transitions", String(val));
                           window.dispatchEvent(new Event("tempo-settings-changed"));
                           triggerSaveNotification();
                         }}
-                        className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${
-                          pageTransitions ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'
-                        }`}
-                      >
-                        <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${pageTransitions ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </button>
+                      />
                     </div>
 
                   </div>
@@ -1391,7 +1359,7 @@ export default function SettingsView({
             {activeTab === 'profile' && (
               <div className="flex flex-col gap-6 animate-fade-in text-left">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">👤 Profile</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Profile</h2>
                   <p className="text-sm text-[#8A8A90]">Manage your identity and bio anchors representing your daily workspace.</p>
                 </header>
 
@@ -1554,7 +1522,7 @@ export default function SettingsView({
             {activeTab === 'notifications' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">🔔 Notifications</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Notifications</h2>
                   <p className="text-sm text-[#8A8A90]">Manage when and how Tempo alerts you about your focus habits and time debts.</p>
                 </header>
 

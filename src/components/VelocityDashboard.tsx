@@ -5,6 +5,7 @@ import {
   Compass, BarChart3, Clock, AlertOctagon, HelpCircle, Activity, Play 
 } from 'lucide-react';
 import { useVelocityData } from '../hooks/useVelocityData';
+import { TempoIcons } from './icons/TempoIcons';
 
 interface Goal {
   id: string;
@@ -604,7 +605,9 @@ export default function VelocityDashboard() {
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] font-mono text-[#FB7185] uppercase tracking-wider font-bold">Time Debt</span>
               {thisWeek.total > 0 && thisWeek.timeDebt > 120 && (
-                <span className="text-sm select-none" title="Debt over 2h requires prompt attention">🔥</span>
+                <span className="inline-flex items-center" title="Debt over 2h requires prompt attention">
+                  <TempoIcons.Streak size={14} className="text-[#FB7185] ml-1" />
+                </span>
               )}
             </div>
             {thisWeek.total > 0 && (
@@ -1011,8 +1014,9 @@ export default function VelocityDashboard() {
 
           <div className="flex justify-between items-center text-[10px] font-sans border-t border-[#2A2A2D]/40 pt-4 mt-2">
             {maxWindowSum > 0 && (
-              <span className="text-[#8A8A90]">
-                💡 Peak focus window: <span className="text-white font-mono font-bold">{formatHour12(peakStartHour)} — {formatHour12(peakEndHour)}</span> ({maxWindowSum} tasks completed)
+              <span className="text-[#8A8A90] flex items-center gap-1">
+                <TempoIcons.Insight size={12} className="text-[var(--color-admin, #FBBF24)] inline-block" />
+                <span>Peak focus window: <span className="text-white font-mono font-bold">{formatHour12(peakStartHour)} — {formatHour12(peakEndHour)}</span> ({maxWindowSum} tasks completed)</span>
               </span>
             )}
             <div className="flex gap-1.5 items-center font-mono ml-auto">

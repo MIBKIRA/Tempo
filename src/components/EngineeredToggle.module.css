@@ -1,0 +1,91 @@
+.toggle {
+  --radius-sharp: var(--tcs-radius-sharp, 2px);
+  --radius-cut: var(--tcs-radius-cut, 14px);
+  --surface: var(--tempo-bg-secondary, #141416);
+  --surface-secondary: var(--tempo-bg-tertiary, #1C1C1F);
+  --surface-pressed: var(--tempo-bg-primary, #0D0D0F);
+  --border: var(--tempo-border, #2A2A2D);
+  --border-strong: var(--tempo-border-hover, #3D3D42);
+  --accent: var(--tempo-accent-blue, #4F8EF7);
+  --text: var(--tempo-text-primary, #F1F1F1);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sharp) var(--radius-cut) var(--radius-sharp) var(--radius-cut);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  outline: none;
+  transition:
+    transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    box-shadow var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    background-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1)),
+    border-color var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+/* UNCHECKED state: Sits raised on plate */
+.unchecked {
+  background: var(--surface-secondary);
+  transform: translate(calc(var(--tcs-lift-step, 2px) * -1), calc(var(--tcs-lift-step, 2px) * -1));
+  box-shadow: var(--tcs-shadow-step, 4px) var(--tcs-shadow-step, 4px) 0 0 color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.unchecked:hover:not(:disabled) {
+  transform: translate(calc((var(--tcs-lift-step, 2px) + 1px) * -1), calc((var(--tcs-lift-step, 2px) + 1px) * -1));
+  box-shadow: calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) calc(var(--tcs-shadow-step, 4px) + var(--tcs-lift-step, 2px)) 0 0 color-mix(in srgb, var(--text) 16%, transparent);
+  border-color: var(--border-strong);
+}
+
+.unchecked:active:not(:disabled) {
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent;
+  background: var(--surface-pressed);
+}
+
+/* CHECKED state: Sits pressed/flat/flush */
+.checked {
+  background: var(--accent);
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent;
+  border-color: var(--accent);
+}
+
+/* On press when checked: stays flat/pressed */
+.checked:active:not(:disabled) {
+  transform: translate(var(--tcs-shadow-step, 4px), var(--tcs-shadow-step, 4px));
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* THUMB: track-and-thumb sliding circle/block with matching asymmetrical cut corners */
+.thumb {
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  border-radius: calc(var(--radius-sharp) * 0.8) calc(var(--radius-cut) * 0.8) calc(var(--radius-sharp) * 0.8) calc(var(--radius-cut) * 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: transform var(--tcs-dur-fast, 120ms) var(--tcs-ease-mech, cubic-bezier(.2,.8,.2,1));
+}
+
+.thumb_unchecked {
+  transform: translateX(0);
+}
+
+.thumb_checked {
+  transform: translateX(20px);
+}
+
+.toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--surface-pressed), 0 0 0 4px var(--accent) !important;
+  z-index: 10;
+}

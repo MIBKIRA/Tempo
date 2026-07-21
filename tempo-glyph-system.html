@@ -127,7 +127,7 @@ section h2::after{content:"";flex:1;height:1px;background:var(--border);}
 .gauge-card[data-level="3"] .gauge-bars i:nth-child(-n+3),
 .gauge-card[data-level="4"] .gauge-bars i:nth-child(-n+4),
 .gauge-card[data-level="5"] .gauge-bars i:nth-child(-n+5){
-  background:#4F8EF7;
+  background:var(--mood-color, #4F8EF7);
 }
 .gauge-label{font-size:11px;font-weight:600;}
 .gauge-old{font-size:15px;opacity:.5;}
@@ -165,8 +165,8 @@ section h2::after{content:"";flex:1;height:1px;background:var(--border);}
 
   <header class="stage__header">
     <p class="eyebrow">TEMPO — GLYPH SYSTEM v1</p>
-    <h1>Replacing 145 emoji with one small, connected icon language</h1>
-    <p class="sub">Every glyph below is built from the same two ideas already in the product: the tick-meter (loading, step progress) and the cut corner (every panel, every button). Nothing here is a new visual idea — it's the existing ones, applied further.</p>
+    <h1>Replacing 145 emoji with one small, connected icon language — v2, complete set</h1>
+    <p class="sub">19 glyphs, covering every repeated emoji in the app. Built from the same two ideas already in the product: the tick-meter (loading, step progress) and the cut corner (every panel, every button). Nothing here is a new visual idea — it's the existing ones, applied further.</p>
   </header>
 
   <!-- ENERGY TYPES -->
@@ -273,11 +273,12 @@ section h2::after{content:"";flex:1;height:1px;background:var(--border);}
   <section>
     <h2>Evening check-in — replaces ⚡ 💪 😐 😴 🤒 (click to preview a level)</h2>
     <div class="gauge-row" id="gaugeRow">
-      <div class="gauge-card" data-level="5"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Peak</div><div class="gauge-old">was ⚡</div></div>
-      <div class="gauge-card" data-level="4"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Good</div><div class="gauge-old">was 💪</div></div>
-      <div class="gauge-card" data-level="3"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">OK</div><div class="gauge-old">was 😐</div></div>
-      <div class="gauge-card" data-level="2"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Drained</div><div class="gauge-old">was 😴</div></div>
-      <div class="gauge-card" data-level="1"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Rough</div><div class="gauge-old">was 🤒</div></div>
+      <div class="gauge-card" data-level="5" style="--mood-color:#8B5CF6"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Peak</div><div class="gauge-old">was ⚡</div></div>
+      <div class="gauge-card" data-level="4" style="--mood-color:#60A5FA"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Good</div><div class="gauge-old">was 💪</div></div>
+      <div class="gauge-card" data-level="3" style="--mood-color:#2DD4BF"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">OK</div><div class="gauge-old">was 😐</div></div>
+      <div class="gauge-card" data-level="2" style="--mood-color:#FBBF24"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Drained</div><div class="gauge-old">was 😴</div></div>
+      <div class="gauge-card" data-level="1" style="--mood-color:#FB7185"><div class="gauge-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="gauge-label">Rough</div><div class="gauge-old">was 🤒</div></div>
+      <p style="width:100%;font-size:10px;color:var(--text-faint);margin:6px 0 0;">Same five hex values already used for Deep/Light/Social/Admin/Creative — this reuses that palette on a second axis, it doesn't add a new one.</p>
     </div>
   </section>
 
@@ -306,8 +307,105 @@ section h2::after{content:"";flex:1;height:1px;background:var(--border);}
     </div>
   </section>
 
+  <!-- FOCUS AMBIENCE -->
+  <section>
+    <h2>Focus ambience — replaces 🌧 🌊 🌲 ☕</h2>
+    <div class="grid">
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="rain">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--text-dim)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="5" y1="8" x2="19" y2="8" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="8" y1="12" x2="6" y2="17" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="13" y1="12" x2="11" y2="17" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="18" y1="12" x2="16" y2="17" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="chip__label">Rain</div>
+        <div class="chip__old">was 🌧</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="ocean">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--text-dim)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="4,9 7,7 10,9 13,7 16,9 19,7 20,9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/>
+            <polyline points="4,15 7,13 10,15 13,13 16,15 19,13 20,15" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/>
+          </svg>
+        </div>
+        <div class="chip__label">Ocean</div>
+        <div class="chip__old">was 🌊</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="forest">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--text-dim)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3 L17 10 H14 L18 16 H6 L10 10 H7 Z" fill="currentColor"/>
+            <line x1="12" y1="16" x2="12" y2="20" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="chip__label">Forest</div>
+        <div class="chip__old">was 🌲</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="cafe">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--text-dim)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="8" width="12" height="9" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M17 10 H19 V14 H17" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="5" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="chip__label">Café</div>
+        <div class="chip__old">was ☕</div>
+      </div>
+
+    </div>
+    <p class="chip__old" style="margin-top:14px;max-width:60ch;">All four sit in neutral gray, not four different hues — they're a "which sound is on" choice, not a category system. The active one switches to accent-blue, same state logic as everything else in the app.</p>
+  </section>
+
+  <!-- INSIGHTS + MILESTONES -->
+  <section>
+    <h2>Insights &amp; milestones — replaces 💡 (×6) and 🙌</h2>
+    <div class="grid">
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="insight">copy svg</button>
+        <div class="chip__icon-box" style="color:var(--color-admin)">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="9" y="9" width="6" height="6" transform="rotate(45 12 12)" fill="currentColor"/>
+            <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="2" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="19" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="chip__label">Insight</div>
+        <div class="chip__old">was 💡</div>
+      </div>
+
+      <div class="chip">
+        <button class="chip__copy" data-copy="milestone">copy svg</button>
+        <div class="chip__icon-box" style="color:#34D399">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 16 L12 10 L18 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+            <path d="M6 20 L12 14 L18 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </div>
+        <div class="chip__label">Milestone</div>
+        <div class="chip__old">was 🙌 / 🚀</div>
+      </div>
+
+    </div>
+    <p class="chip__old" style="margin-top:14px;max-width:60ch;">Milestone reuses the same green as the Evening Review success state (#34D399) — it already means "completed" everywhere else, so it means the same thing here instead of introducing a new "celebration colour."</p>
+  </section>
+
   <section class="note">
-    <p><strong>What this covers, what it doesn't yet.</strong> These 12 glyphs handle the highest-traffic emoji — the ones repeated across TodayView, WeekView, CalendarView, EnergyPlannerView, and EveningReview. Left untouched for now: the ambient-sound icons in FocusMode (🌧 🌊 🌲 ☕), the redundant emoji on the Settings tab list (it already has real lucide icons sitting right next to them — those emoji look like dead leftovers, worth confirming before designing anything new for them), and a handful of one-off alert emoji (🚀 🙌 💡). Same grammar, same corner-chip housing — just not drawn yet, pending your go-ahead on this direction first.</p>
+    <p><strong>Settings tab list needs no new icon at all.</strong> Every entry in <code>sidebarNavItems</code> already carries a real lucide <code>icon</code> alongside a redundant <code>emoji</code> field, and two section headers (Profile, Notifications) print the emoji directly in the heading text. That's cleanup, not design — remove the <code>emoji</code> field and the inline emoji in those two headings, keep the lucide icon that's already doing the job.</p>
+    <p><strong>19 glyphs total now</strong> — the 12 from before, plus Rain/Ocean/Forest/Café and Insight/Milestone. That's every repeated emoji found across the app. One-off decorative uses (if any turn up during the sweep) should follow this same grammar rather than get invented fresh.</p>
     <p>Every chip has a <strong>copy svg</strong> button in the top-right corner (hover to see it) — copies that icon's raw markup for whoever's wiring this in.</p>
   </section>
 
@@ -331,7 +429,13 @@ section h2::after{content:"";flex:1;height:1px;background:var(--border);}
     creative: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 4 H4 V20 H20 V9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="square"/></svg>',
     social: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="11" height="11" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="11" width="9" height="9" stroke="currentColor" stroke-width="1.6"/></svg>',
     streak: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5 L15.5 9 L13.5 9.5 L17 15 L12 21.5 L7 15 L10.5 9.5 L8.5 9 Z" fill="currentColor"/></svg>',
-    evening: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 4.2c-4.4 0-8 3.6-8 8s3.6 8 8 8c1.6 0 3.1-.5 4.4-1.3-.4.05-.9.08-1.3.08-4.4 0-8-3.6-8-8 0-3.1 1.8-5.9 4.4-7.2-.5-.4-1-.5-1.5-.58z" fill="currentColor"/></svg>'
+    evening: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 4.2c-4.4 0-8 3.6-8 8s3.6 8 8 8c1.6 0 3.1-.5 4.4-1.3-.4.05-.9.08-1.3.08-4.4 0-8-3.6-8-8 0-3.1 1.8-5.9 4.4-7.2-.5-.4-1-.5-1.5-.58z" fill="currentColor"/></svg>',
+    rain: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="8" x2="19" y2="8" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="12" x2="6" y2="17" stroke="currentColor" stroke-width="1.6"/><line x1="13" y1="12" x2="11" y2="17" stroke="currentColor" stroke-width="1.6"/><line x1="18" y1="12" x2="16" y2="17" stroke="currentColor" stroke-width="1.6"/></svg>',
+    ocean: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="4,9 7,7 10,9 13,7 16,9 19,7 20,9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/><polyline points="4,15 7,13 10,15 13,13 16,15 19,13 20,15" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/></svg>',
+    forest: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3 L17 10 H14 L18 16 H6 L10 10 H7 Z" fill="currentColor"/><line x1="12" y1="16" x2="12" y2="20" stroke="currentColor" stroke-width="1.8"/></svg>',
+    cafe: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="12" height="9" stroke="currentColor" stroke-width="1.6"/><path d="M17 10 H19 V14 H17" stroke="currentColor" stroke-width="1.6"/><line x1="5" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.6"/></svg>',
+    insight: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="6" height="6" transform="rotate(45 12 12)" fill="currentColor"/><line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="1.6"/><line x1="2" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.6"/><line x1="19" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="1.6"/></svg>',
+    milestone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 16 L12 10 L18 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/><path d="M6 20 L12 14 L18 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg>'
   };
 
   document.querySelectorAll('.chip__copy').forEach(function(btn){

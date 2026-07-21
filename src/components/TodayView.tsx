@@ -15,6 +15,7 @@ import EngineeredButton from './EngineeredButton';
 import EngineeredRocker from './EngineeredRocker';
 import EngineeredLed from './EngineeredLed';
 import { supabase } from '../supabaseClient';
+import { TempoIcons } from './icons/TempoIcons';
 
 // TIMELINE MATH & HELPER CONSTANTS & FUNCTIONS
 // Timeline ranges from 6:00 AM to 10:00 PM (16 hours).
@@ -1006,8 +1007,9 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                 <span className="text-[11px] font-sans font-bold uppercase tracking-wider text-[var(--tempo-text-secondary)]">
                   Daily Habits
                 </span>
-                <span className="text-xs bg-[#FB7185]/10 text-[#FB7185] px-2 py-0.5 rounded border border-[#FB7185]/10 font-bold font-sans">
-                  🔥 {getOverallStreak ? getOverallStreak() : 0} day streak
+                <span className="text-xs bg-[#FB7185]/10 text-[#FB7185] px-2 py-0.5 rounded border border-[#FB7185]/10 font-bold font-sans flex items-center gap-1">
+                  <TempoIcons.Streak size={12} className="text-[#FB7185]" />
+                  <span>{getOverallStreak ? getOverallStreak() : 0} day streak</span>
                 </span>
               </div>
               <div>
@@ -1094,8 +1096,8 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                                 </span>
                               )}
                             </span>
-                            <span className="text-[9px] font-mono text-[var(--tempo-text-muted)] flex items-center gap-1 mt-0.5 whitespace-nowrap">
-                              <span>🔥 {streak}d</span>
+                            <span className="text-[9px] font-mono text-[var(--tempo-text-muted)] flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
+                              <span className="flex items-center gap-0.5"><TempoIcons.Streak size={10} className="text-[#FB7185] inline-block" /> {streak}d</span>
                               <span className="inline-block w-0.5 h-0.5 rounded-full bg-[var(--tempo-border)]" />
                               <span>📊 {rate7d}%</span>
                             </span>
@@ -1105,8 +1107,8 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                     })}
                   </div>
                 )}
-                <span className="text-[10px] font-mono text-[var(--tempo-text-muted)] text-center select-none">
-                  💡 Click any habit tile above to log and track progress
+                <span className="text-[10px] font-mono text-[var(--tempo-text-muted)] text-center select-none flex items-center justify-center gap-1">
+                  <TempoIcons.Insight size={12} className="text-[var(--color-admin, #FBBF24)] inline-block" /> Click any habit tile above to log and track progress
                 </span>
               </div>
             )}

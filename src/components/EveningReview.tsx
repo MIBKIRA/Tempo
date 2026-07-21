@@ -9,6 +9,8 @@ import EngineeredButton from './EngineeredButton';
 import EngineeredStepMeter from './EngineeredStepMeter';
 import EngineeredStateCell from './EngineeredStateCell';
 import { Task } from '../types';
+import EngineeredMoodGauge from './EngineeredMoodGauge';
+import { TempoIcons } from './icons/TempoIcons';
 
 interface IntentionItem {
   id: number;
@@ -131,11 +133,11 @@ export default function EveningReview({
   // STEP 2: Energy & Mood States
   // ⚡ Peak  💪 Good  😐 OK  😴 Drained  🤒 Rough
   const energyRatings = [
-    { key: 'peak', label: 'Peak', emoji: '⚡', color: '#8B5CF6' },
-    { key: 'good', label: 'Good', emoji: '💪', color: '#60A5FA' },
-    { key: 'ok', label: 'OK', emoji: '😐', color: '#2DD4BF' },
-    { key: 'drained', label: 'Drained', emoji: '😴', color: '#FBBF24' },
-    { key: 'rough', label: 'Rough', emoji: '🤒', color: '#FB7185' }
+    { key: 'peak', label: 'Peak', level: 5, color: '#8B5CF6' },
+    { key: 'good', label: 'Good', level: 4, color: '#60A5FA' },
+    { key: 'ok', label: 'OK', level: 3, color: '#2DD4BF' },
+    { key: 'drained', label: 'Drained', level: 2, color: '#FBBF24' },
+    { key: 'rough', label: 'Rough', level: 1, color: '#FB7185' }
   ];
   const [selectedEnergy, setSelectedEnergy] = useState<string>('good');
 
@@ -522,7 +524,7 @@ export default function EveningReview({
                       <button
                         key={e.key}
                         onClick={() => setSelectedEnergy(e.key)}
-                        className={`flex-1 py-2 flex flex-col items-center gap-1 cursor-pointer transition-all duration-150 rounded-8 ${
+                        className={`flex-1 py-2 flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-150 rounded-8 ${
                           isSelected ? 'bg-[#1C1C1F] shadow' : 'hover:bg-[#1C1C1F]/40'
                         }`}
                         style={{
@@ -530,7 +532,7 @@ export default function EveningReview({
                           border: isSelected ? `1px solid ${e.color}` : '1px solid transparent'
                         }}
                       >
-                        <span className="text-xl leading-none">{e.emoji}</span>
+                        <EngineeredMoodGauge level={e.level} color={e.color} />
                         <span className="text-[10px] font-mono font-bold leading-none mt-0.5" style={{ color: isSelected ? e.color : '#8A8A90' }}>
                           {e.label}
                         </span>
@@ -731,8 +733,9 @@ export default function EveningReview({
                           </div>
                           
                           {hasHighGravity && (
-                            <span className="text-[9px] font-bold text-[#FB7185] bg-[#FB7185]/15 px-1 py-0.2 rounded uppercase ml-1 shrink-0">
-                              High 🔥
+                            <span className="text-[9px] font-bold text-[#FB7185] bg-[#FB7185]/15 px-1 py-0.5 rounded uppercase ml-1 shrink-0 flex items-center gap-0.5">
+                              <span>High</span>
+                              <TempoIcons.Streak size={10} className="inline-block" />
                             </span>
                           )}
                         </div>

@@ -6,6 +6,7 @@ import {
 import { EnergyType, Task } from '../types';
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
+import EngineeredLed from './EngineeredLed';
 
 interface WeekEvent {
   id: string;
@@ -392,23 +393,6 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
-        :root:not(.paper-light):not(.forest-green) {
-          --tempo-bg-primary: #0D0D0F;
-          --tempo-bg-secondary: #141416;
-          --tempo-bg-tertiary: #1C1C1F;
-          --tempo-border: #2A2A2D;
-          --tempo-border-hover: #3D3D42;
-          --tempo-accent-blue: var(--color-accent, #3b82f6);
-          --tempo-accent-purple: #8B5CF6;
-          --tempo-accent-green: #34D399;
-          --tempo-accent-amber: #FBBF24;
-          --tempo-accent-coral: #FB7185;
-          --tempo-accent-teal: #2DD4BF;
-          --tempo-text-primary: #F1F1F1;
-          --tempo-text-secondary: #8A8A90;
-          --tempo-text-muted: #4A4A52;
-        }
-
         .font-serif-dm {
           font-family: 'DM Serif Display', Georgia, serif;
         }
@@ -552,23 +536,23 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
           {/* Mapping custom dots for colors */}
           <div className="flex items-center gap-3.5 bg-[var(--tempo-bg-primary)] border border-[var(--tempo-border)] px-3 py-2 rounded-lg text-[11px] font-mono-jb shrink-0">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor('deep') }} />
+              <EngineeredLed color={getEnergyColor('deep')} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Deep</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor('light') }} />
+              <EngineeredLed color={getEnergyColor('light')} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Light</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor('admin') }} />
+              <EngineeredLed color={getEnergyColor('admin')} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Admin</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor('creative') }} />
+              <EngineeredLed color={getEnergyColor('creative')} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Creative</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor('social') }} />
+              <EngineeredLed color={getEnergyColor('social')} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Social</span>
             </div>
           </div>

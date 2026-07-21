@@ -8,6 +8,7 @@ import { useHabits } from '../contexts/HabitsContext';
 import { DbHabit } from '../hooks/useHabitsData';
 import { useNow } from '../useNow';
 import { playCheckSound, playUncheckSound } from '../utils/playSound';
+import { TempoIcons } from './icons/TempoIcons';
 
 export default function HabitsView() {
   const {
@@ -185,7 +186,7 @@ export default function HabitsView() {
     if (checkInHabits.length > 0) {
       setCheckInIndex(0);
     } else {
-      alert("All habits checked off today! Amazing job! 🚀");
+      alert("All habits checked off today! Amazing job!");
     }
   };
 
@@ -826,8 +827,15 @@ export default function HabitsView() {
                         </span>
                         
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-[#8A8A90] font-mono leading-none">
-                            {habit.streak > 0 ? `🔥 Streak: ${habit.streak} days` : 'Not done yesterday'}
+                          <span className="text-[11px] text-[#8A8A90] font-mono leading-none flex items-center gap-1">
+                            {habit.streak > 0 ? (
+                              <>
+                                <TempoIcons.Streak size={11} className="text-[#FB7185] inline-block" />
+                                <span>Streak: {habit.streak} days</span>
+                              </>
+                            ) : (
+                              'Not done yesterday'
+                            )}
                           </span>
                           
                           <span className="text-[#2A2A2D] text-xs font-bold font-mono">|</span>
@@ -1270,14 +1278,21 @@ export default function HabitsView() {
 
           {/* INSIGHTS METRICS CARD */}
           <div className="bg-[#141416] border border-[#2A2A2D] rounded-12 p-4 select-none relative shadow-sm overflow-hidden flex flex-col gap-3.5">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#8A8A90] font-bold block">
-              💡 Intelligence Agency Insights
+            <span className="text-xs font-mono uppercase tracking-wider text-[#8A8A90] font-bold flex items-center gap-1.5">
+              <TempoIcons.Insight size={12} className="text-[var(--color-admin, #FBBF24)] inline-block" />
+              <span>Intelligence Agency Insights</span>
             </span>
             
             <div className="flex flex-col gap-3.5">
               {intelligenceInsights.map((insight, idx) => (
                 <div key={idx} className={`flex items-start gap-2.5 ${idx !== 0 ? 'border-t border-[#2A2A2D]/40 pt-3' : ''}`}>
-                  <span className="text-base shrink-0 select-none">{insight.icon}</span>
+                  <span className="shrink-0 select-none flex items-center justify-center">
+                    {insight.icon === '💡' ? (
+                      <TempoIcons.Insight size={14} className="text-[var(--color-admin, #FBBF24)]" />
+                    ) : (
+                      <span className="text-base">{insight.icon}</span>
+                    )}
+                  </span>
                   <p className="text-xs text-[#8A8A90] leading-relaxed select-text">
                     {insight.text}
                   </p>

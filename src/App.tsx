@@ -18,6 +18,7 @@ import CommandPalette from './components/CommandPalette';
 import EveningReview from './components/EveningReview';
 import { Task } from './types';
 import { LogoSm } from './components/Logo';
+import { TempoIcons } from './components/icons/TempoIcons';
 import { useTasksData } from './TasksContext';
 import CompleteProfile from './components/CompleteProfile';
 import AuthCallback from './components/AuthCallback';
@@ -782,11 +783,11 @@ export default function App() {
                   }`}
                 >
                   {compactSidebar ? (
-                    <span className="text-sm leading-none">🌙</span>
+                    <TempoIcons.Evening size={14} className="text-[#FB7185] inline-block" />
                   ) : (
                     <>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm">🌙</span>
+                        <TempoIcons.Evening size={14} className="text-[#FB7185] inline-block" />
                         <span>Evening Review</span>
                       </div>
                       <span className="text-[9px] font-mono bg-[#FB7185]/15 text-[#FB7185] px-1.5 py-0.5 rounded uppercase font-bold">
