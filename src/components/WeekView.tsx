@@ -7,6 +7,7 @@ import { EnergyType, Task } from '../types';
 import { useNow } from '../useNow';
 import { useTasksData } from '../TasksContext';
 import EngineeredLed from './EngineeredLed';
+import { TempoIcons } from './icons/TempoIcons';
 
 interface WeekEvent {
   id: string;
@@ -536,23 +537,23 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
           {/* Mapping custom dots for colors */}
           <div className="flex items-center gap-3.5 bg-[var(--tempo-bg-primary)] border border-[var(--tempo-border)] px-3 py-2 rounded-lg text-[11px] font-mono-jb shrink-0">
             <div className="flex items-center gap-1.5">
-              <EngineeredLed color={getEnergyColor('deep')} />
+              <TempoIcons.Deep size={12} style={{ color: getEnergyColor('deep') }} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Deep</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <EngineeredLed color={getEnergyColor('light')} />
+              <TempoIcons.Light size={12} style={{ color: getEnergyColor('light') }} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Light</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <EngineeredLed color={getEnergyColor('admin')} />
+              <TempoIcons.Admin size={12} style={{ color: getEnergyColor('admin') }} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Admin</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <EngineeredLed color={getEnergyColor('creative')} />
+              <TempoIcons.Creative size={12} style={{ color: getEnergyColor('creative') }} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Creative</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <EngineeredLed color={getEnergyColor('social')} />
+              <TempoIcons.Social size={12} style={{ color: getEnergyColor('social') }} />
               <span className="text-[11px] text-[var(--tempo-text-secondary)] font-sans-dm">Social</span>
             </div>
           </div>
@@ -957,9 +958,14 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
           <div className="flex flex-wrap gap-[12px] mt-1">
             {(['deep', 'light', 'social', 'admin', 'creative'] as const).map(cat => {
               const cap = activeHoursByCategory[cat];
+              const IconComponent = cat === 'deep' ? TempoIcons.Deep
+                : cat === 'light' ? TempoIcons.Light
+                : cat === 'social' ? TempoIcons.Social
+                : cat === 'admin' ? TempoIcons.Admin
+                : TempoIcons.Creative;
               return (
                 <div key={cat} className="flex items-center gap-1.5 select-none animate-fadeIn">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getEnergyColor(cat) }} />
+                  <IconComponent size={12} style={{ color: getEnergyColor(cat) }} />
                   <span className="text-[11px] text-[var(--tempo-text-secondary)] font-medium capitalize">
                     {cat}
                   </span>

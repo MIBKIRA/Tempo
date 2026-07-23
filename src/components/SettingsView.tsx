@@ -1593,7 +1593,7 @@ export default function SettingsView({
             {activeTab === 'calendar' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">📅 Calendar & Sync Integration</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Calendar & Sync Integration</h2>
                   <p className="text-sm text-[#8A8A90]">Connect modern calendars to resolve planned time coordinates instantly.</p>
                 </header>
 
@@ -1679,7 +1679,7 @@ export default function SettingsView({
             {activeTab === 'focus_pomo' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">⏱ Focus & Pomodoro Settings</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Focus & Pomodoro Settings</h2>
                   <p className="text-sm text-[#8A8A90]">Tune cognitive study waves and task time buffers to prevent fatigue.</p>
                 </header>
 
@@ -1782,7 +1782,7 @@ export default function SettingsView({
             {activeTab === 'ai_assistant' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">🤖 AI Assistant</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">AI Assistant</h2>
                   <p className="text-sm text-[#8A8A90]">Configure server-side Gemini intelligence models to auto-categorize habits and time debts.</p>
                 </header>
 
@@ -1853,7 +1853,7 @@ export default function SettingsView({
             {activeTab === 'privacy' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">🔒 Privacy & Key Guards</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Privacy & Key Guards</h2>
                   <p className="text-sm text-[#8A8A90]">Review security configurations, access scopes, and keys.</p>
                 </header>
 
@@ -1875,7 +1875,7 @@ export default function SettingsView({
             {activeTab === 'data' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">💾 Data Export & Overrides</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Data Export & Overrides</h2>
                   <p className="text-sm text-[#8A8A90]">Acquire a copy of your session tracking database or override visual matrices instantly.</p>
                 </header>
 
@@ -1935,7 +1935,7 @@ export default function SettingsView({
             {activeTab === 'billing' && (
               <div className="flex flex-col gap-6 animate-fade-in">
                 <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">💳 Billing & Invoices</h2>
+                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Billing & Invoices</h2>
                   <p className="text-sm text-[#8A8A90]">Manage your subscription tier, billing period, and past receipts.</p>
                 </header>
 

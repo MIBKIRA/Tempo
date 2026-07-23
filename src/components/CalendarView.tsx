@@ -465,23 +465,23 @@ export default function CalendarView({ onDayClick, onViewChange, tasks: propsTas
           {/* Energy Legends */}
           <div className="flex items-center gap-3 bg-[var(--tempo-bg-primary)] border border-[var(--tempo-border)] px-3 py-1.5 rounded-lg text-[11px] font-medium shrink-0">
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: energyColors.deep }} />
+              <TempoIcons.Deep size={12} style={{ color: energyColors.deep }} />
               <span className="text-[10px] text-[var(--tempo-text-secondary)]">Deep</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: energyColors.admin }} />
+              <TempoIcons.Admin size={12} style={{ color: energyColors.admin }} />
               <span className="text-[10px] text-[var(--tempo-text-secondary)]">Admin</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: energyColors.creative }} />
+              <TempoIcons.Creative size={12} style={{ color: energyColors.creative }} />
               <span className="text-[10px] text-[var(--tempo-text-secondary)]">Creative</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: energyColors.social }} />
+              <TempoIcons.Social size={12} style={{ color: energyColors.social }} />
               <span className="text-[10px] text-[var(--tempo-text-secondary)]">Social</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: energyColors.light }} />
+              <TempoIcons.Light size={12} style={{ color: energyColors.light }} />
               <span className="text-[10px] text-[var(--tempo-text-secondary)]">Light</span>
             </div>
           </div>
@@ -795,35 +795,35 @@ export default function CalendarView({ onDayClick, onViewChange, tasks: propsTas
               <div className="flex-grow flex flex-col gap-1 text-[11px]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded animate-pulse" style={{ backgroundColor: energyColors.deep }} />
+                    <TempoIcons.Deep size={12} style={{ color: energyColors.deep }} />
                     <span className="text-[10px] text-[var(--tempo-text-secondary)]">Deep Focus</span>
                   </div>
                   <span className="font-mono text-[var(--tempo-text-muted)] font-bold">{monthStatistics.percentages.deep}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded animate-pulse" style={{ backgroundColor: energyColors.admin }} />
+                    <TempoIcons.Admin size={12} style={{ color: energyColors.admin }} />
                     <span className="text-[10px] text-[var(--tempo-text-secondary)]">Admin/Inb</span>
                   </div>
                   <span className="font-mono text-[var(--tempo-text-muted)] font-bold">{monthStatistics.percentages.admin}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded animate-pulse" style={{ backgroundColor: energyColors.creative }} />
+                    <TempoIcons.Creative size={12} style={{ color: energyColors.creative }} />
                     <span className="text-[10px] text-[var(--tempo-text-secondary)]">Creative</span>
                   </div>
                   <span className="font-mono text-[var(--tempo-text-muted)] font-bold">{monthStatistics.percentages.creative}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded animate-pulse" style={{ backgroundColor: energyColors.social }} />
+                    <TempoIcons.Social size={12} style={{ color: energyColors.social }} />
                     <span className="text-[10px] text-[var(--tempo-text-secondary)]">Social Focus</span>
                   </div>
                   <span className="font-mono text-[var(--tempo-text-muted)] font-bold">{monthStatistics.percentages.social}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded animate-pulse" style={{ backgroundColor: energyColors.light }} />
+                    <TempoIcons.Light size={12} style={{ color: energyColors.light }} />
                     <span className="text-[10px] text-[var(--tempo-text-secondary)]">Light Recover</span>
                   </div>
                   <span className="font-mono text-[var(--tempo-text-muted)] font-bold">{monthStatistics.percentages.light}%</span>

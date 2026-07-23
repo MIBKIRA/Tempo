@@ -1148,9 +1148,14 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-2">
               {ENERGY_TYPES.map(e => e.value).map(type => {
                 const hrs = dynamicEnergyLoads[type] || 0;
+                const IconComponent = type === 'deep' ? TempoIcons.Deep
+                  : type === 'light' ? TempoIcons.Light
+                  : type === 'social' ? TempoIcons.Social
+                  : type === 'admin' ? TempoIcons.Admin
+                  : TempoIcons.Creative;
                 return (
                   <div key={type} className="flex gap-2.5 items-center">
-                    <EngineeredLed color={getEnergyColor(type)} />
+                    <IconComponent size={14} style={{ color: getEnergyColor(type) }} />
                     <div className="flex flex-col">
                       <span className="text-[11px] font-sans font-medium text-[var(--tempo-text-primary)] capitalize">{type}</span>
                       <span className="text-[10px] font-mono text-[var(--tempo-text-secondary)] mt-0.5">
