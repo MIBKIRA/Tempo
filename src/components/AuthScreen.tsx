@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, Command, Check, AlertCircle, Calendar, AtSign } from 'lucide-react';
 import { Logo, LogoSm } from './Logo';
+import TempoitWordmark from './TempoitWordmark';
 import { supabase } from '../supabaseClient';
 import EngineeredButton from './EngineeredButton';
 import EngineeredRocker from './EngineeredRocker';
@@ -466,9 +467,9 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
           <div className="w-32 h-32 mb-8 flex items-center justify-center">
             <Logo className="w-32 h-32" />
           </div>
-          <h1 className="text-8xl tracking-tighter font-serif text-[#F1F1F1] select-none font-medium mb-4">
-            TEMPO
-          </h1>
+          <div className="w-full max-w-xs sm:max-w-sm mb-4">
+            <TempoitWordmark autoPlayDelay={900} showReplayButton={false} />
+          </div>
           <p className="text-lg md:text-xl text-[#8A8A90] font-sans font-light tracking-wide max-w-sm mb-12">
             Every hour. <span className="text-[#F1F1F1] font-medium">Intentional.</span>
           </p>
