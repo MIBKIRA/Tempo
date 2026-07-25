@@ -275,7 +275,6 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
           }
           return next;
         });
-        console.log("Tempo Focus Mode: Toggled interruption panel via Ctrl+I");
       }
       if (e.key === ' ') {
         // Only trigger if not typing in the interruption input
@@ -283,10 +282,8 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
           e.preventDefault();
           if (timerState.timerRunning) {
             dispatch({ type: 'PAUSE' });
-            console.log("Tempo Focus Mode: Countdown paused via spacebar");
           } else {
             dispatch({ type: 'START' });
-            console.log("Tempo Focus Mode: Countdown started via spacebar");
           }
         }
       }
@@ -295,11 +292,6 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, timerState.timerRunning]);
-
-  // Audio simulation side effects on changes
-  useEffect(() => {
-    console.log(`Ambient Sound Action: playing "${activeSound}" at ${volume}% volume.`);
-  }, [activeSound, volume]);
 
   // Interval timer ticks
   useEffect(() => {
@@ -317,7 +309,9 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
   // Handle pomodoro cycle completions or flashes
   useEffect(() => {
     if (timerState.isCompleteFlash) {
-      console.log("Timer Cycle completed! Flashing display green.");
+      if ((import.meta as any).env?.DEV) {
+        console.log("Timer Cycle completed! Flashing display green.");
+      }
       // Increment stats
       setSessionsCompletedToday(prev => Math.min(getPomoTargetDaily(), prev + 1));
       
@@ -358,8 +352,6 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
     setInterruptions(prev => [newEntry, ...prev]);
     setNewInterruptionText('');
     setIsAddingInterruption(false);
-
-    console.log(`Focus Interruption Logged: ${newEntry.time} — ${newEntry.text}`);
   };
 
   // Focus Score Math: start at 100%, each interruption subtracts 12%, clip at 20%
@@ -643,7 +635,6 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
                     key={chip.id}
                     onClick={() => {
                       setActiveSound(chip.id);
-                      console.log(`Ambient Sound selection: scaled and selected "${chip.id}"`);
                     }}
                     className={`py-2 px-1 rounded-lg border text-center transition-all duration-150 relative scale-tap flex items-center justify-center flex-col gap-1 cursor-pointer ${
                       isActive 

@@ -127,7 +127,6 @@ export default function SettingsView({
   const [colorErrors, setColorErrors] = useState<Record<string, string>>({});
 
   const handleColorChange = (key: 'deep' | 'light' | 'admin' | 'creative' | 'social', value: string) => {
-    console.log("Color changed:", value);
     setEnergyColors(prev => {
       const updated = { ...prev, [key]: value };
       const hexRegex = /^#[0-9A-Fa-f]{6}$/;

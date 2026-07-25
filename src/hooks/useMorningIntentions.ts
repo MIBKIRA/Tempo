@@ -24,7 +24,9 @@ export function useMorningIntentions() {
     setIsLoading(true);
     const todayStr = new Date().toISOString().split('T')[0];
     try {
-      console.log('[useMorningIntentions] Fetching daily intentions for user:', uid, 'date:', todayStr);
+      if ((import.meta as any).env?.DEV) {
+        console.log('[useMorningIntentions] Fetching daily intentions for user:', uid, 'date:', todayStr);
+      }
       const { data, error } = await supabase
         .from('daily_intentions')
         .select('*')
@@ -54,22 +56,30 @@ export function useMorningIntentions() {
         }
 
         if (localRow) {
-          console.log('[useMorningIntentions] Loaded today from localStorage fallback:', localRow);
+          if ((import.meta as any).env?.DEV) {
+            console.log('[useMorningIntentions] Loaded today from localStorage fallback:', localRow);
+          }
           setIntentionsRow(localRow);
           setShowModal(false);
         } else {
-          console.log('[useMorningIntentions] No items for today in fallback. Triggering modal.');
+          if ((import.meta as any).env?.DEV) {
+            console.log('[useMorningIntentions] No items for today in fallback. Triggering modal.');
+          }
           setIntentionsRow(null);
           setTimeout(() => {
             setShowModal(true);
           }, 400);
         }
       } else if (data) {
-        console.log('[useMorningIntentions] Fetched intentions successfully from database:', data);
+        if ((import.meta as any).env?.DEV) {
+          console.log('[useMorningIntentions] Fetched intentions successfully from database:', data);
+        }
         setIntentionsRow(data);
         setShowModal(false);
       } else {
-        console.log('[useMorningIntentions] No intentions record exists for today in database. Triggering modal.');
+        if ((import.meta as any).env?.DEV) {
+          console.log('[useMorningIntentions] No intentions record exists for today in database. Triggering modal.');
+        }
         setIntentionsRow(null);
         setTimeout(() => {
           setShowModal(true);
@@ -169,7 +179,9 @@ export function useMorningIntentions() {
           .upsert(payload, { onConflict: 'user_id,date' });
 
         if (!error) {
-          console.log('[useMorningIntentions] Successfully upserted intentions to database.');
+          if ((import.meta as any).env?.DEV) {
+            console.log('[useMorningIntentions] Successfully upserted intentions to database.');
+          }
           const { data } = await supabase
             .from('daily_intentions')
             .select('*')
@@ -203,7 +215,9 @@ export function useMorningIntentions() {
       updated_at: new Date().toISOString()
     };
     localStorage.setItem(key, JSON.stringify(localRow));
-    console.log('[useMorningIntentions] Saved intentions to localStorage fallback.');
+    if ((import.meta as any).env?.DEV) {
+      console.log('[useMorningIntentions] Saved intentions to localStorage fallback.');
+    }
     setIntentionsRow(localRow);
     return true;
   }, [userId, useLocalFallback]);
