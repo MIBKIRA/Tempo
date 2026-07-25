@@ -46,7 +46,11 @@ export function useMorningIntentions() {
             if (parsed && parsed.date === todayStr) {
               localRow = parsed;
             }
-          } catch (_) {}
+          } catch (e) {
+            if ((import.meta as any).env?.DEV) {
+              console.warn('[useMorningIntentions:supabaseErrorFallback] Failed to parse cached data, falling back to default:', e);
+            }
+          }
         }
 
         if (localRow) {
@@ -84,7 +88,11 @@ export function useMorningIntentions() {
           if (parsed && parsed.date === todayStr) {
             localRow = parsed;
           }
-        } catch (_) {}
+        } catch (e) {
+          if ((import.meta as any).env?.DEV) {
+            console.warn('[useMorningIntentions:unexpectedErrorFallback] Failed to parse cached data, falling back to default:', e);
+          }
+        }
       }
 
       if (localRow) {

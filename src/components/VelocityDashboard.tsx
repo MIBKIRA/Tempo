@@ -140,7 +140,13 @@ export default function VelocityDashboard() {
     const saved = localStorage.getItem(key);
     let parsed: any = {};
     if (saved) {
-      try { parsed = JSON.parse(saved); } catch (e) {}
+      try {
+        parsed = JSON.parse(saved);
+      } catch (e) {
+        if ((import.meta as any).env?.DEV) {
+          console.warn('[VelocityDashboard:handleWentWellChange] Failed to parse cached data, falling back to default:', e);
+        }
+      }
     }
     localStorage.setItem(key, JSON.stringify({
       wentWell: val,
@@ -155,7 +161,13 @@ export default function VelocityDashboard() {
     const saved = localStorage.getItem(key);
     let parsed: any = {};
     if (saved) {
-      try { parsed = JSON.parse(saved); } catch (e) {}
+      try {
+        parsed = JSON.parse(saved);
+      } catch (e) {
+        if ((import.meta as any).env?.DEV) {
+          console.warn('[VelocityDashboard:handleToImproveChange] Failed to parse cached data, falling back to default:', e);
+        }
+      }
     }
     localStorage.setItem(key, JSON.stringify({
       wentWell: parsed.wentWell ?? wentWellText,
@@ -180,7 +192,13 @@ export default function VelocityDashboard() {
     const saved = localStorage.getItem(key);
     let parsed: any = {};
     if (saved) {
-      try { parsed = JSON.parse(saved); } catch (e) {}
+      try {
+        parsed = JSON.parse(saved);
+      } catch (e) {
+        if ((import.meta as any).env?.DEV) {
+          console.warn('[VelocityDashboard:handleAddGoal] Failed to parse cached data, falling back to default:', e);
+        }
+      }
     }
     localStorage.setItem(key, JSON.stringify({
       ...parsed,
@@ -196,7 +214,13 @@ export default function VelocityDashboard() {
     const saved = localStorage.getItem(key);
     let parsed: any = {};
     if (saved) {
-      try { parsed = JSON.parse(saved); } catch (e) {}
+      try {
+        parsed = JSON.parse(saved);
+      } catch (e) {
+        if ((import.meta as any).env?.DEV) {
+          console.warn('[VelocityDashboard:handleToggleGoal] Failed to parse cached data, falling back to default:', e);
+        }
+      }
     }
     localStorage.setItem(key, JSON.stringify({
       ...parsed,
