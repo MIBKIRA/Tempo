@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from './supabaseClient';
-import { Task, EnergyType } from './types';
+import { Task, TaskRow, EnergyType } from './types';
 
 // Decoupled Helper: trigger a toast notification by dispatching a custom event
 export const triggerAppToast = (msg: string) => {
@@ -13,12 +13,12 @@ export const getInitialTasks = (): Task[] => {
 };
 
 // ORM Database Column Mappers
-export const mapRowToTask = (r: any): Task => {
+export const mapRowToTask = (r: TaskRow): Task => {
   return {
     id: r.id,
     type: (r.type || 'task'),
     title: r.title || 'Untitled',
-    energy: (r.category || r.energy || 'deep') as EnergyType,
+    energy: ((r.category || r.energy || 'deep') as EnergyType),
     duration: r.duration_minutes !== undefined && r.duration_minutes !== null 
       ? `${r.duration_minutes}m` 
       : (r.duration || '15m'),
@@ -41,7 +41,7 @@ export const mapRowToTask = (r: any): Task => {
 };
 
 export const mapTaskToRow = (task: Partial<Task>, userId?: string | null) => {
-  const payload: Record<string, any> = {};
+  const payload: Record<string, unknown> = {};
   if (userId) payload.user_id = userId;
   if (task.type !== undefined) payload.type = task.type;
   if (task.title !== undefined) payload.title = task.title;
@@ -144,7 +144,7 @@ async function migrateLocalToSupabase(userId: string) {
       .insert(rows);
 
     if (!error) {
-      if ((import.meta as any).env?.DEV) {
+      if (import.meta.env?.DEV) {
         console.log(`✓ Migrated ${items.length} items to Supabase`);
       }
     } else {
@@ -199,7 +199,7 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
 
       if (selectErr) {
         if (selectErr.code === 'PGRST205' || selectErr.message?.includes('schema cache') || selectErr.message?.includes('Could not find the table')) {
-          if ((import.meta as any).env?.DEV) {
+          if (import.meta.env?.DEV) {
             console.log("Table 'blocks' is missing in Supabase. Falling back to local storage cleanly.");
           }
           setUseLocalFallback(true);
@@ -220,9 +220,9 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         setLastSynced(new Date());
       }
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading items from Supabase, applying local fallback:", err);
-      setError(err);
+      setError(err instanceof Error ? err : new Error(String(err)));
       setUseLocalFallback(true);
       setTasks(loadLocalTasks());
       setSyncStatus('error');
@@ -366,11 +366,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         setSyncStatus('synced');
         setLastSynced(new Date());
         return confirmedTask;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to insert into Supabase, reverting optimistic change:", err);
         setTasks(previousTasks);
         setSyncStatus('error');
-        triggerAppToast(`Failed to save: ${err.message || err}`);
+        const msg = err instanceof Error ? err.message : String(err);
+        triggerAppToast(`Failed to save: ${msg}`);
         return null;
       }
     }
@@ -404,11 +405,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         setSyncStatus('synced');
         setLastSynced(new Date());
         return updatedTasks.find(t => t.id === id) || null;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to update on Supabase, reverting:", err);
         setTasks(previousTasks);
         setSyncStatus('error');
-        triggerAppToast(`Error updating: ${err.message || err}`);
+        const msg = err instanceof Error ? err.message : String(err);
+        triggerAppToast(`Error updating: ${msg}`);
         return null;
       }
     }
@@ -446,11 +448,12 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
         setSyncStatus('synced');
         setLastSynced(new Date());
         return true;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to delete on Supabase, reverting:", err);
         setTasks(previousTasks);
         setSyncStatus('error');
-        triggerAppToast(`Error deleting: ${err.message || err}`);
+        const msg = err instanceof Error ? err.message : String(err);
+        triggerAppToast(`Error deleting: ${msg}`);
         return false;
       }
     }

@@ -738,7 +738,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                   {['all', ...ENERGY_TYPES.map(e => e.value)].map(f => (
                     <button
                       key={f}
-                      onClick={() => setTaskFilter(f as any)}
+                      onClick={() => setTaskFilter(f as 'all' | EnergyType)}
                       className={`text-[10px] font-sans px-2.5 py-1 rounded-md transition-all cursor-pointer capitalize font-medium ${
                         taskFilter === f 
                           ? 'bg-[var(--tempo-bg-tertiary)] text-[var(--tempo-text-primary)] shadow-sm' 

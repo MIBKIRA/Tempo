@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { User } from '@supabase/supabase-js';
 import { supabase } from '../supabaseClient';
 
 export interface DbHabit {
@@ -27,7 +28,7 @@ export function useHabitsData() {
   const [habits, setHabits] = useState<DbHabit[]>([]);
   const [habitsAll, setHabitsAll] = useState<DbHabit[]>([]); // holds both active and inactive for calculations like mindate
   const [logs, setLogs] = useState<DbHabitLog[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -63,9 +64,9 @@ export function useHabitsData() {
       setHabitsAll(habitsList);
       setHabits(habitsList.filter((h: DbHabit) => h.is_active));
       setLogs(logsData || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching habits/logs:', err);
-      setError(err instanceof Error ? err : new Error(err.message || 'Unknown error'));
+      setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setIsLoading(false);
     }

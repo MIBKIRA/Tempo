@@ -168,9 +168,10 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
 
       // Call success handler
       onSetupSuccess(username, dob);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Profile complete error:', err);
-      setErrorMessage(err.message || 'Something went wrong, try again');
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage(msg || 'Something went wrong, try again');
     } finally {
       setIsSubmitting(false);
     }

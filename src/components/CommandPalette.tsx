@@ -34,6 +34,8 @@ interface TaskItem {
   type: 'task';
 }
 
+type PaletteItem = CommandItem | TaskItem;
+
 export default function CommandPalette({ isOpen, onClose, onNavigate, onThemeChange, onOpenEveningReview }: CommandPaletteProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
@@ -374,7 +376,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onThemeCha
 
   // Flattened array representing the exact visible sequence for keyboard index tracking
   const flattenedItems = useMemo(() => {
-    return filteredAndCategorizedItems.reduce<any[]>((acc, group) => {
+    return filteredAndCategorizedItems.reduce<PaletteItem[]>((acc, group) => {
       return [...acc, ...group.items];
     }, []);
   }, [filteredAndCategorizedItems]);

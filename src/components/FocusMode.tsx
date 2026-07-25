@@ -309,7 +309,7 @@ export default function FocusMode({ task, onClose, onMinimize }: FocusModeProps)
   // Handle pomodoro cycle completions or flashes
   useEffect(() => {
     if (timerState.isCompleteFlash) {
-      if ((import.meta as any).env?.DEV) {
+      if (import.meta.env?.DEV) {
         console.log("Timer Cycle completed! Flashing display green.");
       }
       // Increment stats

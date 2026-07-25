@@ -4,6 +4,7 @@ import {
   Layers, BarChart3, HelpCircle, Activity, ExternalLink, Columns, Flame
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import AuthScreen from './components/AuthScreen';
 import TodayView from './components/TodayView';
@@ -36,7 +37,7 @@ export default function App() {
   // Custom SPA pathname router states and session hooks
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname);
   const [isProfileComplete, setIsProfileComplete] = useState<boolean | null>(null);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
 
   // Simple SPA navigator helper

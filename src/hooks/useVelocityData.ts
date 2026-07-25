@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { User } from '@supabase/supabase-js';
 import { supabase } from '../supabaseClient';
 import { Task } from '../types';
 import { mapRowToTask } from '../TasksContext';
@@ -207,9 +208,9 @@ const defaultStats = (): WeekStats => ({
 });
 
 export function useVelocityData(weekStart: Date) {
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   // States for final calculations
   const [thisWeek, setThisWeek] = useState<WeekStats>(defaultStats());
@@ -332,7 +333,7 @@ export function useVelocityData(weekStart: Date) {
         // Fallback to local storage tasks
         throw new Error("fallback_to_local");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Local fallback logic
       const localTasks = loadLocalTasks();
 
@@ -352,9 +353,10 @@ export function useVelocityData(weekStart: Date) {
         timeDebt: lwStats.timeDebt
       });
 
-      if (err.message !== "fallback_to_local") {
+      const errObj = err instanceof Error ? err : new Error(String(err));
+      if (errObj.message !== "fallback_to_local") {
         console.error("Supabase query error:", err);
-        setError(err);
+        setError(errObj);
       } else {
         setError(null);
       }

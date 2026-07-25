@@ -222,7 +222,7 @@ export default function HabitsView() {
       name: editName.trim(),
       icon: editIcon || '✓',
       color: editColor,
-      category: editCategory as any,
+      category: editCategory,
       frequency: editFrequency
     });
     setEditingHabit(null);

@@ -21,6 +21,12 @@ const formatTimeDebt = (mins: number) => {
   return `${m}m`;
 };
 
+interface WeeklyReviewCache {
+  wentWell?: string;
+  toImprove?: string;
+  goals?: Goal[];
+}
+
 export default function VelocityDashboard() {
   // 1. STATE & VELOCITY DATA SYSTEM
   const getMondayOfCurrentWeek = (): Date => {
@@ -138,12 +144,12 @@ export default function VelocityDashboard() {
     setWentWellText(val);
     const key = `velocity_review_${weekStart.toISOString()}`;
     const saved = localStorage.getItem(key);
-    let parsed: any = {};
+    let parsed: WeeklyReviewCache = {};
     if (saved) {
       try {
         parsed = JSON.parse(saved);
       } catch (e) {
-        if ((import.meta as any).env?.DEV) {
+        if (import.meta.env?.DEV) {
           console.warn('[VelocityDashboard:handleWentWellChange] Failed to parse cached data, falling back to default:', e);
         }
       }
@@ -159,12 +165,12 @@ export default function VelocityDashboard() {
     setToImproveText(val);
     const key = `velocity_review_${weekStart.toISOString()}`;
     const saved = localStorage.getItem(key);
-    let parsed: any = {};
+    let parsed: WeeklyReviewCache = {};
     if (saved) {
       try {
         parsed = JSON.parse(saved);
       } catch (e) {
-        if ((import.meta as any).env?.DEV) {
+        if (import.meta.env?.DEV) {
           console.warn('[VelocityDashboard:handleToImproveChange] Failed to parse cached data, falling back to default:', e);
         }
       }
@@ -190,12 +196,12 @@ export default function VelocityDashboard() {
 
     const key = `velocity_review_${weekStart.toISOString()}`;
     const saved = localStorage.getItem(key);
-    let parsed: any = {};
+    let parsed: WeeklyReviewCache = {};
     if (saved) {
       try {
         parsed = JSON.parse(saved);
       } catch (e) {
-        if ((import.meta as any).env?.DEV) {
+        if (import.meta.env?.DEV) {
           console.warn('[VelocityDashboard:handleAddGoal] Failed to parse cached data, falling back to default:', e);
         }
       }
@@ -212,12 +218,12 @@ export default function VelocityDashboard() {
 
     const key = `velocity_review_${weekStart.toISOString()}`;
     const saved = localStorage.getItem(key);
-    let parsed: any = {};
+    let parsed: WeeklyReviewCache = {};
     if (saved) {
       try {
         parsed = JSON.parse(saved);
       } catch (e) {
-        if ((import.meta as any).env?.DEV) {
+        if (import.meta.env?.DEV) {
           console.warn('[VelocityDashboard:handleToggleGoal] Failed to parse cached data, falling back to default:', e);
         }
       }

@@ -5,6 +5,15 @@ import {
 } from 'lucide-react';
 import { Task, EnergyType, TimeBlock } from '../types';
 
+interface ScheduledBlock {
+  id: number;
+  title: string;
+  startTime: string;
+  endTime: string;
+  energy: EnergyType;
+  notes?: string;
+}
+
 interface EnergyPlannerViewProps {
   tasks: Task[];
   onStartFocusSession: (task: Task) => void;
@@ -109,7 +118,7 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
   };
 
   // Handler to start session for a scheduled block
-  const handleStartBlockSession = (block: any) => {
+  const handleStartBlockSession = (block: ScheduledBlock) => {
     onStartFocusSession({
       id: block.id + 10000, // Namespace offset so it doesn't conflict with core task ids
       title: block.title,

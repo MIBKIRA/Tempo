@@ -143,9 +143,10 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       } else {
         setErrorMessage("User session could not be established.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("signIn unexpected error:", err);
-      setErrorMessage(err.message || 'An unexpected error occurred during sign in.');
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage(msg || 'An unexpected error occurred during sign in.');
     } finally {
       setIsSubmitting(false);
     }
@@ -251,9 +252,10 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       // Check registration progress status
       // We do NOT redirect immediately
       setIsSignupSuccess(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("signUp unexpected error:", err);
-      setErrorMessage(err.message || 'An unexpected error occurred during sign up.');
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage(msg || 'An unexpected error occurred during sign up.');
     } finally {
       setIsSubmitting(false);
     }
@@ -274,9 +276,10 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
         return;
       }
       setSuccessMessage(`Reset link dispatched to ${email}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("forgotPassword unexpected error:", err);
-      setErrorMessage(err.message || 'A problem occurred sending the reset email.');
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage(msg || 'A problem occurred sending the reset email.');
     }
   };
 
@@ -321,9 +324,10 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
         }
       }, 1000);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Google SSO Error:', err);
-      setErrorMessage(err.message || 'Something went wrong, try again');
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage(msg || 'Something went wrong, try again');
       setIsSubmitting(false);
     }
   };

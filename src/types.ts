@@ -20,6 +20,37 @@ export interface Task {
   projectId?: string | number;
 }
 
+export interface TaskRow {
+  id: number | string;
+  type?: ItemType;
+  title?: string;
+  category?: string;
+  energy?: EnergyType;
+  duration_minutes?: number | null;
+  duration?: string;
+  gravity_rank?: number | null;
+  gravity?: number;
+  is_completed?: boolean | null;
+  completed?: boolean;
+  start_time?: string | null;
+  startTime?: string;
+  end_time?: string | null;
+  endTime?: string;
+  description?: string | null;
+  notes?: string;
+  date?: string | null;
+  inbox_status?: Task['inboxStatus'];
+  inboxStatus?: Task['inboxStatus'];
+  captured_at?: string | null;
+  capturedAt?: string;
+  capture_source?: string | null;
+  captureSource?: string;
+  inbox_notes?: string | null;
+  inboxNotes?: string;
+  project_id?: string | number | null;
+  projectId?: string | number;
+}
+
 export interface Intention {
   id: number;
   text: string;

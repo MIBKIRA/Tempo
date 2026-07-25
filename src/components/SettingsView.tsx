@@ -264,7 +264,7 @@ export default function SettingsView({
               .from('avatars')
               .upload(filePath, file, { cacheControl: '3600', upsert: true });
             if (retryError) throw retryError;
-          } catch (bucketErr: any) {
+          } catch (bucketErr: unknown) {
             throw new Error("Could not write to Supabase Storage bucket. Please check storage bucket policies or create an 'avatars' bucket.");
           }
         } else {
@@ -286,8 +286,9 @@ export default function SettingsView({
       window.dispatchEvent(new Event("tempo-profile-updated"));
 
       setTimeout(() => setUploadProgress(0), 1200);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Avatar upload error, falling back:", err);
+      const errMsg = err instanceof Error ? err.message : String(err);
       try {
         // Fallback: convert to base64 for local persistence preview inside metadata if bucket doesn't support public write
         setUploadProgress(50);
@@ -302,7 +303,7 @@ export default function SettingsView({
           setTimeout(() => setUploadProgress(0), 1000);
         };
       } catch (fe) {
-        setProfileErrors(prev => ({ ...prev, avatar: err.message || "Failed to upload avatar" }));
+        setProfileErrors(prev => ({ ...prev, avatar: errMsg || "Failed to upload avatar" }));
         setUploadProgress(0);
       }
     } finally {
@@ -380,9 +381,10 @@ export default function SettingsView({
 
       triggerSaveNotification("Profile updated successfully!");
       window.dispatchEvent(new Event("tempo-profile-updated"));
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Save profile error:", err);
-      setProfileErrors({ save: err.message || "Could not save profile metadata." });
+      const msg = err instanceof Error ? err.message : String(err);
+      setProfileErrors({ save: msg || "Could not save profile metadata." });
     } finally {
       setIsSaving(false);
     }
