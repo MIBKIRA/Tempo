@@ -131,8 +131,6 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
         password,
       });
 
-      console.log("signIn response:", { data, error });
-
       if (error) {
         setErrorMessage(error.message);
         return;
@@ -244,8 +242,6 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
           },
         },
       });
-
-      console.log("signUp response:", { data, error });
 
       if (error) {
         setErrorMessage(error.message);
