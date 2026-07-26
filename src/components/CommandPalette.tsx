@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Search, Clock, Compass, HelpCircle, Activity, Sparkles, 
-  Check, FileJson, Sun, Moon, TreeDeciduous, 
+  Check, FileJson, Sun, Moon, TreeDeciduous, Coffee,
   Grid, Zap, CheckSquare, Plus, ArrowUpRight, ArrowRight,
   User, Settings, Calendar, Columns, Flame, BarChart3
 } from 'lucide-react';
@@ -11,7 +11,7 @@ interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate?: (tabId: string) => void;
-  onThemeChange?: (themeName: 'midnight' | 'paper' | 'forest') => void;
+  onThemeChange?: (themeName: 'midnight' | 'paper' | 'latte') => void;
   onOpenEveningReview?: () => void;
 }
 
@@ -279,14 +279,14 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onThemeCha
       }
     },
     {
-      id: 'act-theme-forest',
-      label: 'Switch to Forest Theme',
+      id: 'act-theme-latte',
+      label: 'Switch to Latte Theme',
       group: 'Actions',
-      icon: TreeDeciduous,
+      icon: Coffee,
       type: 'command',
       action: () => {
-        onThemeChange?.('forest');
-        triggerFeedback('Applied Deep Forest Green Theme');
+        onThemeChange?.('latte');
+        triggerFeedback('Applied Warm Latte Theme');
       }
     },
     {

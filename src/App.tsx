@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { 
   Command, Calendar, Mail, Bell, Settings, LogOut, Compass, 
   Layers, BarChart3, HelpCircle, Activity, ExternalLink, Columns, Flame
@@ -26,58 +27,57 @@ import AuthCallback from './components/AuthCallback';
 import EngineeredButton from './components/EngineeredButton';
 import EngineeredRocker from './components/EngineeredRocker';
 
+const PATH_TO_TAB: Record<string, { tab: string; viewMode?: 'day' | 'week' | 'month' }> = {
+  '/today': { tab: 'today', viewMode: 'day' },
+  '/week': { tab: 'week', viewMode: 'week' },
+  '/month': { tab: 'month', viewMode: 'month' },
+  '/habits': { tab: 'habits' },
+  '/energy-planner': { tab: 'focus' },
+  '/velocity': { tab: 'analytics' },
+  '/settings': { tab: 'integrations' },
+  '/evening-review': { tab: 'today', viewMode: 'day' },
+};
+
+const TAB_TO_PATH: Record<string, string> = {
+  'today': '/today',
+  'week': '/week',
+  'month': '/month',
+  'habits': '/habits',
+  'focus': '/energy-planner',
+  'analytics': '/velocity',
+  'integrations': '/settings',
+};
+
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const currentConfig = PATH_TO_TAB[location.pathname] || { tab: 'today', viewMode: 'day' };
+  const activeSidebarTab = currentConfig.tab;
+  const viewMode = currentConfig.viewMode || 'day';
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [userEmail, setUserEmail] = useState<string>('ryuk9079@gmail.com');
   const [userName, setUserName] = useState<string>('Adrian Vance');
   const [userAvatarUrl, setUserAvatarUrl] = useState<string>('');
-  const [activeSidebarTab, setActiveSidebarTab] = useState<string>('today');
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
 
-  // Custom SPA pathname router states and session hooks
-  const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname);
   const [isProfileComplete, setIsProfileComplete] = useState<boolean | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
 
-  // Simple SPA navigator helper
-  const navigate = (path: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path);
-  };
-
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('pushstate', handleLocationChange);
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('pushstate', handleLocationChange);
-    };
-  }, []);
-
   const handleViewChange = (v: 'day' | 'week' | 'month') => {
-    setViewMode(v);
     if (v === 'day') {
-      setActiveSidebarTab('today');
+      navigate('/today');
     } else if (v === 'week') {
-      setActiveSidebarTab('week');
+      navigate('/week');
     } else if (v === 'month') {
-      setActiveSidebarTab('month');
+      navigate('/month');
     }
   };
 
   const navigateToTab = (tabId: string) => {
-    setActiveSidebarTab(tabId);
-    if (tabId === 'today') {
-      setViewMode('day');
-    } else if (tabId === 'week') {
-      setViewMode('week');
-    } else if (tabId === 'month') {
-      setViewMode('month');
-    }
+    const targetPath = TAB_TO_PATH[tabId] || '/today';
+    navigate(targetPath);
   };
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export default function App() {
   // Lifted Tasks State from central context provider
   const { tasks } = useTasksData();
 
-  const [tasksHistory, setTasksHistory] = useState<Task[][]>([]);
+  const [tasksHistory] = useState<Task[][]>([]);
 
   const updateTasksWithHistory = (newTasks: Task[] | ((prev: Task[]) => Task[])) => {
     // Handled in real-time by Supabase and TasksContext CRUD methods now
@@ -135,13 +135,13 @@ export default function App() {
             setUserAvatarUrl(profile.avatar_url || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
-            } else if (window.location.pathname === '/complete-profile') {
-              navigate('/');
+            } else if (location.pathname === '/complete-profile') {
+              navigate('/today');
             }
           } else {
             setIsProfileComplete(true);
-            if (window.location.pathname === '/complete-profile') {
-              navigate('/');
+            if (location.pathname === '/complete-profile') {
+              navigate('/today');
             }
           }
         } else {
@@ -178,13 +178,13 @@ export default function App() {
             setUserAvatarUrl(profile.avatar_url || '');
             if (needsProfileCompletion) {
               navigate('/complete-profile');
-            } else if (window.location.pathname === '/complete-profile') {
-              navigate('/');
+            } else if (location.pathname === '/complete-profile') {
+              navigate('/today');
             }
           } else {
             setIsProfileComplete(true);
-            if (window.location.pathname === '/complete-profile') {
-              navigate('/');
+            if (location.pathname === '/complete-profile') {
+              navigate('/today');
             }
           }
         }
@@ -226,7 +226,8 @@ export default function App() {
       subscription.unsubscribe();
       window.removeEventListener("tempo-profile-updated", handleProfileUpdate);
     };
-  }, []);
+  }, [location.pathname, navigate]);
+
   const [activeFocusTask, setActiveFocusTask] = useState<Task | null>(() => {
     const savedRunning = localStorage.getItem("tempo-active-timer-running") === "true";
     if (savedRunning) {
@@ -249,23 +250,36 @@ export default function App() {
     }
     return null;
   });
+
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isEveningReviewOpen, setIsEveningReviewOpen] = useState<boolean>(false);
   const [compactSidebar, setCompactSidebar] = useState<boolean>(() => localStorage.getItem("tempo-compact-sidebar") === "true");
   const [showShortcutsInSidebar, setShowShortcutsInSidebar] = useState<boolean>(() => localStorage.getItem("tempo-show-shortcuts") !== "false");
-  const [theme, setTheme] = useState<'midnight' | 'paper' | 'forest'>(() => {
+  const [theme, setTheme] = useState<'midnight' | 'paper' | 'latte'>(() => {
     const saved = localStorage.getItem("tempo-theme") || "midnight-black";
     if (saved === "paper-light") return "paper";
-    if (saved === "forest-green") return "forest";
+    if (saved === "forest-green" || saved === "latte") return "latte";
     return "midnight";
   });
 
+  useEffect(() => {
+    if (location.pathname === '/evening-review') {
+      setIsEveningReviewOpen(true);
+    }
+  }, [location.pathname]);
+
+  const handleCloseEveningReview = () => {
+    setIsEveningReviewOpen(false);
+    if (location.pathname === '/evening-review') {
+      navigate('/today');
+    }
+  };
+
   // Apply theme class to document.documentElement on change or mount
   useEffect(() => {
-    const mapped = theme === 'midnight' ? 'midnight-black' : theme === 'paper' ? 'paper-light' : 'forest-green';
+    const mapped = theme === 'midnight' ? 'midnight-black' : theme === 'paper' ? 'paper-light' : 'latte';
     localStorage.setItem("tempo-theme", mapped);
     
-    // Maintain existing theme classes but toggle VFX and theme classes nicely
     document.documentElement.className = mapped;
     
     const isReduceMotion = localStorage.getItem("tempo-reduce-motion") === "true";
@@ -301,11 +315,9 @@ export default function App() {
         (el as HTMLElement)?.isContentEditable || 
         !!el?.closest?.('[contenteditable="true"]');
 
-      // 1. Structural Modals Early Exits (Prevent double-actions or background leaks)
+      // 1. Structural Modals Early Exits
       const isFocusModeActive = activeFocusTask !== null;
       if (isFocusModeActive) {
-        // Focus Mode is active. Let FocusMode handle Space, Esc, Ctrl+I.
-        // We only allow Ctrl+K to toggle Command Palette.
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
           e.preventDefault();
           setIsCommandPaletteOpen(prev => !prev);
@@ -314,7 +326,6 @@ export default function App() {
       }
 
       if (isEveningReviewOpen) {
-        // Evening Review modal is open. Only handle dialog interactions.
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
           e.preventDefault();
           setIsCommandPaletteOpen(prev => !prev);
@@ -323,7 +334,6 @@ export default function App() {
       }
 
       if (isCommandPaletteOpen) {
-        // Command Palette is open. Only Ctrl+K lets us toggle/close it.
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
           e.preventDefault();
           setIsCommandPaletteOpen(false);
@@ -331,7 +341,7 @@ export default function App() {
         return;
       }
 
-      // 2. Modifier keys checks (Available globally unless focusing an input where it would conflict, e.g., Undo)
+      // 2. Modifier keys checks
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
         e.preventDefault();
         triggerToast("All transient memories and status anchors saved automatically!");
@@ -378,7 +388,7 @@ export default function App() {
 
       if (e.key === '?') {
         e.preventDefault();
-        setActiveSidebarTab('integrations');
+        navigate('/settings');
         localStorage.setItem("tempo-settings-active-tab", "shortcuts");
         window.dispatchEvent(new Event("tempo-settings-tab-changed"));
         triggerToast("Opened Shortcut Settings reference overview");
@@ -388,60 +398,56 @@ export default function App() {
       // View nav paths
       if (e.key.toLowerCase() === 't') {
         e.preventDefault();
-        setActiveSidebarTab('today');
-        setViewMode('day');
+        navigate('/today');
         triggerToast("Today Dashboard focus cockpit loaded");
         return;
       }
 
       if (e.key.toLowerCase() === 'w') {
         e.preventDefault();
-        setActiveSidebarTab('week');
-        setViewMode('week');
+        navigate('/week');
         triggerToast("Week view loaded");
         return;
       }
 
       if (e.key.toLowerCase() === 'c') {
         e.preventDefault();
-        setActiveSidebarTab('month');
-        setViewMode('month');
+        navigate('/month');
         triggerToast("Month view calendar calendar deck loaded");
         return;
       }
 
       if (e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setActiveSidebarTab('today');
-        setViewMode('day');
+        navigate('/today');
         triggerToast("Today task checklist cockpit highlighted");
         return;
       }
 
       if (e.key.toLowerCase() === 'h') {
         e.preventDefault();
-        setActiveSidebarTab('habits');
+        navigate('/habits');
         triggerToast("Habits tracking space highlighted");
         return;
       }
 
       if (e.key.toLowerCase() === 'a') {
         e.preventDefault();
-        setActiveSidebarTab('analytics');
+        navigate('/velocity');
         triggerToast("Velocity dashboard highlighted");
         return;
       }
 
       if (e.key.toLowerCase() === 'r') {
         e.preventDefault();
-        setIsEveningReviewOpen(true);
+        navigate('/evening-review');
         triggerToast("Evening wind-down review initiated");
         return;
       }
 
       if (e.key === ',') {
         e.preventDefault();
-        setActiveSidebarTab('integrations');
+        navigate('/settings');
         triggerToast("Settings dashboard configuration panel opened");
         return;
       }
@@ -449,8 +455,7 @@ export default function App() {
       // Single-letter Task Actions
       if (e.key.toLowerCase() === 'n') {
         e.preventDefault();
-        setActiveSidebarTab('today');
-        setViewMode('day');
+        navigate('/today');
         setTimeout(() => {
           const quickInput = document.getElementById('quick-task-input');
           if (quickInput) {
@@ -460,82 +465,10 @@ export default function App() {
         }, 80);
         return;
       }
-
-      if (e.key === ' ') {
-        e.preventDefault();
-        const firstUncompleted = tasks.find(t => !t.completed);
-        if (firstUncompleted) {
-          updateTasksWithHistory(prev => prev.map(t => t.id === firstUncompleted.id ? { ...t, completed: true } : t));
-          triggerToast(`Task completed: "${firstUncompleted.title}"`);
-        } else {
-          triggerToast("All task units completed!");
-        }
-        return;
-      }
-
-      if (e.key.toLowerCase() === 'e') {
-        e.preventDefault();
-        const firstUncompleted = tasks.find(t => !t.completed);
-        if (firstUncompleted) {
-          const newTitle = prompt("Edit Task Title:", firstUncompleted.title);
-          if (newTitle && newTitle.trim()) {
-            updateTasksWithHistory(prev => prev.map(t => t.id === firstUncompleted.id ? { ...t, title: newTitle.trim() } : t));
-            triggerToast("Task title updated successfully");
-          }
-        } else {
-          triggerToast("No uncompleted tasks available to edit");
-        }
-        return;
-      }
-
-      if (e.key.toLowerCase() === 's') {
-        e.preventDefault();
-        const firstUncompleted = tasks.find(t => !t.completed);
-        if (firstUncompleted) {
-          const val = prompt("Enter rescheduled duration details (e.g. 15m, 30m, 45m, 60m):", firstUncompleted.duration);
-          if (val && val.trim()) {
-            updateTasksWithHistory(prev => prev.map(t => t.id === firstUncompleted.id ? { ...t, duration: val.trim() } : t));
-            triggerToast(`Task scheduling updated successfully: ${val.trim()}`);
-          }
-        } else {
-          triggerToast("No active tasks available to reschedule");
-        }
-        return;
-      }
-
-      if (e.key.toLowerCase() === 'g') {
-        e.preventDefault();
-        const firstUncompleted = tasks.find(t => !t.completed);
-        if (firstUncompleted) {
-          const val = prompt("Update priority gravity index score (0-100):", String(firstUncompleted.gravity));
-          const parsed = parseInt(val || '');
-          if (!isNaN(parsed) && parsed >= 0 && parsed <= 100) {
-            updateTasksWithHistory(prev => prev.map(t => t.id === firstUncompleted.id ? { ...t, gravity: parsed } : t));
-            triggerToast(`Task gravity index score repositioned to ${parsed}%`);
-          }
-        } else {
-          triggerToast("No active task available to priority gravity-rank");
-        }
-        return;
-      }
-
-      if (e.key.toLowerCase() === 'd') {
-        e.preventDefault();
-        const firstUncompleted = tasks.find(t => !t.completed);
-        if (firstUncompleted) {
-          if (confirm(`Do you wish to securely delete active task "${firstUncompleted.title}"?`)) {
-            updateTasksWithHistory(prev => prev.filter(t => t.id !== firstUncompleted.id));
-            triggerToast("Task deleted securely form queue");
-          }
-        } else {
-          triggerToast("No active tasks available to delete");
-        }
-        return;
-      }
     };
     window.addEventListener('keydown', handleGlobalKeyDown, { passive: false });
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [tasks, activeSidebarTab, viewMode, activeFocusTask, isCommandPaletteOpen, isEveningReviewOpen, tasksHistory]);
+  }, [tasks, location.pathname, activeFocusTask, isCommandPaletteOpen, isEveningReviewOpen, tasksHistory, navigate]);
 
   // Resume running session on sidebar 'focus' tab click
   useEffect(() => {
@@ -577,7 +510,7 @@ export default function App() {
 
     setActiveFocusTask(null);
     if (activeSidebarTab === 'focus') {
-      setActiveSidebarTab('today');
+      navigate('/today');
     }
     window.dispatchEvent(new Event("tempo-active-session-changed"));
   };
@@ -585,7 +518,7 @@ export default function App() {
   const handleMinimizeFocusMode = () => {
     setActiveFocusTask(null);
     if (activeSidebarTab === 'focus') {
-      setActiveSidebarTab('today');
+      navigate('/today');
     }
   };
 
@@ -608,12 +541,12 @@ export default function App() {
             if (needsProfileCompletion) {
               navigate('/complete-profile');
             } else {
-              navigate('/');
+              navigate('/today');
             }
           });
       } else {
         setIsProfileComplete(true);
-        navigate('/');
+        navigate('/today');
       }
     });
   };
@@ -631,7 +564,7 @@ export default function App() {
     if (!isComplete) {
       navigate('/complete-profile');
     } else {
-      navigate('/');
+      navigate('/today');
     }
   };
 
@@ -639,14 +572,10 @@ export default function App() {
     setIsProfileComplete(true);
     setUserName(newUsername);
     window.dispatchEvent(new Event('tempo-profile-updated'));
-    navigate('/');
+    navigate('/today');
   };
 
   const renderContent = () => {
-    if (currentPath.startsWith('/auth/callback')) {
-      return <AuthCallback onComplete={handleCallbackComplete} />;
-    }
-
     if (isLoadingSession) {
       return (
         <div className="min-h-screen w-full bg-[#0D0D0F] flex flex-col items-center justify-center p-6 select-none">
@@ -655,15 +584,20 @@ export default function App() {
       );
     }
 
+    if (location.pathname.startsWith('/auth/callback')) {
+      return <AuthCallback onComplete={handleCallbackComplete} />;
+    }
+
     if (!isAuthenticated) {
+      if (location.pathname !== '/') {
+        return <Navigate to="/" replace />;
+      }
       return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
     }
 
     if (isProfileComplete === false) {
-      if (currentPath !== '/complete-profile') {
-        setTimeout(() => {
-          navigate('/complete-profile');
-        }, 0);
+      if (location.pathname !== '/complete-profile') {
+        return <Navigate to="/complete-profile" replace />;
       }
       return (
         <CompleteProfile 
@@ -673,16 +607,18 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/complete-profile' && isProfileComplete === true) {
-      setTimeout(() => {
-        navigate('/');
-      }, 0);
+    if (location.pathname === '/' || location.pathname === '/complete-profile') {
+      return <Navigate to="/today" replace />;
+    }
+
+    if (!PATH_TO_TAB[location.pathname] && location.pathname !== '/evening-review') {
+      return <Navigate to="/today" replace />;
     }
 
     return (
       <div className="min-h-screen w-full flex bg-[var(--tempo-bg-primary)] overflow-hidden transition-colors duration-200">
           
-          {/* LEFT SIDEBAR VIEW (exactly 240px width as specified, or 80px if compact) */}
+          {/* LEFT SIDEBAR VIEW */}
           <aside 
             id="main-sidebar" 
             className={`${
@@ -777,7 +713,7 @@ export default function App() {
                 <div className="h-[1px] bg-[#2A2A2D]/55 my-2" />
                 
                 <button
-                  onClick={() => setIsEveningReviewOpen(true)}
+                  onClick={() => navigate('/evening-review')}
                   title={compactSidebar ? "Evening Review" : undefined}
                   className={`w-full flex items-center rounded-lg bg-[#FB7185]/5 border border-[#FB7185]/15 hover:border-[#FB7185]/35 text-[#FB7185] hover:bg-[#FB7185]/10 transition-all duration-150 cursor-pointer ${
                     compactSidebar ? 'justify-center py-2.5 px-0' : 'justify-between px-3 py-2 text-xs font-semibold'
@@ -800,7 +736,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* User Account Profile with click triggers to simulate Logout demo */}
+            {/* User Account Profile */}
             <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'flex-col gap-4'} border-t border-[#2A2A2D]/40 pt-6 pr-1`}>
 
               <div className={`flex ${compactSidebar ? 'flex-col items-center gap-3' : 'items-center justify-between'} w-full min-w-0`}>
@@ -840,7 +776,7 @@ export default function App() {
 
           {/* MAIN CHASSIS: Filling remaining width of screen */}
           <main className="flex-grow flex flex-col h-screen overflow-hidden">
-            <AnimatedPage pageKey={`${activeSidebarTab}-${viewMode}`}>
+            <AnimatedPage pageKey={location.pathname}>
               {activeSidebarTab === 'today' ? (
                 viewMode === 'day' ? (
                   <TodayView 
@@ -850,7 +786,7 @@ export default function App() {
                     onViewChange={handleViewChange}
                     onStartFocusMode={(t) => {
                       setActiveFocusTask(t);
-                      setActiveSidebarTab('focus');
+                      navigate('/energy-planner');
                     }}
                     tasks={tasks}
                     setTasks={updateTasksWithHistory}
@@ -881,7 +817,7 @@ export default function App() {
                   tasks={tasks}
                   onStartFocusSession={(t) => {
                     setActiveFocusTask(t);
-                    setActiveSidebarTab('focus');
+                    navigate('/energy-planner');
                   }}
                 />
               ) : activeSidebarTab === 'integrations' ? (
@@ -894,20 +830,7 @@ export default function App() {
                   onShowShortcutsInSidebarChange={setShowShortcutsInSidebar}
                 />
               ) : (
-                <div className="flex-grow flex flex-col items-center justify-center p-8 select-none text-center bg-[#0D0D0F]">
-                  <LogoSm className="w-10 h-10 mb-3 animate-pulse" style={{ animationDuration: '2s' }} />
-                  <h2 className="text-sm font-sans font-bold text-[#F1F1F1]">Modular App View Loading</h2>
-                  <p className="text-xs text-[#8A8A90] max-w-sm mt-1 mb-4">
-                    You requested to open {activeSidebarTab}. Access remains optimized on the core Today view cockpit.
-                  </p>
-                  <EngineeredButton
-                    variant="primary"
-                    onClick={() => setActiveSidebarTab('today')}
-                    showArrow={false}
-                  >
-                    Return to Today
-                  </EngineeredButton>
-                </div>
+                <Navigate to="/today" replace />
               )}
             </AnimatedPage>
           </main>
@@ -936,21 +859,16 @@ export default function App() {
             isOpen={isCommandPaletteOpen}
             onClose={() => setIsCommandPaletteOpen(false)}
             onNavigate={(tabId) => {
-              if (tabId === 'week' || tabId === 'month') {
-                setActiveSidebarTab('today');
-                setViewMode(tabId === 'week' ? 'week' : 'month');
-              } else {
-                setActiveSidebarTab(tabId);
-              }
+              navigateToTab(tabId);
             }}
-            onOpenEveningReview={() => setIsEveningReviewOpen(true)}
+            onOpenEveningReview={() => navigate('/evening-review')}
             onThemeChange={setTheme}
           />
 
           {/* Evening Review Wind-down Panel Overlay */}
           <EveningReview 
             isOpen={isEveningReviewOpen}
-            onClose={() => setIsEveningReviewOpen(false)}
+            onClose={handleCloseEveningReview}
           />
 
           {/* Floating toggle button for quick layout review */}

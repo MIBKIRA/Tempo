@@ -13,16 +13,16 @@
   --tempo-bg-tertiary: #1C1C1F;
   --tempo-border: #2A2A2D;
   --tempo-border-hover: #3D3D42;
-  --tempo-accent-blue: var(--color-accent, #3b82f6);
-  --tempo-accent-purple: #8B5CF6;
-  --tempo-accent-green: #34D399;
-  --tempo-accent-amber: #FBBF24;
-  --tempo-accent-coral: #FB7185;
-  --tempo-accent-teal: #2DD4BF;
+  --tempo-accent-blue: var(--color-accent, #3654E8);
+  --tempo-accent-purple: #6B46C1;
+  --tempo-accent-green: #0E9F6E;
+  --tempo-accent-amber: #D97706;
+  --tempo-accent-coral: #DC4C4C;
+  --tempo-accent-teal: #0D8A8A;
   --tempo-text-primary: #F1F1F1;
   --tempo-text-secondary: #8A8A90;
   --tempo-text-muted: #4A4A52;
-  --color-accent: #3b82f6;
+  --color-accent: #3654E8;
   --color-deep: #8B5CF6;
   --color-light: #60A5FA;
   --color-admin: #FBBF24;
@@ -46,12 +46,12 @@
   --tempo-bg-tertiary: #E5E2DB;
   --tempo-border: #D1CFCA;
   --tempo-border-hover: #AFAEA8;
-  --tempo-accent-blue: var(--color-accent, #2563EB);
-  --tempo-accent-purple: #7C3AED;
-  --tempo-accent-green: #059669;
-  --tempo-accent-amber: #D97706;
-  --tempo-accent-coral: #E11D48;
-  --tempo-accent-teal: #0D9488;
+  --tempo-accent-blue: var(--color-accent, #2841C4);
+  --tempo-accent-purple: #5B32A8;
+  --tempo-accent-green: #0B7A54;
+  --tempo-accent-amber: #B45F04;
+  --tempo-accent-coral: #B8393A;
+  --tempo-accent-teal: #0A6B6B;
   --tempo-text-primary: #1C1C1F;
   --tempo-text-secondary: #4A4A52;
   --tempo-text-muted: #8A8A90;
@@ -109,66 +109,74 @@
   background: var(--tempo-border-hover) !important;
 }
 
-/* 2. FOREST GREEN THEME */
-.forest-green {
-  --tempo-bg-primary: #0A140F; /* deep dark forest green background */
-  --tempo-bg-secondary: #0F2218;
-  --tempo-bg-tertiary: #173324;
-  --tempo-border: #234E37;
-  --tempo-border-hover: #33714E;
-  --tempo-accent-blue: var(--color-accent, #60A5FA);
-  --tempo-accent-purple: #A78BFA;
-  --tempo-accent-green: #34D399;
-  --tempo-accent-amber: #FBBF24;
-  --tempo-accent-coral: #FB7185;
-  --tempo-accent-teal: #2DD4BF;
-  --tempo-text-primary: #ECFDF5;
-  --tempo-text-secondary: #A7F3D0;
-  --tempo-text-muted: #528965;
+/* 2. LATTE THEME */
+.latte {
+  --tempo-bg-primary: #1A120B;
+  --tempo-bg-secondary: #241A11;
+  --tempo-bg-tertiary: #332417;
+  --tempo-border: #4A3826;
+  --tempo-border-hover: #6B5238;
+  --tempo-accent-blue: var(--color-accent, #C79A5D);
+  --tempo-accent-purple: #9C7166;
+  --tempo-accent-green: #8D9463;
+  --tempo-accent-amber: #C17D45;
+  --tempo-accent-coral: #C17A5C;
+  --tempo-accent-teal: #5C8574;
+  --tempo-text-primary: #F5EBDD;
+  --tempo-text-secondary: #B8A48F;
+  --tempo-text-muted: #6B5A48;
 }
 
-/* Map hardcoded background colors to their variable counterparts in Forest Green */
-.forest-green,
-.forest-green .bg-\[\#0D0D0F\],
-.forest-green .bg-\[\#0d0d0f\],
-.forest-green .bg-\[\#0D0D0FB3\],
-.forest-green .bg-\[\#0A0A0C\],
-.forest-green .bg-\[\#0a0a0c\] {
+/* Map hardcoded background colors to their variable counterparts in Latte */
+.latte,
+.latte .bg-\[\#0D0D0F\],
+.latte .bg-\[\#0d0d0f\],
+.latte .bg-\[\#0D0D0FB3\],
+.latte .bg-\[\#0A0A0C\],
+.latte .bg-\[\#0a0a0c\] {
   background-color: var(--tempo-bg-primary) !important;
 }
 
-.forest-green .bg-\[\#141416\],
-.forest-green .bg-\[\#141416\]\/50,
-.forest-green .bg-\[\#0E0E10\] {
+.latte .bg-\[\#141416\],
+.latte .bg-\[\#141416\]\/50,
+.latte .bg-\[\#0E0E10\] {
   background-color: var(--tempo-bg-secondary) !important;
 }
 
-.forest-green .bg-\[\#1C1C1F\] {
+.latte .bg-\[\#1C1C1F\] {
   background-color: var(--tempo-bg-tertiary) !important;
 }
 
-.forest-green .border-\[\#2A2A2D\],
-.forest-green .border-\[\#2A2A2D\]\/60,
-.forest-green .border-\[\#2A2A2D\]\/40,
-.forest-green .border-\[\#2A2A2D\]\/55,
-.forest-green .border-\[\#2A2A2D\]\/70,
-.forest-green .border-r-\[\#2A2A2D\],
-.forest-green .border-b-\[\#2A2A2D\],
-.forest-green .border-t-\[\#2A2A2D\] {
+.latte .border-\[\#2A2A2D\],
+.latte .border-\[\#2A2A2D\]\/60,
+.latte .border-\[\#2A2A2D\]\/40,
+.latte .border-\[\#2A2A2D\]\/55,
+.latte .border-\[\#2A2A2D\]\/70,
+.latte .border-r-\[\#2A2A2D\],
+.latte .border-b-\[\#2A2A2D\],
+.latte .border-t-\[\#2A2A2D\] {
   border-color: var(--tempo-border) !important;
 }
 
-.forest-green .text-\[\#F1F1F1\],
-.forest-green .text-white {
+.latte .text-\[\#F1F1F1\],
+.latte .text-white {
   color: var(--tempo-text-primary) !important;
 }
 
-.forest-green .text-\[\#8A8A90\] {
+.latte .text-\[\#8A8A90\] {
   color: var(--tempo-text-secondary) !important;
 }
 
-.forest-green .text-\[\#4A4A52\] {
+.latte .text-\[\#4A4A52\] {
   color: var(--tempo-text-muted) !important;
+}
+
+/* Ensure clean scrollbars in latte theme */
+.latte ::-webkit-scrollbar-thumb {
+  background: var(--tempo-border) !important;
+}
+.latte ::-webkit-scrollbar-thumb:hover {
+  background: var(--tempo-border-hover) !important;
 }
 
 /* Dynamic overrides for hardcoded Tailwind blues so they dynamically respect --color-accent too! */

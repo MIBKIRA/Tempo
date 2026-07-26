@@ -15,8 +15,8 @@ interface ShortcutRow {
 }
 
 interface SettingsViewProps {
-  currentTheme?: 'midnight' | 'paper' | 'forest';
-  onThemeChange?: (themeName: 'midnight' | 'paper' | 'forest') => void;
+  currentTheme?: 'midnight' | 'paper' | 'latte';
+  onThemeChange?: (themeName: 'midnight' | 'paper' | 'latte') => void;
   compactSidebar?: boolean;
   onCompactSidebarChange?: (value: boolean) => void;
   showShortcutsInSidebar?: boolean;
@@ -51,26 +51,26 @@ export default function SettingsView({
   }, []);
 
   // 2. APPEARANCE STATES
-  const [localTheme, setLocalTheme] = useState<'midnight' | 'paper' | 'forest'>(() => {
+  const [localTheme, setLocalTheme] = useState<'midnight' | 'paper' | 'latte'>(() => {
     const saved = localStorage.getItem("tempo-theme") || "midnight-black";
     if (saved === "paper-light") return "paper";
-    if (saved === "forest-green") return "forest";
+    if (saved === "forest-green" || saved === "latte") return "latte";
     return "midnight";
   });
   const activeTheme = currentTheme || localTheme;
 
-  const setActiveTheme = (themeValue: 'midnight' | 'paper' | 'forest') => {
+  const setActiveTheme = (themeValue: 'midnight' | 'paper' | 'latte') => {
     setLocalTheme(themeValue);
     if (onThemeChange) {
       onThemeChange(themeValue);
     } else {
-      const mapped = themeValue === 'midnight' ? 'midnight-black' : themeValue === 'paper' ? 'paper-light' : 'forest-green';
+      const mapped = themeValue === 'midnight' ? 'midnight-black' : themeValue === 'paper' ? 'paper-light' : 'latte';
       localStorage.setItem("tempo-theme", mapped);
       document.documentElement.className = mapped;
     }
   };
 
-  const [activeAccent, setActiveAccent] = useState<string>(() => localStorage.getItem("tempo-accent-color") || '#3b82f6'); // Default Blue
+  const [activeAccent, setActiveAccent] = useState<string>(() => localStorage.getItem("tempo-accent-color") || '#3654E8'); // Default Blue
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xl'>(() => (localStorage.getItem("tempo-font-scale") as 'small' | 'medium' | 'large' | 'xl') || 'medium');
   
   // Sidebar toggles
@@ -585,7 +585,7 @@ export default function SettingsView({
 
   // Accent Colors Preset list
   const accentColors = [
-    { name: 'Blue', value: '#3b82f6' },
+    { name: 'Blue', value: '#3654E8' },
     { name: 'Purple', value: '#a855f7' },
     { name: 'Green', value: '#10b981' },
     { name: 'Teal', value: '#14b8a6' },
@@ -852,35 +852,35 @@ export default function SettingsView({
                       <div className="text-xs font-bold text-stone-900 text-center">Paper Light</div>
                     </div>
 
-                    {/* Theme Theme 3: Deep Forest tinted */}
+                    {/* Theme 3: Warm Latte */}
                     <div 
                       onClick={() => {
-                        setActiveTheme('forest');
+                        setActiveTheme('latte');
                         triggerSaveNotification();
                       }}
-                      className={`rounded-12 p-3.5 bg-[#0B1510] border cursor-pointer select-none relative group transition-all transform hover:translate-y-[-1px] ${
-                        activeTheme === 'forest' 
+                      className={`rounded-12 p-3.5 bg-[#1A120B] border cursor-pointer select-none relative group transition-all transform hover:translate-y-[-1px] ${
+                        activeTheme === 'latte' 
                           ? 'border-[var(--tempo-accent-blue)] ring-2 ring-[var(--tempo-accent-blue)]/10' 
-                          : 'border-[#2A2A2D] hover:border-[#3D3D42]'
+                          : 'border-[#4A3826] hover:border-[#6B5238]'
                       }`}
                     >
-                      {activeTheme === 'forest' && (
+                      {activeTheme === 'latte' && (
                         <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[var(--tempo-accent-blue)] flex items-center justify-center text-white p-0.5">
                           <Check className="w-3.5 h-3.5 stroke-[3px]" />
                         </div>
                       )}
                       {/* Mini visual frame representation */}
-                      <div className="w-full h-20 rounded-8 bg-[#0D1F16] border border-[#1F3323] p-2 flex flex-col justify-between mb-2">
+                      <div className="w-full h-20 rounded-8 bg-[#241A11] border border-[#4A3826] p-2 flex flex-col justify-between mb-2">
                         <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#34D399]" />
-                          <div className="w-8 h-1 bg-[#1F3D2A] rounded" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-[#C79A5D]" />
+                          <div className="w-8 h-1 bg-[#332417] rounded" />
                         </div>
                         <div className="space-y-1">
-                          <div className="w-full h-1 bg-[#1E3B27] rounded" />
-                          <div className="w-3/4 h-1 bg-[#1E3B27] rounded" />
+                          <div className="w-full h-1 bg-[#4A3826] rounded" />
+                          <div className="w-3/4 h-1 bg-[#4A3826] rounded" />
                         </div>
                       </div>
-                      <div className="text-xs font-bold text-emerald-400 text-center">Forest Green</div>
+                      <div className="text-xs font-bold text-[#C79A5D] text-center">Latte</div>
                     </div>
 
                   </div>
