@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
-  User, Bell, Keyboard, Palette, Calendar, Timer, Bot, Lock, Database, 
-  CreditCard, Check, Search, Plus, Sparkles, Sliders, Volume2, ShieldAlert, 
+  User, Bell, Keyboard, Palette, Calendar, Timer, Lock, Database, 
+  Check, Search, Plus, Sparkles, Sliders, Volume2, ShieldAlert, 
   Download, Upload, RefreshCw, Smartphone, Eye, EyeOff
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
@@ -32,18 +32,23 @@ export default function SettingsView({
   onShowShortcutsInSidebarChange
 }: SettingsViewProps = {}) {
   // 1. ACTIVE SIDEBAR CATEGORY TAB STATE
-  const [activeTab, setActiveTabState] = useState<string>(() => localStorage.getItem("tempo-settings-active-tab") || 'appearance');
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    const saved = localStorage.getItem("tempo-settings-active-tab");
+    if (saved === 'billing' || saved === 'ai_assistant') return 'profile';
+    return saved || 'appearance';
+  });
 
   const setActiveTab = (tab: string) => {
-    localStorage.setItem("tempo-settings-active-tab", tab);
-    setActiveTabState(tab);
+    const targetTab = (tab === 'billing' || tab === 'ai_assistant') ? 'profile' : tab;
+    localStorage.setItem("tempo-settings-active-tab", targetTab);
+    setActiveTabState(targetTab);
   };
 
   useEffect(() => {
     const handleTabChange = () => {
       const saved = localStorage.getItem("tempo-settings-active-tab");
       if (saved) {
-        setActiveTabState(saved);
+        setActiveTabState((saved === 'billing' || saved === 'ai_assistant') ? 'profile' : saved);
       }
     };
     window.addEventListener("tempo-settings-tab-changed", handleTabChange);
@@ -522,15 +527,8 @@ export default function SettingsView({
 
   const [enableSoundChime, setEnableSoundChime] = useState<boolean>(true);
 
-  // 7. AI ASSISTANT STATES
-  const [aiEnabled, setAiEnabled] = useState<boolean>(true);
-  const [aiAutomateReflections, setAiAutomateReflections] = useState<boolean>(true);
-  const [aiInterruptionShield, setAiInterruptionShield] = useState<boolean>(true);
-  const [aiAssistantModel, setAiAssistantModel] = useState<string>('gemini-2.5-pro');
-
   // 8. BILLING / CREDIT CARD STATES
   const [billingPlan, setBillingPlan] = useState<'free' | 'pro' | 'enterprise'>('pro');
-  const [isCopiedInvoice, setIsCopiedInvoice] = useState<string | null>(null);
 
   // 9. DATA EXPORT ACTIONS
   const [isExporting, setIsExporting] = useState<boolean>(false);
@@ -603,10 +601,8 @@ export default function SettingsView({
     { id: 'appearance', name: 'Appearance', icon: Palette },
     { id: 'calendar', name: 'Calendar & Sync', icon: Calendar },
     { id: 'focus_pomo', name: 'Focus & Pomodoro', icon: Timer },
-    { id: 'ai_assistant', name: 'AI Assistant', icon: Bot },
     { id: 'privacy', name: 'Privacy', icon: Lock },
-    { id: 'data', name: 'Data & Export', icon: Database },
-    { id: 'billing', name: 'Billing', icon: CreditCard }
+    { id: 'data', name: 'Data & Export', icon: Database }
   ];
 
   // Simulated Save Handler
@@ -741,9 +737,6 @@ export default function SettingsView({
                       <span className="text-[8px] font-mono bg-[#1C1C1F] text-[#4A4A52] px-1 rounded uppercase tracking-tighter">
                         ⌥Ctrl
                       </span>
-                    )}
-                    {item.id === 'ai_assistant' && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FB7185] animate-pulse" />
                     )}
                   </button>
                 );
@@ -1778,77 +1771,6 @@ export default function SettingsView({
             )}
 
             {/* ========================================================= */}
-            {/* VIEW G: AI ASSISTANT                                      */}
-            {/* ========================================================= */}
-            {activeTab === 'ai_assistant' && (
-              <div className="flex flex-col gap-6 animate-fade-in">
-                <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">AI Assistant</h2>
-                  <p className="text-sm text-[#8A8A90]">Configure server-side Gemini intelligence models to auto-categorize habits and time debts.</p>
-                </header>
-
-                <div className="flex flex-col gap-4 bg-[#141416]/50 border border-[#2A2A2D]/45 rounded-12 p-4">
-                  
-                  {/* AI toggle */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-white">Enable Assistant Advice</span>
-                      <span className="text-[11px] text-[#8A8A90]">Surface daily reflection alerts inside core dashboard cards</span>
-                    </div>
-                    <button
-                      onClick={() => { setAiEnabled(!aiEnabled); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiEnabled ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
-                    >
-                      <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
-                    </button>
-                  </div>
-
-                  {/* Automation toggle */}
-                  <div className="flex items-center justify-between border-t border-[#2A2A2D]/40 pt-4">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-white">Automate Weekly Reflection Logs</span>
-                      <span className="text-[11px] text-[#8A8A90]">Auto-write draft outlines of "what went well" to jumpstart reviews</span>
-                    </div>
-                    <button
-                      onClick={() => { setAiAutomateReflections(!aiAutomateReflections); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiAutomateReflections ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
-                    >
-                      <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiAutomateReflections ? 'translate-x-5' : 'translate-x-0'}`} />
-                    </button>
-                  </div>
-
-                  {/* Shield toggle */}
-                  <div className="flex items-center justify-between border-t border-[#2A2A2D]/40 pt-4">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-white">Interruption Shield Guard</span>
-                      <span className="text-[11px] text-[#8A8A90]">AI filters notification alerts if active focus mode exceeds threshold</span>
-                    </div>
-                    <button
-                      onClick={() => { setAiInterruptionShield(!aiInterruptionShield); triggerSaveNotification(); }}
-                      className={`w-11 h-6 rounded-full p-1 toggle-track-transition cursor-pointer ${aiInterruptionShield ? 'bg-[var(--tempo-accent-blue)]' : 'bg-[#2A2A2D]'}`}
-                    >
-                      <div className={`w-4 h-4 rounded-full bg-white shadow toggle-circle-transition ${aiInterruptionShield ? 'translate-x-5' : 'translate-x-0'}`} />
-                    </button>
-                  </div>
-
-                </div>
-
-                <div className="flex flex-col gap-2 p-4 bg-[#0E0E10] border border-[#2A2A2D] rounded-12 max-w-sm">
-                  <span className="text-[11px] font-mono text-[#8A8A90] font-bold uppercase">Intelligence Core Engine</span>
-                  <select
-                    value={aiAssistantModel}
-                    onChange={(e) => { setAiAssistantModel(e.target.value); triggerSaveNotification(); }}
-                    className="w-full bg-[#141416] border border-[#2A2A2D] p-1.5 rounded mt-1 text-xs text-white font-mono"
-                  >
-                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Recommended)</option>
-                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Performance)</option>
-                    <option value="custom-api">Custom API Tunnel Proxy</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {/* ========================================================= */}
             {/* VIEW H: PRIVACY SETTINGS                                  */}
             {/* ========================================================= */}
             {activeTab === 'privacy' && (
@@ -1931,80 +1853,6 @@ export default function SettingsView({
             )}
 
             {/* ========================================================= */}
-            {/* VIEW J: BILLING PLATFORM                                  */}
-            {/* ========================================================= */}
-            {activeTab === 'billing' && (
-              <div className="flex flex-col gap-6 animate-fade-in">
-                <header className="flex flex-col gap-1 border-b border-[#2A2A2D] pb-4">
-                  <h2 className="text-xl md:text-2xl font-serif text-[#F1F1F1] tracking-tight">Billing & Invoices</h2>
-                  <p className="text-sm text-[#8A8A90]">Manage your subscription tier, billing period, and past receipts.</p>
-                </header>
-
-                <div className="flex flex-col gap-4 bg-[#141416] border border-[#2A2A2D] p-5 rounded-12 relative overflow-hidden">
-                  
-                  {/* Decorative background visual glow */}
-                  <div className="absolute right-0 top-0 w-36 h-36 bg-[var(--tempo-accent-blue)]/5 rounded-full blur-2xl pointer-events-none" />
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-[var(--tempo-accent-blue)] font-bold uppercase tracking-wider">CURRENT SUBSCRIPTION</span>
-                      <h3 className="text-lg font-bold text-white mt-1">Tempo Professional</h3>
-                      <span className="text-xs text-[#8A8A90]">$12 per seat / month • Next charge date: July 1, 2026</span>
-                    </div>
-
-                    <span className="px-3 py-1 rounded bg-[#34D399]/15 border border-[#34D399]/25 text-xs text-[#34D399] font-bold">
-                      ACTIVE (Pro)
-                    </span>
-                  </div>
-
-                  <div className="border-t border-[#2A2A2D] pt-4 flex gap-2">
-                    <button 
-                      onClick={() => triggerSaveNotification()}
-                      className="px-3.5 py-1.5 rounded bg-[#1C1C1F] text-xs font-bold text-white border border-[#2A2A2D] hover:bg-white/5 cursor-pointer duration-150"
-                    >
-                      Update Card Details
-                    </button>
-                    <button 
-                      onClick={() => triggerSaveNotification()}
-                      className="px-3.5 py-1.5 rounded bg-transparent text-xs text-[#8A8A90] hover:text-white cursor-pointer duration-150"
-                    >
-                      Cancel Plan
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2.5">
-                  <span className="text-xs font-mono uppercase tracking-wider text-[#8A8A90] font-bold">Invoice History</span>
-                  
-                  <div className="flex flex-col border border-[#2A2A2D] rounded-12 bg-[#0E0E10] overflow-hidden divide-y divide-[#2A2A2D]/50 text-xs">
-                    
-                    <div className="flex justify-between items-center p-3 px-4 hover:bg-white/[0.01]">
-                      <span className="font-mono text-[#8A8A90]">June 1, 2026</span>
-                      <span className="text-white font-semibold">Pro Plan Sub ($12.00)</span>
-                      <button 
-                        onClick={() => { setIsCopiedInvoice('june'); setTimeout(() => setIsCopiedInvoice(null), 1500); }}
-                        className="text-[10px] font-mono text-[var(--tempo-accent-blue)] bg-[var(--tempo-accent-blue)]/10 hover:bg-[var(--tempo-accent-blue)]/20 px-2.0 py-1.0 rounded"
-                      >
-                        {isCopiedInvoice === 'june' ? 'Saved! ✓' : 'Invoice PDF'}
-                      </button>
-                    </div>
-
-                    <div className="flex justify-between items-center p-3 px-4 hover:bg-white/[0.01]">
-                      <span className="font-mono text-[#8A8A90]">May 1, 2026</span>
-                      <span className="text-white font-semibold">Pro Plan Sub ($12.00)</span>
-                      <button 
-                        onClick={() => { setIsCopiedInvoice('may'); setTimeout(() => setIsCopiedInvoice(null), 1500); }}
-                        className="text-[10px] font-mono text-[var(--tempo-accent-blue)] bg-[var(--tempo-accent-blue)]/10 hover:bg-[var(--tempo-accent-blue)]/20 px-2.0 py-1.0 rounded"
-                      >
-                        {isCopiedInvoice === 'may' ? 'Saved! ✓' : 'Invoice PDF'}
-                      </button>
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-            )}
 
           </div>
 
