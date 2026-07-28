@@ -52,10 +52,6 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const currentConfig = PATH_TO_TAB[location.pathname] || { tab: 'today', viewMode: 'day' };
-  const activeSidebarTab = currentConfig.tab;
-  const viewMode = currentConfig.viewMode || 'day';
-
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [userEmail, setUserEmail] = useState<string>('ryuk9079@gmail.com');
   const [userName, setUserName] = useState<string>('Adrian Vance');
@@ -470,9 +466,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [tasks, location.pathname, activeFocusTask, isCommandPaletteOpen, isEveningReviewOpen, tasksHistory, navigate]);
 
-  // Resume running session on sidebar 'focus' tab click
+  // Resume running session on energy planner route
   useEffect(() => {
-    if (activeSidebarTab === 'focus') {
+    if (location.pathname === '/energy-planner') {
       const savedTaskId = localStorage.getItem("tempo-active-timer-task-id");
       const savedTaskJson = localStorage.getItem("tempo-active-timer-task");
       const savedRunning = localStorage.getItem("tempo-active-timer-running") === "true";
@@ -496,7 +492,7 @@ export default function App() {
         });
       }
     }
-  }, [activeSidebarTab]);
+  }, [location.pathname]);
 
   const handleCloseFocusMode = () => {
     localStorage.removeItem("tempo-active-timer-task-id");
@@ -509,7 +505,7 @@ export default function App() {
     localStorage.removeItem("tempo-active-timer-session-count");
 
     setActiveFocusTask(null);
-    if (activeSidebarTab === 'focus') {
+    if (location.pathname === '/energy-planner') {
       navigate('/today');
     }
     window.dispatchEvent(new Event("tempo-active-session-changed"));
@@ -517,7 +513,7 @@ export default function App() {
 
   const handleMinimizeFocusMode = () => {
     setActiveFocusTask(null);
-    if (activeSidebarTab === 'focus') {
+    if (location.pathname === '/energy-planner') {
       navigate('/today');
     }
   };
@@ -671,7 +667,7 @@ export default function App() {
                   { id: 'analytics', name: 'Velocity stats', icon: BarChart3, badge: '87%' },
                   { id: 'integrations', name: 'App Settings', icon: Settings, badge: null }
                 ].map(item => {
-                  const isActive = activeSidebarTab === item.id;
+                  const isActive = location.pathname === TAB_TO_PATH[item.id];
                   return (
                     <div key={item.id} className="w-full">
                       <EngineeredRocker
@@ -777,42 +773,32 @@ export default function App() {
           {/* MAIN CHASSIS: Filling remaining width of screen */}
           <main className="flex-grow flex flex-col h-screen overflow-hidden">
             <AnimatedPage pageKey={location.pathname}>
-              {activeSidebarTab === 'today' ? (
-                viewMode === 'day' ? (
-                  <TodayView 
-                    userEmail={userEmail}
-                    userName={userName}
-                    onLogout={handleLogout}
-                    onViewChange={handleViewChange}
-                    onStartFocusMode={(t) => {
-                      setActiveFocusTask(t);
-                      navigate('/energy-planner');
-                    }}
-                    tasks={tasks}
-                    setTasks={updateTasksWithHistory}
-                  />
-                ) : viewMode === 'week' ? (
-                  <WeekView 
-                    onViewChange={handleViewChange} 
-                    tasks={tasks}
-                    setTasks={updateTasksWithHistory}
-                  />
-                ) : (
-                  <CalendarView onViewChange={handleViewChange} />
-                )
-              ) : activeSidebarTab === 'week' ? (
+              {location.pathname === '/today' ? (
+                <TodayView 
+                  userEmail={userEmail}
+                  userName={userName}
+                  onLogout={handleLogout}
+                  onViewChange={handleViewChange}
+                  onStartFocusMode={(t) => {
+                    setActiveFocusTask(t);
+                    navigate('/energy-planner');
+                  }}
+                  tasks={tasks}
+                  setTasks={updateTasksWithHistory}
+                />
+              ) : location.pathname === '/week' ? (
                 <WeekView 
                   onViewChange={handleViewChange} 
                   tasks={tasks}
                   setTasks={updateTasksWithHistory}
                 />
-              ) : activeSidebarTab === 'month' ? (
+              ) : location.pathname === '/month' ? (
                 <CalendarView onViewChange={handleViewChange} />
-              ) : activeSidebarTab === 'habits' ? (
+              ) : location.pathname === '/habits' ? (
                 <HabitsView />
-              ) : activeSidebarTab === 'analytics' ? (
+              ) : location.pathname === '/velocity' ? (
                 <VelocityDashboard />
-              ) : activeSidebarTab === 'focus' ? (
+              ) : location.pathname === '/energy-planner' ? (
                 <EnergyPlannerView 
                   tasks={tasks}
                   onStartFocusSession={(t) => {
@@ -820,7 +806,7 @@ export default function App() {
                     navigate('/energy-planner');
                   }}
                 />
-              ) : activeSidebarTab === 'integrations' ? (
+              ) : location.pathname === '/settings' ? (
                 <SettingsView 
                   currentTheme={theme} 
                   onThemeChange={setTheme} 
