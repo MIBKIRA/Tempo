@@ -95,14 +95,59 @@ serve(async (req: Request) => {
     await adminClient.from("profiles").delete().eq("id", userId);
 
     // Delete user's avatar from 'avatars' storage bucket if exists
+    let storageCleanupStatus: { attempted: boolean; success: boolean; error?: string } = {
+      attempted: false,
+      success: true,
+    };
+
     try {
-      const { data: files } = await adminClient.storage.from("avatars").list(userId);
-      if (files && files.length > 0) {
-        const filePaths = files.map((f) => `${userId}/${f.name}`);
-        await adminClient.storage.from("avatars").remove(filePaths);
+      storageCleanupStatus.attempted = true;
+      const filePathsToRemove: string[] = [];
+
+      // 1. List files in folder `${userId}` (matches SettingsView upload convention: `${userId}/${filename}`)
+      const { data: folderFiles, error: folderErr } = await adminClient.storage
+        .from("avatars")
+        .list(userId);
+
+      if (folderErr) {
+        // Log generic notice if bucket doesn't exist or list fails, without sensitive user info
+        storageCleanupStatus.success = false;
+        storageCleanupStatus.error = "Failed to query storage avatar folder";
+      } else if (folderFiles && folderFiles.length > 0) {
+        folderFiles.forEach((f) => {
+          if (f.name) filePathsToRemove.push(`${userId}/${f.name}`);
+        });
       }
-    } catch (storageErr) {
-      // Storage bucket cleanup error logged silently or ignored if no avatar
+
+      // 2. Also check root directory for any direct file named `${userId}` or starting with `${userId}.`
+      const { data: rootFiles, error: rootErr } = await adminClient.storage
+        .from("avatars")
+        .list("", { search: userId });
+
+      if (!rootErr && rootFiles && rootFiles.length > 0) {
+        rootFiles.forEach((f) => {
+          if (f.name === userId || f.name.startsWith(`${userId}.`)) {
+            if (!filePathsToRemove.includes(f.name)) {
+              filePathsToRemove.push(f.name);
+            }
+          }
+        });
+      }
+
+      if (filePathsToRemove.length > 0) {
+        const { error: removeErr } = await adminClient.storage
+          .from("avatars")
+          .remove(filePathsToRemove);
+
+        if (removeErr) {
+          storageCleanupStatus.success = false;
+          storageCleanupStatus.error = "Failed to remove avatar files from storage";
+        }
+      }
+    } catch (_storageErr) {
+      // Record failure without logging full file paths, tokens, or user data
+      storageCleanupStatus.success = false;
+      storageCleanupStatus.error = "Unexpected exception during storage cleanup";
     }
 
     // 3. Delete user from Supabase Auth admin
@@ -116,7 +161,11 @@ serve(async (req: Request) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Account and associated data deleted successfully." }),
+      JSON.stringify({
+        success: true,
+        message: "Account and associated data deleted successfully.",
+        storage_cleanup: storageCleanupStatus,
+      }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err: unknown) {
