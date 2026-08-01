@@ -29,7 +29,7 @@ Tempo is a personal productivity and time-management application. Its features c
 
 4.2 You agree to provide accurate, current, and complete information during registration and profile completion, and to keep it up to date.
 
-4.3 You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. Notify us promptly at **[Contact Email]** if you become aware of any unauthorized use of your account.
+4.3 You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. Notify us promptly at **contact@tempoit.me** if you become aware of any unauthorized use of your account.
 
 4.4 We reserve the right to suspend or terminate accounts that contain materially inaccurate information, that violate these Terms, or that remain inactive for an extended period, subject to our [Account & Data Deletion Policy](./account-deletion-policy.md).
 
@@ -121,4 +121,4 @@ You agree to indemnify and hold harmless the Operator and its personnel from cla
 
 17.3 **No Waiver.** Our failure to enforce any right or provision of these Terms is not a waiver of that right or provision.
 
-17.4 **Contact.** Questions about these Terms may be directed to **[Contact Email]**.
+17.4 **Contact.** Questions about these Terms may be directed to **contact@tempoit.me**.

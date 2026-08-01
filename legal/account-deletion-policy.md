@@ -12,7 +12,7 @@ You may delete your Tempo account and the personal data associated with it at an
 You can request deletion of your account and data through either of the following methods, without needing to keep the app installed:
 
 - **In-app:** Account Settings → [Danger Zone / Delete Account] (where available in your version of the app).
-- **Web:** By emailing **[Contact Email]** with the subject line "Account Deletion Request" from the email address associated with your account, or via **[Insert public web deletion-request page URL]**.
+- **Web:** By emailing **contact@tempoit.me** with the subject line "Account Deletion Request" from the email address associated with your account, or via **[Insert public web deletion-request page URL]**.
 
 We will verify that the request comes from the account owner before processing it.
 
@@ -45,4 +45,4 @@ Account deletion is permanent and cannot be undone. If you want to use Tempo aga
 
 ## 7. Contact Us
 
-Questions about this Policy, or about the status of a deletion request, can be directed to **[Contact Email]**.
+Questions about this Policy, or about the status of a deletion request, can be directed to **contact@tempoit.me**.

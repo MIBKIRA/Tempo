@@ -218,10 +218,10 @@ export default function PublicDeleteAccount() {
           <div className="border-t border-[#2A2A2D] pt-4 flex flex-col gap-2 text-center text-xs text-[#8A8A90]">
             <span>Alternative Direct Request Method:</span>
             <a
-              href="mailto:support@tempo.so?subject=Account%20Deletion%20Request"
+              href="mailto:contact@tempoit.me?subject=Account%20Deletion%20Request"
               className="font-mono text-[var(--tempo-accent-blue)] hover:underline"
             >
-              Email support@tempo.so directly with subject "Account Deletion Request"
+              Email contact@tempoit.me directly with subject "Account Deletion Request"
             </a>
           </div>
         </div>

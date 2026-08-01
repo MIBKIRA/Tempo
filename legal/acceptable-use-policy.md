@@ -35,7 +35,7 @@ We may investigate suspected violations of this AUP and take action we consider 
 
 ## 5. Reporting Violations
 
-If you become aware of a violation of this AUP, please report it to **[Contact Email]**.
+If you become aware of a violation of this AUP, please report it to **contact@tempoit.me**.
 
 ## 6. Relationship to Other Policies
 

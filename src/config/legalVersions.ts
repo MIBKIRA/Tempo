@@ -19,22 +19,22 @@ export interface LegalVersions {
 export const LEGAL_VERSIONS: LegalVersions = {
   termsOfService: {
     version: '1.0.0',
-    effectiveDate: '2026-08-01',
+    effectiveDate: '[Insert Effective Date]',
   },
   privacyPolicy: {
     version: '1.0.0',
-    effectiveDate: '2026-08-01',
+    effectiveDate: '[Insert Effective Date]',
   },
   cookiePolicy: {
     version: '1.0.0',
-    effectiveDate: '2026-08-01',
+    effectiveDate: '[Insert Effective Date]',
   },
   acceptableUsePolicy: {
     version: '1.0.0',
-    effectiveDate: '2026-08-01',
+    effectiveDate: '[Insert Effective Date]',
   },
   accountDeletionPolicy: {
     version: '1.0.0',
-    effectiveDate: '2026-08-01',
+    effectiveDate: '[Insert Effective Date]',
   },
 };

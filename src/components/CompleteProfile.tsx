@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Lock, User, Calendar, AtSign, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { LogoSm } from './Logo';
 import { supabase } from '../supabaseClient';
+import { LEGAL_VERSIONS } from '../config/legalVersions';
 import EngineeredButton from './EngineeredButton';
 
 interface CompleteProfileProps {
@@ -17,6 +18,7 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
   const [dob, setDob] = useState('');
   const [dobError, setDobError] = useState<string | null>(null);
 
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -106,7 +108,13 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
       return;
     }
 
-    // 2. Validate current username check state
+    // 2. Terms & Privacy consent check
+    if (!termsAccepted) {
+      setErrorMessage('You must read and agree to the Terms of Service and Privacy Policy to complete your profile.');
+      return;
+    }
+
+    // 3. Validate current username check state
     if (usernameStatus === 'invalid') {
       return;
     }
@@ -156,6 +164,26 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
 
       if (!updatedProfile?.is_complete) {
         throw new Error('Profile save failed. Please try again.');
+      }
+
+      // Record legal consents
+      try {
+        await supabase.from('user_consents').insert([
+          {
+            user_id: user.id,
+            policy_type: 'terms_of_service',
+            policy_version: LEGAL_VERSIONS.termsOfService.version,
+            user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+          },
+          {
+            user_id: user.id,
+            policy_type: 'privacy_policy',
+            policy_version: LEGAL_VERSIONS.privacyPolicy.version,
+            user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+          },
+        ]);
+      } catch (consentErr) {
+        console.warn('Non-fatal: Failed to log profile completion consent:', consentErr);
       }
 
       // Sync Supabase user metadata with username and dob
@@ -263,12 +291,34 @@ export default function CompleteProfile({ onSetupSuccess, onLogout }: CompletePr
             )}
           </div>
 
+          {/* Mandatory Legal Consent Checkbox */}
+          <div className="flex items-start gap-2.5 mt-1 mb-1">
+            <input
+              id="complete-terms-consent"
+              type="checkbox"
+              required
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded border-[#2A2A2D] bg-[#0D0D0F] text-[var(--tempo-accent-blue)] focus:ring-0 accent-[var(--tempo-accent-blue)] cursor-pointer shrink-0"
+            />
+            <label htmlFor="complete-terms-consent" className="text-[11px] text-[#8A8A90] font-sans leading-relaxed cursor-pointer select-none">
+              I have read and agree to the{' '}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#F1F1F1] underline hover:text-[var(--tempo-accent-blue)] font-medium">
+                Terms of Service
+              </a>{' '}
+              and{' '}
+              <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#F1F1F1] underline hover:text-[var(--tempo-accent-blue)] font-medium">
+                Privacy Policy
+              </a>.
+            </label>
+          </div>
+
           {/* Complete Button */}
           <EngineeredButton
             id="complete-btn-submit"
             variant="primary"
             type="submit"
-            disabled={isSubmitting || usernameStatus === 'checking' || usernameStatus === 'taken' || usernameStatus === 'invalid'}
+            disabled={isSubmitting || !termsAccepted || usernameStatus === 'checking' || usernameStatus === 'taken' || usernameStatus === 'invalid'}
             isLoading={isSubmitting}
             fullWidth
             showArrow={true}

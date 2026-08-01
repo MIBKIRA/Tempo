@@ -109,10 +109,10 @@ export default function LegalView({ docKey = 'terms' }: LegalViewProps) {
               If you have questions about our policies or wish to exercise your privacy rights under GDPR or CCPA, email us at:
             </p>
             <a
-              href="mailto:support@tempo.so"
+              href="mailto:contact@tempoit.me"
               className="text-xs font-mono text-[var(--tempo-accent-blue)] hover:underline mt-1"
             >
-              support@tempo.so
+              contact@tempoit.me
             </a>
           </div>
         </aside>
@@ -148,21 +148,48 @@ export default function LegalView({ docKey = 'terms' }: LegalViewProps) {
                 return (
                   <ul key={idx} className="list-disc pl-5 space-y-1">
                     {paragraph.split('\n').map((line, lIdx) => (
-                      <li key={lIdx}>{line.replace('- ', '')}</li>
+                      <li key={lIdx}>
+                        {line.replace('- ', '').split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, pIdx) => {
+                          if (part.startsWith('**') && part.endsWith('**')) {
+                            return <strong key={pIdx} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                          }
+                          if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+                            const match = part.match(/^\[(.*?)\]\((.*?)\)$/);
+                            if (match) {
+                              return <a key={pIdx} href={match[2]} className="text-[var(--tempo-accent-blue)] hover:underline">{match[1]}</a>;
+                            }
+                          }
+                          return part;
+                        })}
+                      </li>
                     ))}
                   </ul>
                 );
               }
+
+              const formattedParagraphParts = paragraph.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, pIdx) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return <strong key={pIdx} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                }
+                if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+                  const match = part.match(/^\[(.*?)\]\((.*?)\)$/);
+                  if (match) {
+                    return <a key={pIdx} href={match[2]} className="text-[var(--tempo-accent-blue)] hover:underline">{match[1]}</a>;
+                  }
+                }
+                return part;
+              });
+
               return (
                 <p key={idx} className="leading-relaxed">
-                  {paragraph}
+                  {formattedParagraphParts}
                 </p>
               );
             })}
           </div>
 
           <footer className="mt-12 border-t border-[#2A2A2D] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8A8A90]">
-            <span>Tempo Technologies Inc. © 2026</span>
+            <span>Tempo — [Company Name / Legal Entity — to be confirmed]</span>
             <a
               href="/delete-account"
               onClick={(e) => {

@@ -50,7 +50,7 @@ We retain your account and productivity data for as long as your account remains
 
 ## 8. Your Privacy Rights
 
-**8.1 All users.** You may access, correct, export, or request deletion of your data by contacting us at **[Contact Email]**, or by using the in-app data controls described in our Account & Data Deletion Policy once available.
+**8.1 All users.** You may access, correct, export, or request deletion of your data by contacting us at **contact@tempoit.me**, or by using the in-app data controls described in our Account & Data Deletion Policy once available.
 
 **8.2 EU, UK, and EEA residents (GDPR / UK GDPR).** You have the right to access, rectify, erase, or restrict processing of your data; to data portability; to object to processing based on legitimate interests; to withdraw consent where processing relies on consent; and to lodge a complaint with your local data protection supervisory authority.
 
@@ -60,7 +60,7 @@ We retain your account and productivity data for as long as your account remains
 
 ## 9. Children's Privacy
 
-The Service requires users to be at least 13 years old, and we check this at sign-up. The Service is not directed at children under 13, and we do not knowingly collect data from anyone under 13. We do not knowingly sell or share the personal information of users we know to be under 18. If you are a parent or guardian and believe your child under 13 has provided us with personal data, contact us at **[Contact Email]** so we can delete it.
+The Service requires users to be at least 13 years old, and we check this at sign-up. The Service is not directed at children under 13, and we do not knowingly collect data from anyone under 13. We do not knowingly sell or share the personal information of users we know to be under 18. If you are a parent or guardian and believe your child under 13 has provided us with personal data, contact us at **contact@tempoit.me** so we can delete it.
 
 ## 10. Data Security
 
@@ -80,4 +80,4 @@ See our separate [Cookie Policy](./cookie-policy.md) for details on the local st
 
 ## 14. Contact Us
 
-If you have questions about this Policy or want to exercise your privacy rights, contact us at **[Contact Email]**.
+If you have questions about this Policy or want to exercise your privacy rights, contact us at **contact@tempoit.me**.

@@ -39,4 +39,4 @@ We will update this Policy if our use of cookies or similar technologies changes
 
 ## 7. Contact Us
 
-Questions about this Policy can be directed to **[Contact Email]**.
+Questions about this Policy can be directed to **contact@tempoit.me**.
