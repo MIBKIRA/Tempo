@@ -10,10 +10,48 @@ interface ReconsentModalProps {
   onConsentsRecorded: () => void;
 }
 
+export const getPolicyVersion = (policyType: string): string => {
+  switch (policyType) {
+    case 'privacy_policy':
+      return LEGAL_VERSIONS.privacyPolicy.version;
+    case 'terms_of_service':
+      return LEGAL_VERSIONS.termsOfService.version;
+    case 'cookie_policy':
+      return LEGAL_VERSIONS.cookiePolicy.version;
+    case 'acceptable_use_policy':
+      return LEGAL_VERSIONS.acceptableUsePolicy.version;
+    case 'account_deletion_policy':
+      return LEGAL_VERSIONS.accountDeletionPolicy.version;
+    default:
+      return '1.0.0';
+  }
+};
+
+export const getPolicyTitle = (policyType: string): string => {
+  switch (policyType) {
+    case 'terms_of_service':
+      return 'Terms of Service';
+    case 'privacy_policy':
+      return 'Privacy Policy';
+    case 'cookie_policy':
+      return 'Cookie Policy';
+    case 'acceptable_use_policy':
+      return 'Acceptable Use Policy';
+    case 'account_deletion_policy':
+      return 'Account & Data Deletion Policy';
+    default:
+      return policyType;
+  }
+};
+
 export default function ReconsentModal({ userId, outdatedPolicies, onConsentsRecorded }: ReconsentModalProps) {
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const activePolicies = outdatedPolicies && outdatedPolicies.length > 0
+    ? outdatedPolicies
+    : ['terms_of_service', 'privacy_policy'];
 
   const handleAcceptAll = async () => {
     if (!agreed) return;
@@ -22,13 +60,10 @@ export default function ReconsentModal({ userId, outdatedPolicies, onConsentsRec
     setErrorMessage(null);
 
     try {
-      const rowsToInsert = outdatedPolicies.map((policyType) => ({
+      const rowsToInsert = activePolicies.map((policyType) => ({
         user_id: userId,
         policy_type: policyType,
-        policy_version:
-          policyType === 'privacy_policy'
-            ? LEGAL_VERSIONS.privacyPolicy.version
-            : LEGAL_VERSIONS.termsOfService.version,
+        policy_version: getPolicyVersion(policyType),
         user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
         accepted_at: new Date().toISOString(),
       }));
@@ -71,8 +106,20 @@ export default function ReconsentModal({ userId, outdatedPolicies, onConsentsRec
 
         <div className="p-4 rounded-12 bg-[#0E0E10] border border-[#2A2A2D] flex flex-col gap-2 text-xs text-[#CCCCCC] leading-relaxed">
           <p>
-            We have updated our <strong>Terms of Service</strong> and <strong>Privacy Policy</strong> to version{' '}
-            <span className="font-mono text-[var(--tempo-accent-blue)] font-bold">1.0.0</span> to clarify data handling, age requirements (13+), and account deletion procedures.
+            We have updated our{' '}
+            {activePolicies.map((policyType, index) => {
+              const title = getPolicyTitle(policyType);
+              const ver = getPolicyVersion(policyType);
+              const isLast = index === activePolicies.length - 1;
+              const isSecondToLast = index === activePolicies.length - 2;
+              const separator = isLast ? '' : isSecondToLast ? ' and ' : ', ';
+              return (
+                <React.Fragment key={policyType}>
+                  <strong>{title}</strong> (v<span className="font-mono text-[var(--tempo-accent-blue)] font-bold">{ver}</span>){separator}
+                </React.Fragment>
+              );
+            })}{' '}
+            to clarify data handling, age requirements (13+), and account deletion procedures.
           </p>
           <p className="text-[#8A8A90]">
             Please review the updated documents before accepting to proceed into your workspace.

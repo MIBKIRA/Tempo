@@ -1005,12 +1005,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   </EngineeredButton>
                 </div>
 
-                <p id="signup-disclaimer" className="text-[11px] text-[#4A4A52] font-sans text-center mt-3 leading-relaxed">
-                  By signing up you agree to our{' '}
-                  <a href="#" className="text-[#8A8A90] hover:text-[#F1F1F1] underline">Terms of Service</a>{' '}
-                  and{' '}
-                  <a href="#" className="text-[#8A8A90] hover:text-[#F1F1F1] underline">Privacy Policy</a>.
-                </p>
+
               </form>
             )}
           </div>

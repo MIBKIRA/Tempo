@@ -1,18 +1,46 @@
 // Supabase Edge Function: delete-account
 // Deployment instructions:
-//   supabase functions deploy delete-account --no-verify-jwt
+//   supabase functions deploy delete-account
+// Note: `--no-verify-jwt` is NOT required. Supabase platform-level JWT verification inspects the Bearer token
+// on incoming calls as the first security layer. The function also performs internal secondary verification
+// using `adminClient.auth.getUser(token)`.
 // Ensure SUPABASE_SERVICE_ROLE_KEY and SUPABASE_URL are configured in your Supabase project secrets.
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+// Helper to resolve origin for CORS headers
+function getCorsHeaders(req: Request) {
+  const requestOrigin = req.headers.get("origin") || "";
+  const allowedOriginsEnv = Deno.env.get("ALLOWED_ORIGINS");
+  const allowedOrigins = allowedOriginsEnv
+    ? allowedOriginsEnv.split(",").map((o) => o.trim())
+    : [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://tempo.it",
+        "https://tempo.app",
+      ];
+
+  // Match exact allowed origin or vercel app domain pattern
+  const isAllowed =
+    allowedOrigins.includes(requestOrigin) ||
+    /\.vercel\.app$/.test(requestOrigin) ||
+    /\.run\.app$/.test(requestOrigin);
+
+  const corsOrigin = isAllowed ? requestOrigin : (allowedOrigins[0] || "*");
+
+  return {
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
 serve(async (req: Request) => {
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
