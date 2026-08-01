@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
   User, Bell, Keyboard, Palette, Calendar, Timer, Lock, Database, 
   Check, Search, Plus, Sparkles, Sliders, Volume2, ShieldAlert, 
-  Download, Upload, RefreshCw, Smartphone, Eye, EyeOff
+  Download, Upload, RefreshCw, Smartphone, Eye, EyeOff, Trash2, 
+  AlertTriangle, FileText, ExternalLink
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import EngineeredToggle from './EngineeredToggle';
@@ -168,6 +169,46 @@ export default function SettingsView({
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
+
+  // Danger Zone - Account Deletion state
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [deleteConfirmInput, setDeleteConfirmInput] = useState<string>('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState<boolean>(false);
+  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(null);
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    setDeleteAccountError(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("No active session found.");
+      }
+
+      // Call Supabase Edge Function to delete user and associated data
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Sign out on client and redirect
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (err: unknown) {
+      console.error("Account deletion error:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setDeleteAccountError(msg || "Failed to delete account. Please try again or contact support.");
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
 
   // Initials generator
   const getInitials = (name: string): string => {
@@ -1507,6 +1548,146 @@ export default function SettingsView({
                   {isSaving && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isSaving ? "Saving..." : "Save Profile Changes"}</span>
                 </button>
+
+                {/* Legal Policies Links Section */}
+                <div className="border-t border-[#2A2A2D]/60 pt-6 mt-4 flex flex-col gap-3">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#8A8A90] font-bold">
+                    Legal & Compliance Policies
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-8 bg-[#0D0D0F] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)] text-xs text-[#CCCCCC] hover:text-white transition-colors flex items-center justify-between"
+                    >
+                      <span>Terms of Service</span>
+                      <ExternalLink className="w-3 h-3 text-[#8A8A90]" />
+                    </a>
+                    <a
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-8 bg-[#0D0D0F] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)] text-xs text-[#CCCCCC] hover:text-white transition-colors flex items-center justify-between"
+                    >
+                      <span>Privacy Policy</span>
+                      <ExternalLink className="w-3 h-3 text-[#8A8A90]" />
+                    </a>
+                    <a
+                      href="/cookie-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-8 bg-[#0D0D0F] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)] text-xs text-[#CCCCCC] hover:text-white transition-colors flex items-center justify-between"
+                    >
+                      <span>Cookie Policy</span>
+                      <ExternalLink className="w-3 h-3 text-[#8A8A90]" />
+                    </a>
+                    <a
+                      href="/account-deletion-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-8 bg-[#0D0D0F] border border-[#2A2A2D] hover:border-[var(--tempo-accent-blue)] text-xs text-[#CCCCCC] hover:text-white transition-colors flex items-center justify-between"
+                    >
+                      <span>Deletion Policy</span>
+                      <ExternalLink className="w-3 h-3 text-[#8A8A90]" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Danger Zone: Account & Data Deletion */}
+                <div className="border-t border-[#FB7185]/20 pt-6 mt-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-[#FB7185] font-mono text-xs uppercase font-bold tracking-wider">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Danger Zone — Account & Data Deletion</span>
+                  </div>
+
+                  <div className="p-4 rounded-12 bg-[#FB7185]/5 border border-[#FB7185]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-bold text-white">Permanently Delete Account & Data</span>
+                      <p className="text-[11px] text-[#8A8A90] leading-relaxed">
+                        Irreversibly delete your profile, tasks, habits, focus logs, and account records in accordance with our Account & Data Deletion Policy.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setDeleteConfirmInput('');
+                        setDeleteAccountError(null);
+                      }}
+                      className="px-4 py-2 rounded-8 bg-[#FB7185]/15 hover:bg-[#FB7185] border border-[#FB7185]/30 hover:border-[#FB7185] text-xs font-bold text-[#FB7185] hover:text-white transition-all cursor-pointer shrink-0 flex items-center gap-1.5"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Account</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Deletion Confirmation Modal */}
+                {showDeleteModal && (
+                  <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="w-full max-w-md bg-[#141416] border border-[#FB7185]/30 rounded-16 p-6 shadow-2xl flex flex-col gap-4 animate-fade-in relative">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-10 bg-[#FB7185]/10 border border-[#FB7185]/30 flex items-center justify-center text-[#FB7185]">
+                          <AlertTriangle className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-white">Confirm Account Deletion</h3>
+                          <span className="text-[11px] font-mono text-[#8A8A90]">This action is permanent and cannot be undone</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-[#CCCCCC] leading-relaxed">
+                        To confirm deletion, please type your username <strong className="text-white font-mono">{profileUsername || 'username'}</strong> below:
+                      </p>
+
+                      <input
+                        type="text"
+                        value={deleteConfirmInput}
+                        onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                        placeholder={profileUsername || 'Type username to confirm'}
+                        className="w-full px-3.5 py-2 text-xs bg-[#0D0D0F] border border-[#2A2A2D] rounded-8 text-white focus:outline-none focus:border-[#FB7185] font-mono"
+                      />
+
+                      {deleteAccountError && (
+                        <div className="p-2.5 rounded-8 bg-[#FB7185]/10 border border-[#FB7185]/20 text-[#FB7185] text-xs">
+                          {deleteAccountError}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#2A2A2D]">
+                        <button
+                          type="button"
+                          onClick={() => setShowDeleteModal(false)}
+                          disabled={isDeletingAccount}
+                          className="px-4 py-2 rounded-8 bg-[#1C1C1F] hover:bg-[#2A2A2D] text-xs text-[#8A8A90] hover:text-white cursor-pointer font-bold"
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleDeleteAccount}
+                          disabled={
+                            isDeletingAccount ||
+                            deleteConfirmInput.trim().toLowerCase() !== (profileUsername || '').trim().toLowerCase()
+                          }
+                          className="px-4 py-2 rounded-8 bg-[#FB7185] hover:bg-[#F43F5E] disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-white transition-all cursor-pointer flex items-center gap-1.5"
+                        >
+                          {isDeletingAccount ? (
+                            <span>Deleting...</span>
+                          ) : (
+                            <>
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Permanently Delete</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

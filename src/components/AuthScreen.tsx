@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, Command, Check, Aler
 import { Logo, LogoSm } from './Logo';
 import TempoitWordmark from './TempoitWordmark';
 import { supabase } from '../supabaseClient';
+import { LEGAL_VERSIONS } from '../config/legalVersions';
 import EngineeredButton from './EngineeredButton';
 import EngineeredRocker from './EngineeredRocker';
 
@@ -18,6 +19,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
   const [username, setUsername] = useState('');
   const [dob, setDob] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -223,6 +225,12 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       errors.confirmPassword = 'Passwords do not match';
     }
 
+    // 7. Terms & Privacy consent check
+    if (!termsAccepted) {
+      setErrorMessage('You must read and agree to the Terms of Service and Privacy Policy to create an account.');
+      return;
+    }
+
     // If any validation errors, set them and abort
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -247,6 +255,28 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       if (error) {
         setErrorMessage(error.message);
         return;
+      }
+
+      // Record legal consents if user was created
+      if (data.user) {
+        try {
+          await supabase.from('user_consents').insert([
+            {
+              user_id: data.user.id,
+              policy_type: 'terms_of_service',
+              policy_version: LEGAL_VERSIONS.termsOfService.version,
+              user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+            },
+            {
+              user_id: data.user.id,
+              policy_type: 'privacy_policy',
+              policy_version: LEGAL_VERSIONS.privacyPolicy.version,
+              user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+            },
+          ]);
+        } catch (consentErr) {
+          console.warn('Non-fatal: Failed to log initial signup consent:', consentErr);
+        }
       }
 
       // Check registration progress status
@@ -919,12 +949,35 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
                   )}
                 </div>
 
+                {/* 7. Mandatory Legal Consent Checkbox */}
+                <div className="flex items-start gap-2.5 mt-2 mb-1">
+                  <input
+                    id="signup-terms-consent"
+                    type="checkbox"
+                    required
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-[#2A2A2D] bg-[#0D0D0F] text-[var(--tempo-accent-blue)] focus:ring-0 accent-[var(--tempo-accent-blue)] cursor-pointer shrink-0"
+                  />
+                  <label htmlFor="signup-terms-consent" className="text-[11px] text-[#8A8A90] font-sans leading-relaxed cursor-pointer select-none">
+                    I have read and agree to the{' '}
+                    <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#F1F1F1] underline hover:text-[var(--tempo-accent-blue)] font-medium">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#F1F1F1] underline hover:text-[var(--tempo-accent-blue)] font-medium">
+                      Privacy Policy
+                    </a>.
+                  </label>
+                </div>
+
                 <div className="flex justify-center w-full mt-2">
                   <EngineeredButton
                     id="signup-btn-submit"
                     type="submit"
                     variant="primary"
                     isLoading={isSubmitting}
+                    disabled={!termsAccepted || isSubmitting}
                     hasError={!!errorMessage}
                     hintText="↵ enter"
                   >

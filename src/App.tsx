@@ -26,6 +26,10 @@ import CompleteProfile from './components/CompleteProfile';
 import AuthCallback from './components/AuthCallback';
 import EngineeredButton from './components/EngineeredButton';
 import EngineeredRocker from './components/EngineeredRocker';
+import LegalView from './components/LegalView';
+import PublicDeleteAccount from './components/PublicDeleteAccount';
+import ReconsentModal from './components/ReconsentModal';
+import { LEGAL_VERSIONS } from './config/legalVersions';
 
 const PATH_TO_TAB: Record<string, { tab: string; viewMode?: 'day' | 'week' | 'month' }> = {
   '/today': { tab: 'today', viewMode: 'day' },
@@ -60,6 +64,47 @@ export default function App() {
   const [isProfileComplete, setIsProfileComplete] = useState<boolean | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
+
+  const [needsReconsent, setNeedsReconsent] = useState<boolean>(false);
+  const [outdatedPolicies, setOutdatedPolicies] = useState<string[]>([]);
+
+  const checkUserConsents = async (userId: string) => {
+    try {
+      const { data: consents, error } = await supabase
+        .from('user_consents')
+        .select('policy_type, policy_version, accepted_at')
+        .eq('user_id', userId)
+        .order('accepted_at', { ascending: false });
+
+      if (error) {
+        console.warn('Failed to query user consents table:', error);
+        return;
+      }
+
+      const requiredPolicies = [
+        { type: 'terms_of_service', version: LEGAL_VERSIONS.termsOfService.version },
+        { type: 'privacy_policy', version: LEGAL_VERSIONS.privacyPolicy.version }
+      ];
+
+      const outdated: string[] = [];
+
+      for (const reqP of requiredPolicies) {
+        const userLatest = consents?.find(c => c.policy_type === reqP.type);
+        if (!userLatest || userLatest.policy_version !== reqP.version) {
+          outdated.push(reqP.type);
+        }
+      }
+
+      if (outdated.length > 0) {
+        setOutdatedPolicies(outdated);
+        setNeedsReconsent(true);
+      } else {
+        setNeedsReconsent(false);
+      }
+    } catch (err) {
+      console.warn("Failed to check user consents:", err);
+    }
+  };
 
   const handleViewChange = (v: 'day' | 'week' | 'month') => {
     if (v === 'day') {
@@ -117,6 +162,9 @@ export default function App() {
           setIsAuthenticated(true);
           setUserEmail(session.user.email || 'ryuk9079@gmail.com');
           
+          // Verify user consents
+          checkUserConsents(session.user.id);
+
           // Fetch database profile complete status
           const { data: profile } = await supabase
             .from('profiles')
@@ -158,6 +206,7 @@ export default function App() {
       if (newSession && newSession.user) {
         setIsAuthenticated(true);
         setUserEmail(newSession.user.email || 'ryuk9079@gmail.com');
+        checkUserConsents(newSession.user.id);
         
         // Only trigger profile loading on SIGNED_IN to avoid updating issues
         if (event === 'SIGNED_IN') {
@@ -580,6 +629,26 @@ export default function App() {
       );
     }
 
+    // Public legal & account deletion routes (accessible unauthenticated or authenticated)
+    if (location.pathname === '/terms') {
+      return <LegalView docKey="terms" />;
+    }
+    if (location.pathname === '/privacy') {
+      return <LegalView docKey="privacy" />;
+    }
+    if (location.pathname === '/cookie-policy') {
+      return <LegalView docKey="cookie-policy" />;
+    }
+    if (location.pathname === '/acceptable-use') {
+      return <LegalView docKey="acceptable-use" />;
+    }
+    if (location.pathname === '/account-deletion-policy') {
+      return <LegalView docKey="account-deletion-policy" />;
+    }
+    if (location.pathname === '/delete-account') {
+      return <PublicDeleteAccount />;
+    }
+
     if (location.pathname.startsWith('/auth/callback')) {
       return <AuthCallback onComplete={handleCallbackComplete} />;
     }
@@ -589,6 +658,17 @@ export default function App() {
         return <Navigate to="/" replace />;
       }
       return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
+    }
+
+    // Blocking Re-consent modal if user hasn't accepted current legal policy versions
+    if (needsReconsent && session?.user) {
+      return (
+        <ReconsentModal
+          userId={session.user.id}
+          outdatedPolicies={outdatedPolicies}
+          onConsentsRecorded={() => setNeedsReconsent(false)}
+        />
+      );
     }
 
     if (isProfileComplete === false) {
