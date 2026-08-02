@@ -350,9 +350,9 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
               })
             ) : (
               <div className="text-center py-10 select-none flex flex-col items-center justify-center p-6 border border-dashed border-[#222] rounded-lg">
-                <AlertCircle className="w-5 h-5 text-zinc-600 mb-2" />
-                <p className="text-xs text-zinc-400 font-sans">No tasks model matches the query.</p>
-                <p className="text-[10px] text-zinc-500 mt-1">Try relaxing filters or search titles.</p>
+                <AlertCircle className="w-5 h-5 text-[var(--tempo-text-muted)] mb-2" />
+                <p className="text-xs text-[var(--tempo-text-secondary)] font-sans">No tasks model matches the query.</p>
+                <p className="text-[10px] text-[var(--tempo-text-muted)] mt-1">Try relaxing filters or search titles.</p>
               </div>
             )}
           </div>
@@ -398,7 +398,7 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
                     return (
                       <div 
                         key={block.id} 
-                        className="flex flex-col p-4 md:p-5 rounded-lg border border-[#2B2B30] bg-[#171719]/90 hover:border-zinc-700 transition-all"
+                        className="flex flex-col p-4 md:p-5 rounded-lg border border-[#2B2B30] bg-[#171719]/90 hover:border-[var(--tempo-border-hover)] transition-all"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0 flex-grow">
@@ -411,11 +411,11 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
                             <h3 className="text-sm font-bold text-white tracking-tight mt-1 truncate">
                               {block.title}
                             </h3>
-                            <span className="text-[10px] font-mono text-zinc-400 mt-2 block bg-[#0F0F11] inline-block px-2 py-0.5 rounded border border-white/5">
+                            <span className="text-[10px] font-mono text-[var(--tempo-text-secondary)] mt-2 block bg-[#0F0F11] inline-block px-2 py-0.5 rounded border border-white/5">
                               🕒 {block.startTime} - {block.endTime}
                             </span>
                             {block.notes && (
-                              <p className="text-[10px] text-zinc-500 italic mt-2.5 leading-relaxed bg-zinc-900/40 p-2.5 rounded border border-zinc-800/50">
+                              <p className="text-[10px] text-[var(--tempo-text-muted)] italic mt-2.5 leading-relaxed bg-[var(--tempo-bg-primary)]/40 p-2.5 rounded border border-[var(--tempo-border)]/50">
                                 {block.notes}
                               </p>
                             )}
@@ -437,9 +437,9 @@ export default function EnergyPlannerView({ tasks, onStartFocusSession }: Energy
               </div>
             ) : (
               <div className="text-center py-8 p-6 bg-[#0E0E10] border border-[#1A1A1D] rounded-lg flex flex-col items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-zinc-600 mb-2.5" />
-                <h4 className="text-xs font-semibold text-zinc-400">Nothing scheduled right now</h4>
-                <p className="text-[10px] text-zinc-500 max-w-xs mt-1.5 leading-normal">
+                <AlertCircle className="w-6 h-6 text-[var(--tempo-text-muted)] mb-2.5" />
+                <h4 className="text-xs font-semibold text-[var(--tempo-text-secondary)]">Nothing scheduled right now</h4>
+                <p className="text-[10px] text-[var(--tempo-text-muted)] max-w-xs mt-1.5 leading-normal">
                   No layout appointment block bounds your current timestamp. Check your Timeline schedule or boot a Quick Session instead.
                 </p>
                 

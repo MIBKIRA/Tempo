@@ -433,7 +433,7 @@ export default function HabitsView() {
   if (error) {
     return (
       <div id="habits-view-error" className="flex-grow w-full max-w-7xl mx-auto px-6 py-12 flex flex-col items-center justify-center font-sans gap-5 animate-fadeIn">
-        <div className="w-12 h-12 bg-red-950/20 border border-red-500/30 rounded-full flex items-center justify-center text-red-500">
+        <div className="w-12 h-12 bg-[var(--tempo-accent-coral)]/20 border border-[var(--tempo-accent-coral)]/30 rounded-full flex items-center justify-center text-[var(--tempo-accent-coral)]">
           <AlertTriangle className="w-6 h-6 animate-pulse" />
         </div>
         <div className="text-center flex flex-col gap-1.5">
@@ -569,7 +569,7 @@ export default function HabitsView() {
                 <button
                   type="button"
                   onClick={() => handleTriggerDelete(true)}
-                  className="px-2.5 py-1.5 text-[10px] font-semibold text-red-500 hover:text-red-400 border border-red-950 hover:bg-red-950/15 rounded-8 transition-all cursor-pointer"
+                  className="px-2.5 py-1.5 text-[10px] font-semibold text-[var(--tempo-accent-coral)] hover:text-[var(--tempo-accent-coral)]/80 border border-[var(--tempo-accent-coral)]/30 hover:bg-[var(--tempo-accent-coral)]/15 rounded-8 transition-all cursor-pointer"
                 >
                   Hard Delete
                 </button>
@@ -600,7 +600,7 @@ export default function HabitsView() {
       {deleteConfirmId && (
         <div className="fixed inset-0 z-[1200] bg-[#000000CC] backdrop-blur-md flex items-center justify-center p-4">
           <div className="w-full max-w-[400px] bg-[#141416] border border-[#2A2A2D] rounded-16 p-6 shadow-2xl relative flex flex-col gap-5 select-none text-center">
-            <div className="w-12 h-12 rounded-full bg-red-950/30 border border-red-500/30 flex items-center justify-center mx-auto text-red-500">
+            <div className="w-12 h-12 rounded-full bg-[var(--tempo-accent-coral)]/20 border border-[var(--tempo-accent-coral)]/30 flex items-center justify-center mx-auto text-[var(--tempo-accent-coral)]">
               <AlertTriangle className="w-6 h-6 animate-pulse" />
             </div>
             
@@ -626,7 +626,7 @@ export default function HabitsView() {
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="py-2 rounded-8 text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-all cursor-pointer"
+                className="py-2 rounded-8 text-xs font-bold text-white bg-[var(--tempo-accent-coral)] hover:bg-[var(--tempo-accent-coral)]/90 transition-all cursor-pointer"
               >
                 Confirm Delete
               </button>

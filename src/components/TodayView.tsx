@@ -575,14 +575,14 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
         <div className="flex items-center gap-2">
           {/* Status Dot */}
           <span className={`inline-flex items-center justify-center p-0.5 rounded-full ${
-            syncStatus === 'syncing' ? 'bg-amber-500/10' :
-            syncStatus === 'error' ? 'bg-red-500/10' :
-            useLocalFallback ? 'bg-white/5' : 'bg-emerald-500/10'
+            syncStatus === 'syncing' ? 'bg-[var(--tempo-accent-amber)]/10' :
+            syncStatus === 'error' ? 'bg-[var(--tempo-accent-coral)]/10' :
+            useLocalFallback ? 'bg-white/5' : 'bg-[var(--tempo-accent-green)]/10'
           }`}>
             <span className={`h-2 w-2 rounded-full ${
-              syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' :
-              syncStatus === 'error' ? 'bg-red-500 animate-pulse' :
-              useLocalFallback ? 'bg-gray-400' : 'bg-emerald-400'
+              syncStatus === 'syncing' ? 'bg-[var(--tempo-accent-amber)] animate-pulse' :
+              syncStatus === 'error' ? 'bg-[var(--tempo-accent-coral)] animate-pulse' :
+              useLocalFallback ? 'bg-[var(--tempo-border-hover)]' : 'bg-[var(--tempo-accent-green)]'
             }`} />
           </span>
 
@@ -591,7 +591,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
               <span>Syncing database...</span>
             )}
             {syncStatus === 'error' && (
-              <span className="text-red-400 font-medium">Sync issue (Offline)</span>
+              <span className="text-[var(--tempo-accent-coral)] font-medium">Sync issue (Offline)</span>
             )}
             {syncStatus === 'synced' && (
               <span>
@@ -936,7 +936,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                         </button>
 
                         {confirmDeleteTaskId === task.id ? (
-                          <div className="flex items-center gap-1 text-[10px] whitespace-nowrap bg-red-500/10 border border-red-500/20 rounded px-1.5 py-0.5 text-red-500 select-none">
+                          <div className="flex items-center gap-1 text-[10px] whitespace-nowrap bg-[var(--tempo-accent-coral)]/10 border border-[var(--tempo-accent-coral)]/20 rounded px-1.5 py-0.5 text-[var(--tempo-accent-coral)] select-none">
                             <span>Delete?</span>
                             <button 
                               type="button" 
@@ -945,7 +945,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                                 await deleteTask(task.id);
                                 setConfirmDeleteTaskId(null);
                               }} 
-                              className="font-bold underline text-red-400 hover:text-red-200 ml-0.5"
+                              className="font-bold underline text-[var(--tempo-accent-coral)] hover:text-[var(--tempo-text-primary)] ml-0.5"
                             >
                               Yes
                             </button>
@@ -955,7 +955,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                                 e.stopPropagation();
                                 setConfirmDeleteTaskId(null);
                               }} 
-                              className="text-gray-400 hover:text-white ml-0.5"
+                              className="text-[var(--tempo-text-secondary)] hover:text-[var(--tempo-text-primary)] ml-0.5"
                             >
                               No
                             </button>
@@ -968,7 +968,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                               setConfirmDeleteTaskId(task.id);
                             }}
                             title="Delete task completely"
-                            className="w-6 h-6 rounded-md hover:bg-red-500/10 text-[var(--tempo-text-muted)] hover:text-red-400 flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+                            className="w-6 h-6 rounded-md hover:bg-[var(--tempo-accent-coral)]/10 text-[var(--tempo-text-muted)] hover:text-[var(--tempo-accent-coral)] flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1052,7 +1052,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                           onClick={handleCardClick}
                           className={`p-3 bg-[var(--tempo-bg-secondary)] border ${
                             isCompletedToday 
-                              ? 'border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.06)]' 
+                              ? 'border-[var(--tempo-accent-green)]/50 shadow-[0_0_12px_rgba(16,185,129,0.06)]' 
                               : 'border-[var(--tempo-border)]'
                           } rounded-xl flex items-center gap-3 hover:border-[var(--tempo-border-hover)] cursor-pointer hover:bg-[var(--tempo-bg-tertiary)] group transition-all`}
                         >
@@ -1091,7 +1091,7 @@ export default function TodayView({ userEmail, userName, onLogout, onViewChange,
                             <span className="text-[11px] font-sans font-medium text-[var(--tempo-text-primary)] truncate tracking-wide flex items-center gap-1">
                               {habit.name}
                               {isCompletedToday && (
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex items-center justify-center text-[7px] text-white font-bold shrink-0 inline-block" title="Completed Today">
+                                <span className="w-2.5 h-2.5 rounded-full bg-[var(--tempo-accent-green)] flex items-center justify-center text-[7px] text-white font-bold shrink-0 inline-block" title="Completed Today">
                                   ✓
                                 </span>
                               )}

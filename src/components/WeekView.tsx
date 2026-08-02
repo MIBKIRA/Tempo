@@ -728,7 +728,7 @@ export default function WeekView({ onViewChange, tasks: propsTasks, setTasks: pr
                       style={{ top: `${currentTimePosition}px` }}
                     >
                       {/* Left side focal point marker */}
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--tempo-accent-coral)] absolute -left-[3px] shrink-0 pulse-coral-indicator bg-red-400 font-bold" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--tempo-accent-coral)] absolute -left-[3px] shrink-0 pulse-coral-indicator font-bold" />
                       <span className="flex-grow h-[1px] bg-[var(--tempo-accent-coral)]/80" />
                     </div>
                   )}
