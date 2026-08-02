@@ -35,4 +35,4 @@ The disclaimer of warranties, limitation of liability, and governing-law provisi
 
 ## 8. Contact Us
 
-Questions about this EULA can be directed to **[Contact Email]**.
+Questions about this EULA can be directed to **contact@tempoit.me**.
