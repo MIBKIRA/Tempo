@@ -143,11 +143,7 @@ async function migrateLocalToSupabase(userId: string) {
       .from('blocks')
       .insert(rows);
 
-    if (!error) {
-      if (import.meta.env?.DEV) {
-        console.log(`✓ Migrated ${items.length} items to Supabase`);
-      }
-    } else {
+    if (error) {
       console.error("Migration to Supabase failed:", error);
     }
   }
@@ -199,9 +195,6 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
 
       if (selectErr) {
         if (selectErr.code === 'PGRST205' || selectErr.message?.includes('schema cache') || selectErr.message?.includes('Could not find the table')) {
-          if (import.meta.env?.DEV) {
-            console.log("Table 'blocks' is missing in Supabase. Falling back to local storage cleanly.");
-          }
           setUseLocalFallback(true);
           setTasks(loadLocalTasks());
           setError(null);
