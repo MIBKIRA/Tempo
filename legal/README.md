@@ -18,12 +18,12 @@ This folder contains Tempo's legal documents. It was generated from a direct rev
 
 Every file above contains bracketed placeholders — `[Company Name / Legal Entity]`, `[Insert Effective Date]`, `[Contact Email]`, and a few document-specific ones (governing-law city, liability cap, Supabase hosting region). Fill these in before treating any document as final.
 
-## Known Gaps to Close in the App (Not Just the Documents)
+## App Implementation Status for Legal Requirements
 
-These were found during the code review and are referenced by the policies above, but the underlying features don't exist yet:
+The items previously flagged as gaps during earlier compliance reviews have been fully resolved in the codebase:
 
-1. **Account/data deletion** — no in-app or backend capability currently exists. Required by the Account & Data Deletion Policy, by GDPR/CCPA/PDPL, and by Google Play (mandatory since April 2024).
-2. **Server-side age enforcement** — the 13+ check currently runs client-side only.
+1. **Account/data deletion** — **Resolved.** Implemented via `supabase/functions/delete-account/` (a Supabase Edge Function with server-side JWT verification and storage/data cleanup).
+2. **Server-side age enforcement** — **Resolved.** Enforced via a database trigger added in `supabase/migrations/20260801_legal_consents_and_age_check.sql`.
 
 ## Not a Substitute for Legal Advice
 

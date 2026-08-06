@@ -5,7 +5,7 @@
 
 ## 1. Introduction
 
-This Privacy Policy explains how Tempo ("Tempo," "we," "us," or "our"), operated by **[Company Name / Legal Entity — to be confirmed]**, collects, uses, discloses, and protects your personal data when you use our productivity and calendar application (the "Service"). This Policy is incorporated into and forms part of our [Terms of Service](./terms-of-service.md).
+This Privacy Policy explains how Tempo ("Tempo," "we," "us," or "our"), operated by **Mohamed Hatem**, collects, uses, discloses, and protects your personal data when you use our productivity and calendar application (the "Service"). This Policy is incorporated into and forms part of our [Terms of Service](./terms-of-service.md).
 
 This Policy describes what the Service actually does as of the effective date above, based on a direct review of its code and configuration — not a generic template.
 

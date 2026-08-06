@@ -1,8 +1,5 @@
 {
-  "name": "Remix: Tempo Authentication Screen",
-  "description": "A keyboard-first productivity OS with task checklists, calendar planning, interactive quick capture inbox, and immersive Pomodoro-style Focus Mode sessions.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "name": "Tempo",
+  "description": "A keyboard-first productivity OS with task checklists, calendar planning, habit tracking, and Pomodoro-style Focus Mode sessions.",
+  "requestFramePermissions": []
 }

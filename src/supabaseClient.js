@@ -2,9 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 
 // ============================================================================
 // SUPABASE CONFIGURATION
-// Replace the placeholder below with your actual Project anon public key from
-// the Supabase Dashboard (Project Settings > API > Project API Keys > anon/public).
-// The correct anon key MUST be a JSON Web Token (JWT) starting with "eyJ".
+// Replace the placeholder below with your actual Supabase publishable
+// key from the Supabase Dashboard (Project Settings > API Keys).
+// The current key format is sb_publishable_..., not a legacy JWT anon key.
 // ============================================================================
 
 const SUPABASE_URL = "https://vrqdyyonogcuffxyhprg.supabase.co";

@@ -5,7 +5,7 @@
 
 ## 1. Introduction and Acceptance
 
-Welcome to Tempo ("Tempo," "we," "us," or "our"), a productivity and calendar application operated by **[Company Name / Legal Entity — to be confirmed]** ("the Operator"). These Terms of Service ("Terms") govern your access to and use of the Tempo website, application, and related services (collectively, the "Service").
+Welcome to Tempo ("Tempo," "we," "us," or "our"), a productivity and calendar application operated by **Mohamed Hatem** ("the Operator"). These Terms of Service ("Terms") govern your access to and use of the Tempo website, application, and related services (collectively, the "Service").
 
 By creating an account, accessing, or using the Service, you agree to be bound by these Terms and by our [Privacy Policy](./privacy-policy.md), which is incorporated into these Terms by reference. If you do not agree to these Terms, you must not access or use the Service.
 
